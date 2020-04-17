@@ -11,7 +11,8 @@ application =
 		height = 480, 
 		scale = "letterbox",
 		fps = 60,
-		
+        xAlign = "left",
+        yAlign = "top"
 		--[[
 		imageSuffix =
 		{

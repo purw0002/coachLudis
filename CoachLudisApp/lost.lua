@@ -43,37 +43,11 @@ function scene:create( event )
 	local background = display.newRect( display.screenOriginX, display.screenOriginY, screenW, screenH )
 	background.anchorX = 0 
 	background.anchorY = 0
-	background:setFillColor( 1 )
-	local game1 = display.newImageRect( "images/logo/game1.jpeg", 100, 100 )
-	game1.x = game1.contentHeight -30
-	game1.y = game1.contentHeight
-	game1.touch = onGame1BtnRelease
-	game1:addEventListener( "touch", game1 )
-	
-	local game2 = display.newImageRect( "images/logo/game2.jpeg", 100, 100 )
-	game2.x = game2.contentHeight +  140 
-	game2.y = game2.contentHeight
-
-	local game3 = display.newImageRect( "images/logo/game3.jpeg", 100, 100 )
-	game3.x = game3.contentHeight +  310 
-	game3.y = game3.contentHeight
-
-	local game4 = display.newImageRect( "images/logo/game4.jpeg", 100, 100 )
-	game4.x = game4.contentHeight +50 
-	game4.y = game4.contentHeight + 140
-
-	local game5 = display.newImageRect( "images/logo/game5.jpeg", 100, 100 )
-	game5.x = game5.contentHeight +  230 
-	game5.y = game5.contentHeight + 140
+	background:setFillColor( -1 )
 
 
 	-- all display objects must be inserted into group
 	sceneGroup:insert( background )
-	sceneGroup:insert( game1 )
-	sceneGroup:insert( game2 )
-	sceneGroup:insert( game3 )
-	sceneGroup:insert( game4 )
-	sceneGroup:insert( game5 )
 
 end
 

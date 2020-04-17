@@ -15,21 +15,39 @@ local physics = require "physics"
 -- forward declarations and other locals
 local screenW, screenH, halfW = display.actualContentWidth, display.actualContentHeight, display.contentCenterX
 
+
+
 function scene:create( event )
 
-	-- Called when the scene's view does not exist.
-	-- 
-	-- INSERT code here to initialize the scene
-	-- e.g. add display objects to 'sceneGroup', add touch listeners, etc.
-
+	healthValue = 3
 	local sceneGroup = self.view
 
 	-- We need physics started to add bodies, but we don't want the simulaton
 	-- running until the scene is on the screen.
 	physics.start()
 	physics.pause()
+	-- Called when the scene's view does not exist.
+	-- 
+	-- INSERT code here to initialize the scene
+	-- e.g. add display objects to 'sceneGroup', add touch listeners, etc.
+	local healths = display.newGroup()
+	local function onCollision(event)
 
-
+		if(event.phase == "began") then
+			if(event.object1.name == "player" or event.object2.name == "player") then
+				event.object2:removeSelf()
+				if (healthValue == 1) then
+					healths[1].alpha = 0
+					physics.pause()
+				elseif (healthValue == 3) then
+					healths[3].alpha = 0
+				elseif (healthValue == 2) then
+					healths[2].alpha = 0
+				end
+				healthValue = healthValue - 1
+			end
+		end
+	end
 	-- create a grey rectangle as the backdrop
 	-- the physical screen will likely be a different shape than our defined content area
 	-- since we are going to position the background from it's top, left corner, draw the
@@ -38,15 +56,90 @@ function scene:create( event )
 	background.anchorX = 0 
 	background.anchorY = 0
 	background:setFillColor( .5 )
-	
+	dist = 5
+	for i= 1,3,1 
+	do 
+		health = display.newImageRect( "crate.png", 20, 20) 
+		health.x, health.y = dist,20
+		health.name  = i
+		dist = dist + 30
+		healths:insert(health)
+	end
+
+
+	local crates = display.newGroup()
+
+	local function randomizeLane()
+
+		local lanes = {1, 2, 3, 4, 5 }
+		local idx = math.random(#lanes)
+		local selectedLane = lanes[idx]
+		if(selectedLane == 1) then
+			return 100
+		elseif (selectedLane == 2) then
+			return 160
+		elseif (selectedLane == 3) then
+			return 220
+		elseif (selectedLane == 4) then
+			return 280
+		elseif (selectedLane == 5) then
+			return 340
+		end
+	end
+	initialObstacle = -500
+	crate_id = 0
+	local function createCrate()
+    	crate = display.newImageRect( "crate.png", 50, 50 )
+    	crate.x = randomizeLane()
+    	crate_id = crate_id + 1
+    	crate.name = "crate" .. tostring(crate_id)
+    	crate.y = initialObstacle
+		physics.addBody( crate )
+    	crate.gravityScale = 0.25
+
+    	crates:insert(crate)
+    end
+
+	timer.performWithDelay( 1000, createCrate,13 )
+
+
+	local player = display.newImageRect( "soccer.png", 50, 50)
+
+	player.name = "player"
+	player.x, player.y = 160,220
+	physics.addBody( player, "static" )
+
+
+
+	local function moveLeft(event)
+		if (event.phase == "ended") then
+			if(player.x > 100) then
+				player.x = player.x - 60
+			end
+		end
+		return true
+	end
+
+	local function moveRight( event )
+		if (event.phase == "ended") then
+			if(player.x < 340) then
+				player.x = player.x + 60
+			end
+		end
+		return true
+	end
+
+	local leftArrow = display.newImageRect( "Icon-hdpi.png", 50, 50 )
+	leftArrow.x, leftArrow.y = 0,110
+	leftArrow:addEventListener( "touch", moveLeft )
+
+	local rightArrow = display.newImageRect( "Icon-hdpi.png", 50, 50 )
+	rightArrow.x, rightArrow.y = 480,110
+	rightArrow:addEventListener( "touch", moveRight )
+
+
+
 	-- make a crate (off-screen), position it, and rotate slightly
-	local crate = display.newImageRect( "crate.png", 90, 90 )
-	crate.x, crate.y = 160, -100
-	crate.rotation = 15
-	
-	-- add physics to the crate
-	physics.addBody( crate, { density=1.0, friction=0.3, bounce=0.3 } )
-	
 	-- create a grass object and add physics (with custom shape)
 	local grass = display.newImageRect( "grass.png", screenW, 82 )
 	grass.anchorX = 0
@@ -56,19 +149,24 @@ function scene:create( event )
 	
 	-- define a shape that's slightly shorter than image bounds (set draw mode to "hybrid" or "debug" to see)
 	local grassShape = { -halfW,-34, halfW,-34, halfW,34, -halfW,34 }
-	physics.addBody( grass, "static", { friction=0.3, shape=grassShape } )
-	
 	-- all display objects must be inserted into group
+
+
 	sceneGroup:insert( background )
 	sceneGroup:insert( grass)
-	sceneGroup:insert( crate )
+	sceneGroup:insert( crates )
+	sceneGroup:insert(player)
+	sceneGroup:insert(leftArrow)
+	sceneGroup:insert(rightArrow)
+	sceneGroup:insert(healths)
+
+	Runtime:addEventListener("collision", onCollision)
 end
 
 
 function scene:show( event )
 	local sceneGroup = self.view
 	local phase = event.phase
-	
 	if phase == "will" then
 		-- Called when the scene is still off screen and is about to move on screen
 	elseif phase == "did" then
@@ -84,7 +182,6 @@ function scene:hide( event )
 	local sceneGroup = self.view
 	
 	local phase = event.phase
-	
 	if event.phase == "will" then
 		-- Called when the scene is on screen and is about to move off screen
 		--
@@ -116,7 +213,6 @@ scene:addEventListener( "create", scene )
 scene:addEventListener( "show", scene )
 scene:addEventListener( "hide", scene )
 scene:addEventListener( "destroy", scene )
-
 -----------------------------------------------------------------------------------------
 
 return scene
