@@ -37,8 +37,8 @@ function scene:create( event )
 	background.anchorX = 0
 	background.anchorY = 0
 
-	background.x = 0 + display.screenOriginX 
-	background.y = 0 + display.screenOriginY
+	background.x = display.screenOriginX 
+	background.y = display.screenOriginY
 	background.touch = onPlayBtnRelease
 	background:addEventListener( "touch", background )
 
@@ -50,7 +50,7 @@ function scene:create( event )
 		over="button-over.png",
 		width=154, height=40,
 	}
-	playBtn.x = display.contentCenterX
+	playBtn.x = display.contentCenterX +50
 	playBtn.y = display.contentHeight - 25
 	
 	-- all display objects must be inserted into group

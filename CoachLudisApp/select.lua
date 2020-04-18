@@ -45,25 +45,25 @@ function scene:create( event )
 	background.anchorY = 0
 	background:setFillColor( 1 )
 	local game1 = display.newImageRect( "images/logo/game1.jpeg", 100, 100 )
-	game1.x = game1.contentHeight -30
+	game1.x = game1.contentHeight + 10
 	game1.y = game1.contentHeight
 	game1.touch = onGame1BtnRelease
 	game1:addEventListener( "touch", game1 )
 	
 	local game2 = display.newImageRect( "images/logo/game2.jpeg", 100, 100 )
-	game2.x = game2.contentHeight +  140 
+	game2.x = game2.contentHeight +  180 
 	game2.y = game2.contentHeight
 
 	local game3 = display.newImageRect( "images/logo/game3.jpeg", 100, 100 )
-	game3.x = game3.contentHeight +  310 
+	game3.x = game3.contentHeight +  350
 	game3.y = game3.contentHeight
 
 	local game4 = display.newImageRect( "images/logo/game4.jpeg", 100, 100 )
-	game4.x = game4.contentHeight +50 
+	game4.x = game4.contentHeight +90 
 	game4.y = game4.contentHeight + 140
 
 	local game5 = display.newImageRect( "images/logo/game5.jpeg", 100, 100 )
-	game5.x = game5.contentHeight +  230 
+	game5.x = game5.contentHeight +  270 
 	game5.y = game5.contentHeight + 140
 
 
