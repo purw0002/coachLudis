@@ -6,22 +6,7 @@
 
 local composer = require( "composer" )
 local scene = composer.newScene()
--- include Corona's "physics" library
-local physics = require "physics"
 
---------------------------------------------
-
-local function onGame4BtnRelease()
-	
-	-- go to level1.lua scene
-	composer.numOfLevels = 5
-	composer.unlocked = 2
-	composer.game = 'soccer'
-
-	composer.gotoScene( "levelSelect", "fade", 500 )
-	
-	return true	-- indicates successful touch
-end
 
 
 -- forward declarations and other locals
@@ -43,47 +28,16 @@ function scene:create( event )
 	-- the physical screen will likely be a different shape than our defined content area
 	-- since we are going to position the background from it's top, left corner, draw the
 	-- background at the real top, left corner.
-
-	local function test()
-		composer.stars = 2
-		composer.gotoScene( "rate", "fade", 500 )
-	end
-	local background = display.newRect( display.screenOriginX, display.screenOriginY, screenW, screenH )
-	background.anchorX = 0 
+	local background = display.newImageRect( "completeScreen.jpg", display.actualContentWidth, display.actualContentHeight )
+	background.anchorX = 0
 	background.anchorY = 0
-	background:setFillColor( 1 )
-	local game1 = display.newImageRect( "images/logo/game1.jpeg", 100, 100 )
-	game1.x = game1.contentHeight + 10
-	game1.y = game1.contentHeight
-	game1.touch = test
-	game1:addEventListener( "touch", game1 )
 
-	local game2 = display.newImageRect( "images/logo/game2.jpeg", 100, 100 )
-	game2.x = game2.contentHeight +  180 
-	game2.y = game2.contentHeight
-
-	local game3 = display.newImageRect( "images/logo/game3.jpeg", 100, 100 )
-	game3.x = game3.contentHeight +  350
-	game3.y = game3.contentHeight
-
-	local game4 = display.newImageRect( "images/logo/game4.jpeg", 100, 100 )
-	game4.x = game4.contentHeight +90 
-	game4.y = game4.contentHeight + 140
-	game4.touch = onGame4BtnRelease
-	game4:addEventListener( "touch", game4 )
-
-	local game5 = display.newImageRect( "images/logo/game5.jpeg", 100, 100 )
-	game5.x = game5.contentHeight +  270 
-	game5.y = game5.contentHeight + 140
-
-
+	background.x = display.screenOriginX 
+	background.y = display.screenOriginY
+	
+	
 	-- all display objects must be inserted into group
 	sceneGroup:insert( background )
-	sceneGroup:insert( game1 )
-	sceneGroup:insert( game2 )
-	sceneGroup:insert( game3 )
-	sceneGroup:insert( game4 )
-	sceneGroup:insert( game5 )
 
 end
 
@@ -99,7 +53,6 @@ function scene:show( event )
 		-- 
 		-- INSERT code here to make the scene come alive
 		-- e.g. start timers, begin animation, play audio, etc.
-		physics.start()
 	end
 end
 
@@ -113,7 +66,6 @@ function scene:hide( event )
 		--
 		-- INSERT code here to pause the scene
 		-- e.g. stop timers, stop animation, unload sounds, etc.)
-		physics.stop()
 	elseif phase == "did" then
 		-- Called when the scene is now off screen
 	end	
@@ -127,9 +79,6 @@ function scene:destroy( event )
 	-- INSERT code here to cleanup the scene
 	-- e.g. remove display objects, remove touch listeners, save state, etc.
 	local sceneGroup = self.view
-	
-	package.loaded[physics] = nil
-	physics = nil
 end
 
 ---------------------------------------------------------------------------------

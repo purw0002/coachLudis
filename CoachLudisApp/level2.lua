@@ -73,9 +73,15 @@ function scene:create( event )
 
 	local win = display.newImageRect( "celebration.png", screenW, screenH )
 	
+	local function showRatings()
+		composer.stars = healthValue
+		composer.gotoScene( "rate", "fade", 500 )
+	end
 	win.anchorX = 0
 	win.anchorY = 0
 	win.isVisible = false
+	win.touch = showRatings
+	win:addEventListener( "touch", win )
 
 	local loss = display.newImageRect( "gameOver.png", screenW, screenH )
 	
