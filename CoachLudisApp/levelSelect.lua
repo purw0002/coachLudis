@@ -65,6 +65,7 @@ function scene:create( event )
 
 	local function goToLevel1()
 		if (game == "soccer") then
+			composer.levelPlaying = 'level2'
 			composer.gotoScene( "level2", "fade", 1 )
 		end
 	end

@@ -8,20 +8,20 @@ local composer = require( "composer" )
 local scene = composer.newScene()
 
 -- include Corona's "physics" library
-local physics = require "physics"
 
 --------------------------------------------
 
 -- forward declarations and other locals
 local screenW, screenH, halfW = display.actualContentWidth, display.actualContentHeight, display.contentCenterX
 
-
+local physics
 
 function scene:create( event )
+	physics = require "physics"
 
 	healthValue = 3
 	local sceneGroup = self.view
-
+	local injuryBoard
 	-- We need physics started to add bodies, but we don't want the simulaton
 	-- running until the scene is on the screen.
 	physics.start()
@@ -31,9 +31,26 @@ function scene:create( event )
 	-- e.g. add display objects to 'sceneGroup', add touch listeners, etc.
 	
 	local healths = display.newGroup()
+
+	dist = 20
+	for i= 1,3,1 
+	do
+
+		 
+		if (composer.playerGender == "boy") then
+			health = display.newImageRect( "boy.png", 20, 20)
+		else
+			health = display.newImageRect( "girl.png", 20, 20)
+		end
+		health.x, health.y = dist,20
+		health.name  = i
+		dist = dist + 15
+		healths:insert(health)
+	end
+
 	local deadPlayers = 0
 	local boom = display.newImageRect("boom.png", 40,40)
-	boom.x, boom.y = 80,145
+	boom.x, boom.y = 80,175
 	boom.name =  "boom"
 	boom.isVisible = false
 	local sheetData = {
@@ -60,6 +77,21 @@ function scene:create( event )
 		sheetContentHeight= 1000
 	}
 
+	local sheetDataGirlMoving  = {
+		width= 416,
+		height= 454,
+		numFrames= 20,
+		sheetContentWidth= 8320,
+		sheetContentHeight= 454
+	}
+
+	local sheetDataGirlDying = {
+		width= 601,
+		height= 502,
+		numFrames= 30,
+		sheetContentWidth= 18030,
+		sheetContentHeight= 502
+	}
 
 
 	local background = display.newImageRect( "ground.jpg", screenW, screenH )
@@ -89,14 +121,6 @@ function scene:create( event )
 	loss.anchorY = 0
 	loss.isVisible = false
 
-
-
-
-	--local ball = display.newImageRect( "ball.png", 20, 20) 
-	--ball.x, ball.y = 90,180
-	--ball.name =  "ball"
-	--physics.addBody( ball , "static")
-
 	local ballSheet = graphics.newImageSheet( "soccer-sprite.png", sheetDataBall) 
 	local ballSequenceData = {
 		{ name = "spin", start = 1, count= 11,time=1500}
@@ -110,18 +134,44 @@ function scene:create( event )
 	local nw, nh = ball.width*0.02*0.5, ball.height*0.02*0.5;
 	physics.addBody(ball, "static", {shape={-nw,-nh,nw,-nh,nw,nh,-nw,nh} });
 
-
-	local blueSheet = graphics.newImageSheet("blueSpriteAllActions.png",sheetData1 )
-	local blueSequenceData = {
-		{ name = "run", start = 46, count= 15,time=800},
-		{name = "dead", start = 1, count= 15,time=800, loopCount=1}
-	}
-	local player = display.newSprite(blueSheet, blueSequenceData)
-	player.x, player.y = 80,160
-	player.name="player"
-	player:setSequence("run")
-	player:scale(0.12,0.12)
-	player:play()
+	local blueSheet
+	local blueSequenceData
+	local player
+	if (composer.playerGender == "boy") then
+		blueSheet = graphics.newImageSheet("blueSpriteAllActions.png",sheetData1 )
+		blueSequenceData = {
+			{ name = "run", start = 46, count= 15,time=800},
+			{name = "dead", start = 1, count= 15,time=800, loopCount=1}
+		}
+		player = display.newSprite(blueSheet, blueSequenceData)
+		player.x, player.y = 80,160
+		player.name="player"
+		player:setSequence("run")
+		player:scale(0.12,0.12)
+		player:play()
+	else
+		blueSheet = graphics.newImageSheet("runGirlsprite.png",sheetDataGirlMoving )
+		blueSequenceData = {
+			{ name = "run", start = 1, count= 20,time=800}
+		}
+		player = display.newSprite(blueSheet, blueSequenceData)
+		player.x, player.y = 60,160
+		player.name="player"
+		player:setSequence("run")
+		player:scale(0.12,0.12)
+		player:play()
+		deadGirlSheet = graphics.newImageSheet("deadGirl-sprite.png",sheetDataGirlDying )
+		deadSequenceData = {
+			{ name = "die", start = 1, count= 30,time=800, loopCount=1}
+		}
+		playerDead = display.newSprite(deadGirlSheet, deadSequenceData)
+		playerDead.x, playerDead.y = 60,160
+		playerDead.name="playerDead"
+		playerDead:setSequence("die")
+		playerDead:scale(0.12,0.12)
+		playerDead.isVisible = false
+		
+	end
 	
 
 	local detector = display.newImageRect("ball.png", 500,500)
@@ -148,12 +198,18 @@ function scene:create( event )
 					player.y = player.y - 100
 					ball.y = ball.y - 100
 					boom.y = boom.y - 100
+					if (composer.playerGender == "girl") then
+						playerDead.y = playerDead.y-100
+					end
 				end
         	elseif (event.y > event.yStart and swipeLength > 5) then
 				if(player.y < 240) then
 					player.y = player.y + 100
 					ball.y = ball.y + 100
 					boom.y = boom.y + 100
+					if (composer.playerGender == "girl") then
+						playerDead.y = playerDead.y+100
+					end
 				end
         	end
     	end
@@ -171,7 +227,6 @@ function scene:create( event )
 			Runtime:removeEventListener("collision", onCollision)
 			ball:pause()
 			player:pause()
-			
 		else
 			background1.x = background1.x-3
 		end
@@ -181,59 +236,10 @@ function scene:create( event )
 		boom.isVisible = false
 	end
 
-	local function showGameOver(event)
-		loss.isVisible = true
-	end
-
-	local function onCollision(event)
-		if(event.phase == "began") then
-			print(event.object1.name)
-			print(event.object2.name)
-			if(event.object1.name == "ball" or event.object2.name == "ball") then
-				event.object2:removeSelf()
-				boom.isVisible = true
-				timer.performWithDelay( 800, boomVisible, 1 )
-				deadPlayers = deadPlayers + 1
-				if (healthValue == 1) then
-					healths[1].alpha = 0
-					physics.pause()
-					player:pause()
-					player:setSequence("dead")
-					player:play()
-					Runtime:removeEventListener("touch",globalTouchHandler)
-					Runtime:removeEventListener("collision", onCollision)
-					timer.performWithDelay( 1000, showGameOver, 1)
-
-				elseif (healthValue == 3) then
-					healths[3].alpha = 0
-				elseif (healthValue == 2) then
-					healths[2].alpha = 0
-				end
-				healthValue = healthValue - 1
-			elseif(event.object1.name == "detector" or event.object2.name == "detector") then
-				event.object2:removeSelf()
-				deadPlayers = deadPlayers + 1
-				if(deadPlayers == 13) then
-					Runtime:addEventListener("enterFrame", moveBackground)
-				end
-			end
-		end
-	end
-
 	-- create a grey rectangle as the backdrop
 	-- the physical screen will likely be a different shape than our defined content area
 	-- since we are going to position the background from it's top, left corner, draw the
 	-- background at the real top, left corner.
-
-	dist = 20
-	for i= 1,3,1 
-	do 
-		health = display.newImageRect( "boy.png", 20, 20) 
-		health.x, health.y = dist,20
-		health.name  = i
-		dist = dist + 15
-		healths:insert(health)
-	end
 
 
 	local player2s = display.newGroup()
@@ -275,9 +281,77 @@ function scene:create( event )
     end
 
 
-	timer.performWithDelay( 1500, createCrate, 13)
+	local createObstacles = timer.performWithDelay( 1500, createCrate, 13)
 
 
+	local function boardDissapear(event)
+		event.target:removeSelf()
+
+		local function showGameOver(loss)
+			player:pause()
+			loss.isVisible = true
+		end
+
+		if injuryBoard.param1 == nil then
+			timer.resume(event.target.params)
+			physics.start()
+		else
+			timer.performWithDelay( 1000, showGameOver(injuryBoard.param1), 1)
+		end
+		
+	end
+
+	local function showInjuryBoard()
+		injuryBoard = display.newImageRect("images/injury window/injury window-dislocation.png", 500,350)
+		injuryBoard.x = display.contentCenterX
+		injuryBoard.y = display.contentCenterY
+		injuryBoard.params = createObstacles
+		if (healthValue<= 1) then
+			injuryBoard.param1 = loss
+		end
+		injuryBoard:addEventListener("tap", boardDissapear)
+	end
+
+	local function onCollision(event)
+		if(event.phase == "began") then
+			if(event.object1.name == "ball" or event.object2.name == "ball") then
+				event.object2:removeSelf()
+				boom.isVisible = true
+				timer.performWithDelay( 800, boomVisible, 1 )
+				deadPlayers = deadPlayers + 1
+				physics.pause()
+				timer.pause(createObstacles)
+				showInjuryBoard()
+				if (healthValue == 1) then
+					healths[1].alpha = 0
+					physics.pause()
+					player:pause()
+					if (composer.playerGender == "boy") then
+						player:setSequence("dead")
+						player:play()
+					else
+						player.isVisible = false
+						playerDead.isVisible = true
+						playerDead:play()
+					end
+					Runtime:removeEventListener("touch",globalTouchHandler)
+					Runtime:removeEventListener("collision", onCollision)
+
+				elseif (healthValue == 3) then
+					healths[3].alpha = 0
+				elseif (healthValue == 2) then
+					healths[2].alpha = 0
+				end
+				healthValue = healthValue - 1
+			elseif(event.object1.name == "detector" or event.object2.name == "detector") then
+				event.object2:removeSelf()
+				deadPlayers = deadPlayers + 1
+				if(deadPlayers == 13) then
+					Runtime:addEventListener("enterFrame", moveBackground)
+				end
+			end
+		end
+	end
 
 	-- make a crate (off-screen), position it, and rotate slightly
 	-- create a grass object and add physics (with custom shape)
@@ -290,6 +364,9 @@ function scene:create( event )
 	sceneGroup:insert(player)
 	sceneGroup:insert(boom)
 	sceneGroup:insert(win)
+	if (composer.playerGender == "girl") then
+		sceneGroup:insert(playerDead)
+	end
 
 	Runtime:addEventListener("touch",globalTouchHandler)
 	Runtime:addEventListener("collision", onCollision)

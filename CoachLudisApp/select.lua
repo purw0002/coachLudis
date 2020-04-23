@@ -11,13 +11,14 @@ local physics = require "physics"
 
 --------------------------------------------
 
+
 local function onGame4BtnRelease()
 	
 	-- go to level1.lua scene
 	composer.numOfLevels = 5
 	composer.unlocked = 2
 	composer.game = 'soccer'
-
+	composer.levelSelectLink = 'levelSelect'
 	composer.gotoScene( "levelSelect", "fade", 500 )
 	
 	return true	-- indicates successful touch
@@ -113,7 +114,6 @@ function scene:hide( event )
 		--
 		-- INSERT code here to pause the scene
 		-- e.g. stop timers, stop animation, unload sounds, etc.)
-		physics.stop()
 	elseif phase == "did" then
 		-- Called when the scene is now off screen
 	end	

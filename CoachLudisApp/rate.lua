@@ -67,49 +67,45 @@ function scene:create( event )
 	timer.performWithDelay( 1000, showStars(1), 1)
 
 	local function goToSportSelect()
-		print("goToSportSelect")
+		print("sport select")
 		composer.gotoScene( "select", "fade", 500 )
 	end
 
 	local function replayLevel()
-		print("replayLevel")
-		composer.gotoScene( "level2", "fade", 500 )
+		composer.removeScene( composer.levelPlaying)
+		composer.gotoScene( composer.levelPlaying, "fade", 500 )
 	end
 
 	local function goToLevelSelect()
-		print("goToLevelSelect")
-		composer.gotoScene( "levelSelect", "fade", 500 )
+
+		print(composer.levelSelectLink)
+		composer.gotoScene( composer.levelSelectLink, "fade", 500 )
 	end
 
 	local function goNext()
-		print("goNext")
 		composer.gotoScene( "select", "fade", 500 )
 	end
 
-	local levelUpButton = display.newImageRect( "images/ratings/home icon.png", 100, 100 )
+	local levelUpButton = display.newImageRect( "images/ratings/home icon.png", 75, 75 )
 	levelUpButton.x = display.contentCenterX-23
 	levelUpButton.y = display.contentCenterY +105
-	levelUpButton.touch = goToSportSelect
-	levelUpButton:addEventListener( "touch", levelUpButton )
+	levelUpButton:addEventListener( "tap", goToSportSelect )
 
-	local levelIconButton = display.newImageRect( "images/ratings/level icon.png", 100, 100 )
+	local levelIconButton = display.newImageRect( "images/ratings/level icon.png", 75, 75 )
 	levelIconButton.x = display.contentCenterX +12
 	levelIconButton.y = display.contentCenterY +105
-	--levelIconButton.touch = goToLevelSelect
-	--levelIconButton:addEventListener( "touch", levelIconButton )
+	levelIconButton:addEventListener( "tap", goToLevelSelect )
 
-	local replayButton = display.newImageRect( "images/ratings/replay icon.png", 100, 100 )
+	local replayButton = display.newImageRect( "images/ratings/replay icon.png", 75, 75 )
 	replayButton.x = display.contentCenterX+47
 	replayButton.y = display.contentCenterY +105
-	replayButton.touch = replayLevel
-	replayButton:addEventListener( "touch", replayButton )
+	replayButton:addEventListener( "tap", replayLevel )
 
 
-	local playIcon = display.newImageRect( "images/ratings/play icon.png", 100, 100 )
+	local playIcon = display.newImageRect( "images/ratings/play icon.png", 75, 75 )
 	playIcon.x = display.contentCenterX+82
 	playIcon.y = display.contentCenterY +105
-	playIcon.touch = goNext
-	playIcon:addEventListener( "touch", playIcon )
+	playIcon:addEventListener( "tap", goNext )
 
 
 
