@@ -29,7 +29,7 @@ function scene:create( event )
 	physics.start()
 	physics.pause()
 
-
+	local gameComplete = false
 	local countDown = 10
 	pauseTime = false;
 	resumeTime = true;
@@ -46,24 +46,26 @@ function scene:create( event )
 	buttonText.text = "Pause"
 
 	function gameOver()
-		if countDown == 0  then
-			countDown = 0
-			currentTime = countDown
-			local stage = display.getCurrentStage()
-			buttonText:removeSelf()
-			buttonText = nil
-			timeBut:removeSelf()
-			timeBut = nil
-			timerText:removeSelf()
-			timerText = nil
-			ice_pack:removeSelf()
-			arm:removeSelf()
-			composer.gotoScene("rate","fade","100")
-		
-		else
-			timerText.text = "Time:"..countDown
-			currentTime = countDown
-			countDown = countDown - 1
+		if(gameComplete == false) then
+			if countDown == 0  then
+				countDown = 0
+				currentTime = countDown
+				local stage = display.getCurrentStage()
+				buttonText:removeSelf()
+				buttonText = nil
+				timeBut:removeSelf()
+				timeBut = nil
+				timerText:removeSelf()
+				timerText = nil
+				ice_pack:removeSelf()
+				arm:removeSelf()
+				composer.stars = 0
+				composer.gotoScene("rate","fade","100")
+			else
+				timerText.text = "Time:"..countDown
+				currentTime = countDown
+				countDown = countDown - 1
+			end
 		end
 	end
 
@@ -149,18 +151,19 @@ end
 
 
 	local function hasCollidedCircle( obj1, obj2, radius )
- 
-		if ( obj1 == nil ) then  -- Make sure the first object exists
-			return false
-		end
-		if ( obj2 == nil ) then  -- Make sure the other object exists
-			return false
-		end
+ 		if(gameComplete == false) then
+			if ( obj1 == nil ) then  -- Make sure the first object exists
+				return false
+			end
+			if ( obj2 == nil ) then  -- Make sure the other object exists
+				return false
+			end
 	 
-		if ((obj1.x - obj2.x) * (obj1.x - obj2.x) + (obj1.y - obj2.y) * (obj1.y - obj2.y) < radius * radius) then
-			return true; 
-		else
-			return false; 
+			if ((obj1.x - obj2.x) * (obj1.x - obj2.x) + (obj1.y - obj2.y) * (obj1.y - obj2.y) < radius * radius) then
+				return true; 
+			else
+				return false; 
+			end
 		end
 	end
 	
@@ -193,6 +196,7 @@ end
 						else
 							composer.stars = 0
 						end
+						gameComplete = true
 						composer.gotoScene("rate","fade",100)
 						break
 					end	
