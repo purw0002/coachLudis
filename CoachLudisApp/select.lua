@@ -16,9 +16,10 @@ local function onGame4BtnRelease()
 	
 	-- go to level1.lua scene
 	composer.numOfLevels = 5
-	composer.unlocked = 2
+	composer.unlocked = 3
 	composer.game = 'soccer'
 	composer.levelSelectLink = 'levelSelect'
+	composer.prevScreen = "select"
 	composer.gotoScene( "levelSelect", "fade", 500 )
 	
 	return true	-- indicates successful touch
@@ -28,12 +29,57 @@ end
 -- forward declarations and other locals
 local screenW, screenH, halfW = display.actualContentWidth, display.actualContentHeight, display.contentCenterX
 
-function scene:create( event )
 
+
+function scene:create( event )
 	-- Called when the scene's view does not exist.
 	-- 
 	-- INSERT code here to initialize the scene
 	-- e.g. add display objects to 'sceneGroup', add touch listeners, etc.
+	musicButtonON = display.newImageRect( "images/background/app background/music button.png", 50, 50 )
+	musicButtonOFF = display.newImageRect( "images/background/app background/no music icon.png", 50, 50 )
+
+	local function stopAudio(event)
+		if ( event.phase == "began" ) then
+			audio.stop()
+			sound = "OFF"
+			musicButtonON.isVisible = false
+			musicButtonOFF.isVisible = true
+		end
+	end
+
+	local function startAudio(event)
+		if ( event.phase == "began" ) then
+			audio.play(musicTrack)
+			sound = "ON"
+			musicButtonON.isVisible = true
+			musicButtonOFF.isVisible = false
+		end
+	end
+
+	musicButtonON.x = 545
+	musicButtonON.y = 20
+	musicButtonON:addEventListener( "touch", stopAudio )
+
+
+	musicButtonOFF.x = 545
+	musicButtonOFF.y = 20
+	musicButtonOFF:addEventListener( "touch", startAudio )
+
+
+	local function goBackToPrev(event)
+		composer.prevScreen = event.target.prev
+		if (prevScreen ~= "None") then
+			composer.gotoScene( event.target.curScreen, "fade", 500 )
+		end
+	end
+	local backButton = display.newImageRect( "images/commons/back button.png", 60, 60 )
+	backButton.x = 20
+	backButton.y = 20
+	backButton.prev = "None"
+	backButton.curScreen = "selectCharacter"
+	backButton:addEventListener( "touch", goBackToPrev )
+
 
 	local sceneGroup = self.view
 
@@ -49,10 +95,9 @@ function scene:create( event )
 		composer.stars = 2
 		composer.gotoScene( "rate", "fade", 500 )
 	end
-	local background = display.newRect( display.screenOriginX, display.screenOriginY, screenW, screenH )
-	background.anchorX = 0 
+	local background = display.newImageRect( "images/background/app background/appBack.png", screenW, screenH )
+	background.anchorX = 0
 	background.anchorY = 0
-	background:setFillColor( 1 )
 	local game1 = display.newImageRect( "images/logo/game1.jpeg", 100, 100 )
 	game1.x = game1.contentHeight + 10
 	game1.y = game1.contentHeight
@@ -85,7 +130,9 @@ function scene:create( event )
 	sceneGroup:insert( game3 )
 	sceneGroup:insert( game4 )
 	sceneGroup:insert( game5 )
-
+	sceneGroup:insert( backButton )
+	sceneGroup:insert(musicButtonOFF)
+	sceneGroup:insert(musicButtonON)
 end
 
 
@@ -98,6 +145,21 @@ function scene:show( event )
 	elseif phase == "did" then
 		-- Called when the scene is now on screen
 		-- 
+		if (sound == "ON") then
+
+			if audio.isChannelPlaying( 1 ) then
+			else
+				audio.stop()
+				audio.play(musicTrack, {  channel=1, loops=-1 })
+			end
+
+			musicButtonON.isVisible = true
+			musicButtonOFF.isVisible = false
+		else
+			audio.stop()
+			musicButtonON.isVisible = false
+			musicButtonOFF.isVisible = true
+		end
 		-- INSERT code here to make the scene come alive
 		-- e.g. start timers, begin animation, play audio, etc.
 		physics.start()

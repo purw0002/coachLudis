@@ -13,9 +13,6 @@ local widget = require "widget"
 --------------------------------------------
 local screenW, screenH, halfW = display.actualContentWidth, display.actualContentHeight, display.contentCenterX
 
-local settingsButton = display.newImageRect( "images/commons/setting button.png", 50, 50 )
-settingsButton.x =  display.contentCenterX + 300
-settingsButton.y = display.contentCenterY - 140
 
 
 function scene:create( event )
@@ -26,10 +23,40 @@ function scene:create( event )
 	-- INSERT code here to initialize the scene
 	-- e.g. add display objects to 'sceneGroup', add touch listeners, etc.
 
-	local background = display.newRect( display.screenOriginX, display.screenOriginY, screenW, screenH )
-	background.anchorX = 0 
+
+	musicButtonONSC = display.newImageRect( "images/background/app background/music button.png", 50, 50 )
+	musicButtonOFFSC = display.newImageRect( "images/background/app background/no music icon.png", 50, 50 )
+
+	local function stopAudio(event)
+		if ( event.phase == "began" ) then
+			audio.stop()
+			sound = "OFF"
+			musicButtonONSC.isVisible = false
+			musicButtonOFFSC.isVisible = true
+		end
+	end
+
+	local function startAudio(event)
+		if ( event.phase == "began" ) then
+			audio.play(musicTrack)
+			sound = "ON"
+			musicButtonONSC.isVisible = true
+			musicButtonOFFSC.isVisible = false
+		end
+	end
+
+
+	musicButtonONSC.x = 545
+	musicButtonONSC.y = 20
+	musicButtonONSC:addEventListener( "touch", stopAudio )
+
+	musicButtonOFFSC.x = 545
+	musicButtonOFFSC.y = 20
+	musicButtonOFFSC:addEventListener( "touch", startAudio )
+
+	local background = display.newImageRect( "images/background/app background/appBack.png", screenW, screenH )
+	background.anchorX = 0
 	background.anchorY = 0
-	background:setFillColor( 1 )
 
 	local playBtn = widget.newButton{
 		label="Select Character",
@@ -43,8 +70,10 @@ function scene:create( event )
 	
 	playBtn._view._label.size = 25
 
+
 	local function selectBoy()
 		composer.playerGender = 'boy'
+		composer.prevScreen = "selectCharacter"
 		composer.gotoScene( "select", "fade", 500 )
 	end
 
@@ -107,6 +136,10 @@ function scene:create( event )
 	sceneGroup:insert( player )
 	sceneGroup:insert( player1 )
 	sceneGroup:insert( playBtn )
+	sceneGroup:insert( musicButtonONSC )
+	sceneGroup:insert( musicButtonOFFSC )
+
+
 
 end
 
@@ -119,6 +152,21 @@ function scene:show( event )
 	elseif phase == "did" then
 		-- Called when the scene is now on screen
 		-- 
+
+		if (sound == "ON") then
+			if audio.isChannelPlaying( 1 ) then
+			else
+				audio.stop()
+				audio.play(musicTrack, {  channel=1, loops=-1 })
+			end
+			musicButtonONSC.isVisible = true
+			musicButtonOFFSC.isVisible = false
+		else
+			audio.stop()
+			musicButtonONSC.isVisible = false
+			musicButtonOFFSC.isVisible = true
+		end
+
 		-- INSERT code here to make the scene come alive
 		-- e.g. start timers, begin animation, play audio, etc.
 	end	

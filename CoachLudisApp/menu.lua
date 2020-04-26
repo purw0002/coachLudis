@@ -15,11 +15,16 @@ local widget = require "widget"
 -- forward declarations and other locals
 local playBtn
 
+musicTrack = audio.loadSound( "sound/bensound-hey.mp3")
+
+sound = "ON"
+
 -- 'onRelease' event listener for playBtn
 local function onPlayBtnRelease()
 	
 	-- go to level1.lua scene
 	--composer.gotoScene( "select", "fade", 500 )
+	composer.prevScreen = "None"
 	composer.gotoScene( "selectCharacter", "fade", 500 )
 	return true	-- indicates successful touch
 end
@@ -64,6 +69,9 @@ function scene:show( event )
 	
 	if phase == "will" then
 		-- Called when the scene is still off screen and is about to move on screen
+		if(sound == "ON") then
+			audio.play(musicTrack, { channel=1, loops=-1 })
+		end
 	elseif phase == "did" then
 		-- Called when the scene is now on screen
 		-- 

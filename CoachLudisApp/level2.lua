@@ -14,12 +14,18 @@ local scene = composer.newScene()
 -- forward declarations and other locals
 local screenW, screenH, halfW = display.actualContentWidth, display.actualContentHeight, display.contentCenterX
 
-local physics
+local physics = require "physics"
+levelTrack = audio.loadSound( "sound/levels/bensound-rumble.mp3")
+
+collisionSound = audio.loadSound( "sound/injury/Concussive_Hit_Guitar_Boing.mp3")
+
+winningSound = audio.loadSound( "sound/clapping/Tomlija_-_Small_Crowd_Cheering_and_Clapping_3_Biberche_Belgrade_Serbia.mp3")
+
+lostTrack = audio.loadSound( "sound/lost/Male_Laugh.mp3")
 
 function scene:create( event )
 	physics = require "physics"
-
-	healthValue = 3
+	healthValue = 100
 	local sceneGroup = self.view
 	local injuryBoard
 	-- We need physics started to add bodies, but we don't want the simulaton
@@ -30,23 +36,11 @@ function scene:create( event )
 	-- INSERT code here to initialize the scene
 	-- e.g. add display objects to 'sceneGroup', add touch listeners, etc.
 	
-	local healths = display.newGroup()
+	local healthRectangeRed = display.newRect( 130, 20, healthValue*2, 20 ) 
+	healthRectangeRed:setFillColor(1, 0, 0, 1)
 
-	dist = 20
-	for i= 1,3,1 
-	do
-
-		 
-		if (composer.playerGender == "boy") then
-			health = display.newImageRect( "boy.png", 20, 20)
-		else
-			health = display.newImageRect( "girl.png", 20, 20)
-		end
-		health.x, health.y = dist,20
-		health.name  = i
-		dist = dist + 15
-		healths:insert(health)
-	end
+	local healthRectangeGreen = display.newRect( 130, 20, healthValue*2, 20 ) 
+	healthRectangeGreen:setFillColor(0, 1, 0, 1)
 
 	local deadPlayers = 0
 	local boom = display.newImageRect("boom.png", 40,40)
@@ -93,6 +87,18 @@ function scene:create( event )
 		sheetContentHeight= 502
 	}
 
+	local sheetOponentGirlRunning = {
+		width= 416,
+		height= 454,
+		numFrames= 20,
+		sheetContentWidth= 8320,
+		sheetContentHeight= 454
+	}
+
+	local function goToRate()
+		composer.stars = 0
+		composer.gotoScene('rate','fade', 500)
+	end
 
 	local background = display.newImageRect( "ground.jpg", screenW, screenH )
 	background.anchorX = 0
@@ -106,7 +112,13 @@ function scene:create( event )
 	local win = display.newImageRect( "celebration.png", screenW, screenH )
 	
 	local function showRatings()
-		composer.stars = healthValue
+		if(healthValue >= 80) then
+			composer.stars = 3
+		elseif(healthValue >=60) then
+			composer.stars = 2
+		else
+			composer.stars = 1
+		end
 		composer.gotoScene( "rate", "fade", 500 )
 	end
 	win.anchorX = 0
@@ -120,6 +132,7 @@ function scene:create( event )
 	loss.anchorX = 0
 	loss.anchorY = 0
 	loss.isVisible = false
+	loss:addEventListener('touch', goToRate)
 
 	local ballSheet = graphics.newImageSheet( "soccer-sprite.png", sheetDataBall) 
 	local ballSequenceData = {
@@ -217,6 +230,10 @@ function scene:create( event )
 
 	local function showWin()
 		win.isVisible = true
+		if(sound == "ON") then
+			audio.stop()
+			audio.play(winningSound)
+		end
 	end
 
 	local function moveBackground()
@@ -265,21 +282,46 @@ function scene:create( event )
 		{ name = "run", start = 1, count= 15, time=800}
 	}
 
+	local localOrangeGirlSheet = graphics.newImageSheet("girlRunnerOpponentSprite.png",sheetOponentGirlRunning )
+	local orangeOpponentSequenceData = {
+		{ name = "run", start = 1, count= 20, time=800}
+	}
 
 
 	local function createCrate()
+		local obs = {'stone','player'}
+		local idx = math.random(#obs)
+		local selectedObs = obs[idx]
     	physics.setGravity(-2,0)
-	    local player2 = display.newSprite(orangeSheet, orangeSequenceData)
-		player2.x, player2.y = initialObstacle,randomizeLane()
-		player2.name="player2" .. tostring(crate_id)
-		player2:setSequence("run")
-		player2:scale(0.12,0.12)
-		player2:play()
-		local nw, nh = player2.width*0.12*0.5, player2.height*0.12*0.5;
-		physics.addBody(player2, {shape={-nw,-nh,nw,-nh,nw,nh,-nw,nh} });
-		player2s:insert(player2)
+    	if(selectedObs == 'stone') then
+    		local stone = display.newImageRect("images/objects/soccer/stone2.png", 30,30)
+			stone.x, stone.y = initialObstacle,randomizeLane()
+			stone.name =  "stone"
+			physics.addBody( stone)
+		else
+			if (composer.playerGender == "boy") then
+	    		local player2 = display.newSprite(orangeSheet, orangeSequenceData)
+				player2.x, player2.y = initialObstacle,randomizeLane()
+				player2.name="player2" .. tostring(crate_id)
+				player2:setSequence("run")
+				player2:scale(0.12,0.12)
+				player2:play()
+				local nw, nh = player2.width*0.12*0.5, player2.height*0.12*0.5;
+				physics.addBody(player2, {shape={-nw,-nh,nw,-nh,nw,nh,-nw,nh} });
+				player2s:insert(player2)
+			else
+	    		local player2 = display.newSprite(localOrangeGirlSheet, orangeOpponentSequenceData)
+				player2.x, player2.y = initialObstacle,randomizeLane()
+				player2.name="player2" .. tostring(crate_id)
+				player2:setSequence("run")
+				player2:scale(0.12,0.12)
+				player2:play()
+				local nw, nh = player2.width*0.12*0.5, player2.height*0.12*0.5;
+				physics.addBody(player2, {shape={-nw,-nh,nw,-nh,nw,nh,-nw,nh} });
+				player2s:insert(player2)
+			end
+		end
     end
-
 
 	local createObstacles = timer.performWithDelay( 1500, createCrate, 13)
 
@@ -289,7 +331,13 @@ function scene:create( event )
 
 		local function showGameOver(loss)
 			player:pause()
+			if(sound == "ON") then
+				audio.stop()
+				audio.play(lostTrack)
+			end
 			loss.isVisible = true
+			healthRectangeGreen.isVisible = false
+			healthRectangeRed.isVisible = false
 		end
 
 		if injuryBoard.param1 == nil then
@@ -302,11 +350,11 @@ function scene:create( event )
 	end
 
 	local function showInjuryBoard()
-		injuryBoard = display.newImageRect("images/injury window/injury window-dislocation.png", 500,350)
+		injuryBoard = display.newImageRect("images/injury window/fracture.png", 250,200)
 		injuryBoard.x = display.contentCenterX
 		injuryBoard.y = display.contentCenterY
 		injuryBoard.params = createObstacles
-		if (healthValue<= 1) then
+		if (healthValue<= 0) then
 			injuryBoard.param1 = loss
 		end
 		injuryBoard:addEventListener("tap", boardDissapear)
@@ -314,18 +362,25 @@ function scene:create( event )
 
 	local function onCollision(event)
 		if(event.phase == "began") then
+
 			if(event.object1.name == "ball" or event.object2.name == "ball") then
+				print(event.object1.name)
+				print(event.object2.name)
+				if(sound == "ON") then
+					audio.play(collisionSound)
+				end
 				event.object2:removeSelf()
 				boom.isVisible = true
 				timer.performWithDelay( 800, boomVisible, 1 )
 				deadPlayers = deadPlayers + 1
 				physics.pause()
 				timer.pause(createObstacles)
+				healthValue = healthValue - 30
 				showInjuryBoard()
-				if (healthValue == 1) then
-					healths[1].alpha = 0
+				if (healthValue <= 0) then
 					physics.pause()
 					player:pause()
+					healthRectangeGreen.width =  0
 					if (composer.playerGender == "boy") then
 						player:setSequence("dead")
 						player:play()
@@ -337,12 +392,12 @@ function scene:create( event )
 					Runtime:removeEventListener("touch",globalTouchHandler)
 					Runtime:removeEventListener("collision", onCollision)
 
-				elseif (healthValue == 3) then
-					healths[3].alpha = 0
-				elseif (healthValue == 2) then
-					healths[2].alpha = 0
+				else
+					healthRectangeGreen.width =  healthValue*2
+					healthRectangeGreen.x = healthRectangeGreen.x - 30
+					healthRectangeGreen:setFillColor(0, 1, 0, 1)
 				end
-				healthValue = healthValue - 1
+				
 			elseif(event.object1.name == "detector" or event.object2.name == "detector") then
 				event.object2:removeSelf()
 				deadPlayers = deadPlayers + 1
@@ -353,20 +408,88 @@ function scene:create( event )
 		end
 	end
 
+
+	local settingBackground = display.newImageRect( "images/background/app background/appBack.png", screenW, screenH )
+	settingBackground.anchorX = 0 
+	settingBackground.anchorY = 0
+	settingBackground:setFillColor( 0.8 )
+	settingBackground.isVisible = false
+
+
+	local settingWindow = display.newImageRect( "images/background/app background/paused window.png", 150, 200 )
+	settingWindow.x = display.contentCenterX + 45
+	settingWindow.y = display.contentCenterY
+	settingWindow.isVisible = false
+
+	local playButton = display.newImageRect( "images/background/app background/play button.png", 50, 50 )
+	playButton.x =  display.contentCenterX + 25
+	playButton.y = display.contentCenterY - 10
+	playButton.isVisible = false
+
+
+	local replayButton = display.newImageRect( "images/background/app background/restart button.png", 50, 50 )
+
+	local function startPlaying( )
+		settingBackground.isVisible = false
+		settingWindow.isVisible = false
+		playButton.isVisible = false
+		replayButton.isVisible = false
+		physics.start()
+		timer.resume(createObstacles)
+	end
+
+	playButton:addEventListener( "touch", startPlaying )
+
+
+
+	local function selectSetting()
+		settingBackground.isVisible = true
+		settingWindow.isVisible = true
+		playButton.isVisible = true
+		replayButton.isVisible = true
+		physics.pause()
+		timer.pause(createObstacles)
+	end
+
+	local function replayButtonEvent()
+		composer.removeScene( composer.levelPlaying)
+		composer.gotoScene( composer.levelPlaying, "fade", 500 )
+
+	end
+
+	
+	local settingsButton = display.newImageRect( "images/commons/setting button.png", 50, 50 )
+	settingsButton.x =  display.contentCenterX + 300
+	settingsButton.y = display.contentCenterY - 140
+	settingsButton:addEventListener( "touch", selectSetting )
+
+	replayButton.x =  display.contentCenterX + 65
+	replayButton.y = display.contentCenterY - 10
+	replayButton.isVisible = false
+	replayButton:addEventListener( "touch", replayButtonEvent )
+
+
 	-- make a crate (off-screen), position it, and rotate slightly
 	-- create a grass object and add physics (with custom shape)
 
 	sceneGroup:insert( background )
 	sceneGroup:insert( background1 )
-	sceneGroup:insert(healths)
 	sceneGroup:insert(ball)
 	sceneGroup:insert(player2s)
 	sceneGroup:insert(player)
-	sceneGroup:insert(boom)
-	sceneGroup:insert(win)
 	if (composer.playerGender == "girl") then
 		sceneGroup:insert(playerDead)
 	end
+	sceneGroup:insert(boom)
+	sceneGroup:insert(healthRectangeRed)
+	sceneGroup:insert(healthRectangeGreen)
+	sceneGroup:insert(loss)
+	sceneGroup:insert(win)
+	sceneGroup:insert(settingBackground)
+	sceneGroup:insert(settingsButton)
+	sceneGroup:insert(settingWindow)
+	sceneGroup:insert(playButton)
+	sceneGroup:insert(replayButton)
 
 	Runtime:addEventListener("touch",globalTouchHandler)
 	Runtime:addEventListener("collision", onCollision)
@@ -382,6 +505,15 @@ function scene:show( event )
 	elseif phase == "did" then
 		-- Called when the scene is now on screen
 		-- 
+		if(sound == "ON") then
+
+			audio.stop()
+			audio.play(levelTrack, { channel=2, loops=-1})
+		else
+			audio.stop()
+		end
+
+
 		-- INSERT code here to make the scene come alive
 		-- e.g. start timers, begin animation, play audio, etc.
 		physics.start()

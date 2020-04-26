@@ -11,18 +11,69 @@ local scene = composer.newScene()
 --------------------------------------------
 
 
+
 -- forward declarations and other locals
 local screenW, screenH, halfW = display.actualContentWidth, display.actualContentHeight, display.contentCenterX
 
+
 function scene:create( event )
+	prevScreen = "select"
+
+
+
+
+	musicButtonONLS = display.newImageRect( "images/background/app background/music button.png", 50, 50 )
+	musicButtonOFFLS = display.newImageRect( "images/background/app background/no music icon.png", 50, 50 )
+
+	local function stopAudio(event)
+		if ( event.phase == "began" ) then
+			audio.stop()
+			sound = "OFF"
+			musicButtonONLS.isVisible = false
+			musicButtonOFFLS.isVisible = true
+		end
+	end
+
+	local function startAudio(event)
+		if ( event.phase == "began" ) then
+			audio.play(musicTrack)
+			sound = "ON"
+			musicButtonONLS.isVisible = true
+			musicButtonOFFLS.isVisible = false
+		end
+	end
+
+	musicButtonONLS.x = 545
+	musicButtonONLS.y = 20
+	musicButtonONLS:addEventListener( "touch", stopAudio )
+	musicButtonONLS.isVisible = true
+
+
+	musicButtonOFFLS.x = 545
+	musicButtonOFFLS.y = 20
+	musicButtonOFFLS:addEventListener( "touch", startAudio )
+	musicButtonOFFLS.isVisible = false
+
 
 	-- Called when the scene's view does not exist.
 	-- 
 	-- INSERT code here to initialize the scene
 	-- e.g. add display objects to 'sceneGroup', add touch listeners, etc.
+	local function goBackToPrev(event)
+		composer.prevScreen = event.target.prev
+		if (prevScreen ~= "None") then
+			composer.gotoScene( event.target.curScreen, "fade", 500 )
+		end
+	end
+	local backButton = display.newImageRect( "images/commons/back button.png", 60, 60 )
+	backButton.x = 20
+	backButton.y = 20
+	backButton.prev = "selectCharacter"
+	backButton.curScreen = "select"
+	backButton:addEventListener( "touch", goBackToPrev )
 
 	local sceneGroup = self.view
-	local background1 = display.newImageRect( "completeScreen.jpg", screenW, screenH )
+	local background1 = display.newImageRect( "images/background/app background/appBack1.png", screenW, screenH )
 	background1.anchorX = 0
 	background1.anchorY = 0
 
@@ -63,10 +114,19 @@ function scene:create( event )
 	locks:insert(lockSymbol4)
 	locks:insert(lockSymbol5)
 
-	local function goToLevel1()
+	local function goToLevel2()
 		if (game == "soccer") then
 			composer.levelPlaying = 'level2'
+			composer.nextLevel = 'level3'
+			composer.removeScene('level2')
 			composer.gotoScene( "level2", "fade", 1 )
+		end
+	end
+
+	local function goToLevel3()
+		if (game == "soccer") then
+			composer.levelPlaying = 'level3'
+			composer.gotoScene( "level3", "fade", 1 )
 		end
 	end
 
@@ -78,13 +138,16 @@ function scene:create( event )
 	local levelSymbol2 = display.newImageRect( "images/level select/level 2 icon.png", 80, 80 )
 	levelSymbol2.x = display.contentCenterX +50
 	levelSymbol2.y = display.contentCenterY -30
-	levelSymbol2.touch = goToLevel1
+	levelSymbol2.touch = goToLevel2
 	levelSymbol2:addEventListener( "touch", levelSymbol2 )
 	levelSymbol2.isVisible = false
 
 	local levelSymbol3 = display.newImageRect( "images/level select/level 3 icon.png", 80, 80 )
 	levelSymbol3.x = display.contentCenterX +130
 	levelSymbol3.y = display.contentCenterY -30
+	levelSymbol3.isVisible = false
+	levelSymbol3.touch = goToLevel3
+	levelSymbol3:addEventListener( "touch", levelSymbol3 )
 	levelSymbol3.isVisible = false
 
 	local levelSymbol4 = display.newImageRect( "images/level select/level 4 icon.png", 80, 80 )
@@ -125,6 +188,9 @@ function scene:create( event )
 	sceneGroup:insert( background )
 	sceneGroup:insert( locks )
 	sceneGroup:insert( levels )
+	sceneGroup:insert( backButton )
+	sceneGroup:insert( musicButtonOFFLS )
+	sceneGroup:insert( musicButtonONLS )
 
 
 end
@@ -152,6 +218,19 @@ function scene:hide( event )
 	if event.phase == "will" then
 		-- Called when the scene is on screen and is about to move off screen
 		--
+		if (sound == "ON") then
+			if audio.isChannelPlaying( 1 ) then
+			else
+				audio.stop()
+				audio.play(musicTrack, {  channel=1, loops=-1 })
+			end
+			musicButtonONLS.isVisible = true
+			musicButtonOFFLS.isVisible = false
+		else
+			musicButtonONLS.isVisible = false
+			musicButtonOFFLS.isVisible = true
+			audio.stop()
+		end
 		-- INSERT code here to pause the scene
 		-- e.g. stop timers, stop animation, unload sounds, etc.)
 	elseif phase == "did" then
