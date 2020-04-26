@@ -173,6 +173,7 @@ function scene:show( event )
 	elseif phase == "did" then
 		-- Called when the scene is now on screen
 		-- 
+
 		-- INSERT code here to make the scene come alive
 		-- e.g. start timers, begin animation, play audio, etc.
 		physics.start()

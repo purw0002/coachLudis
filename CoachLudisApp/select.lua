@@ -16,7 +16,7 @@ local function onGame4BtnRelease()
 	
 	-- go to level1.lua scene
 	composer.numOfLevels = 5
-	composer.unlocked = 3
+	composer.unlocked = 2
 	composer.game = 'soccer'
 	composer.levelSelectLink = 'levelSelect'
 	composer.prevScreen = "select"
@@ -91,24 +91,20 @@ function scene:create( event )
 	-- since we are going to position the background from it's top, left corner, draw the
 	-- background at the real top, left corner.
 
-	local function test()
-		composer.stars = 2
-		composer.gotoScene( "rate", "fade", 500 )
-	end
+
 	local background = display.newImageRect( "images/background/app background/appBack.png", screenW, screenH )
 	background.anchorX = 0
 	background.anchorY = 0
-	local game1 = display.newImageRect( "images/logo/game1.jpeg", 100, 100 )
+	local game1 = display.newImageRect( "images/logo/locked football.png", 100, 100 )
 	game1.x = game1.contentHeight + 10
 	game1.y = game1.contentHeight
-	game1.touch = test
 	game1:addEventListener( "touch", game1 )
 
-	local game2 = display.newImageRect( "images/logo/game2.jpeg", 100, 100 )
+	local game2 = display.newImageRect( "images/logo/locked basketball.png", 100, 100 )
 	game2.x = game2.contentHeight +  180 
 	game2.y = game2.contentHeight
 
-	local game3 = display.newImageRect( "images/logo/game3.jpeg", 100, 100 )
+	local game3 = display.newImageRect( "images/logo/locked netball.png", 100, 100 )
 	game3.x = game3.contentHeight +  350
 	game3.y = game3.contentHeight
 
@@ -118,7 +114,7 @@ function scene:create( event )
 	game4.touch = onGame4BtnRelease
 	game4:addEventListener( "touch", game4 )
 
-	local game5 = display.newImageRect( "images/logo/game5.jpeg", 100, 100 )
+	local game5 = display.newImageRect( "images/logo/locked cycling.png", 100, 100 )
 	game5.x = game5.contentHeight +  270 
 	game5.y = game5.contentHeight + 140
 

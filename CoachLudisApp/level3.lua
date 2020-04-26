@@ -125,7 +125,7 @@ end
 	background:setFillColor( .5 )
 
 	-- create a arm object and add physics (with custom shape)
-	arm = display.newImageRect( "arm.png", screenW, screenH )
+	local arm = display.newImageRect( "arm.png", screenW, screenH )
 	arm.anchorX = 0
 	arm.anchorY = 1
 	--  draw the arm at the very bottom of the screen
@@ -144,7 +144,9 @@ end
 		elseif event.phase == "moved" then
 			local x = (event.x - event.xStart) + self.markX
 			local y = (event.y - event.yStart) + self.markY
+			
 			self.x,self.y = x,y
+			
 		end
 		return true
 	end

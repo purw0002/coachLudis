@@ -126,6 +126,7 @@ function scene:create( event )
 	local function goToLevel3()
 		if (game == "soccer") then
 			composer.levelPlaying = 'level3'
+			composer.nextLevel = 'none'
 			composer.gotoScene( "level3", "fade", 1 )
 		end
 	end
@@ -134,20 +135,18 @@ function scene:create( event )
 	levelSymbol1.x = display.contentCenterX - 30
 	levelSymbol1.y = display.contentCenterY -30
 	levelSymbol1.isVisible = false
+	levelSymbol1.touch = goToLevel2
+	levelSymbol1:addEventListener( "touch", levelSymbol1 )
 
 	local levelSymbol2 = display.newImageRect( "images/level select/level 2 icon.png", 80, 80 )
 	levelSymbol2.x = display.contentCenterX +50
 	levelSymbol2.y = display.contentCenterY -30
-	levelSymbol2.touch = goToLevel2
-	levelSymbol2:addEventListener( "touch", levelSymbol2 )
 	levelSymbol2.isVisible = false
+	levelSymbol2:addEventListener( "touch", levelSymbol2 )
 
 	local levelSymbol3 = display.newImageRect( "images/level select/level 3 icon.png", 80, 80 )
 	levelSymbol3.x = display.contentCenterX +130
 	levelSymbol3.y = display.contentCenterY -30
-	levelSymbol3.isVisible = false
-	levelSymbol3.touch = goToLevel3
-	levelSymbol3:addEventListener( "touch", levelSymbol3 )
 	levelSymbol3.isVisible = false
 
 	local levelSymbol4 = display.newImageRect( "images/level select/level 4 icon.png", 80, 80 )

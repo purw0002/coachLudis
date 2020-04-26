@@ -86,8 +86,12 @@ function scene:create( event )
 
 	local function goNext()
 		composer.prevScreen = "selectCharacter"
-
-		composer.gotoScene( composer.nextLevel, "fade", 500 )
+		if composer.nextLevel == "level3" then
+			composer.nextLevel = "none"
+			composer.gotoScene( "level3", "fade", 500 )
+		else
+			composer.gotoScene( composer.levelSelectLink, "fade", 500 )
+		end
 	end
 
 	local levelUpButton = display.newImageRect( "images/ratings/home icon.png", 75, 75 )
