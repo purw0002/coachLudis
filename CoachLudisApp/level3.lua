@@ -29,16 +29,20 @@ function scene:create( event )
 	physics.start()
 	physics.pause()
 
+	--Video code
+
 	local gameComplete = false
 	local countDown = 10
 	pauseTime = false;
 	resumeTime = true;
 
 	local timerText = display.newText( "", 100, 100, native.systemFont, 16)
+	timerText:translate(55,-40)
 	timerText:setTextColor( 255, 255, 255 )
 
 	local timeBut = display.newRect( 100, 0, 150, 25 )
 	timeBut:setFillColor( 255, 255, 255 )
+	timeBut:translate(50,25)
 	physics.addBody( timeBut, "static" )
 
 	local buttonText = display.newText ( "", 150, 25, native.systemFont, 16)
@@ -49,6 +53,7 @@ function scene:create( event )
 		if(gameComplete == false) then
 			if countDown == 0  then
 				countDown = 0
+				gameComplete = true
 				currentTime = countDown
 				local stage = display.getCurrentStage()
 				buttonText:removeSelf()
@@ -125,7 +130,7 @@ end
 	background:setFillColor( .5 )
 
 	-- create a arm object and add physics (with custom shape)
-	local arm = display.newImageRect( "arm.png", screenW, screenH )
+	arm = display.newImageRect( "ice_background.png", screenW, screenH )
 	arm.anchorX = 0
 	arm.anchorY = 1
 	--  draw the arm at the very bottom of the screen
@@ -134,9 +139,13 @@ end
 	-- define a shape that's slightly shorter than image bounds (set draw mode to "hybrid" or "debug" to see)
 	local armShape = { -halfW,-34, halfW,-34, halfW,34, -halfW,34 }
 	physics.addBody( arm, "static", { friction=0.3, shape=armShape } )
-	myCircle = display.newCircle( 304, 224, 100 )
-	myCircle:setFillColor( 1)
+	myCircle = display.newCircle( 440, 260, 70 )
+	myCircle:setFillColor(1,0,0)
 	ice_pack = display.newImageRect( "ice_pack.png", 100, 100 )
+	ice_pack:translate( 100, 100 )
+	hot_water_bag = display.newImageRect( "hot_water_bag.png", 100, 100 )
+	hot_water_bag:translate(100,220)
+	--bandage = display.newImageRect( "bandage.png", 100, 100 )
 	function ice_pack:touch( event)
 		if event.phase == "began" then
 			self.markX = self.x
@@ -144,12 +153,26 @@ end
 		elseif event.phase == "moved" then
 			local x = (event.x - event.xStart) + self.markX
 			local y = (event.y - event.yStart) + self.markY
-			
 			self.x,self.y = x,y
-			
 		end
 		return true
 	end
+
+	
+	local function onObjectTouch( event )
+		if ( event.phase == "began" ) then
+			gameComplete = true
+			countDown = 0
+			composer.stars = 0
+			composer.gotoScene("rate","fade",100)
+		end
+		return true
+	end
+	hot_water_bag:addEventListener( "touch", onObjectTouch )
+	
+	
+
+
 
 
 	local function hasCollidedCircle( obj1, obj2, radius )
@@ -176,7 +199,8 @@ end
 				-- Remove the coin from the screen
 					display.remove(myCircle)
 					myCircle = nil
-					myCircle = display.newCircle(304, 224,radius)
+					myCircle = display.newCircle(440, 260,radius)
+					myCircle:setFillColor(1,0,0)
 					-- Remove reference from table
 					if (radius == 10) then
 						display.remove(myCircle)
@@ -215,6 +239,10 @@ end
 	sceneGroup:insert( arm)
 	sceneGroup:insert(ice_pack)
 	sceneGroup:insert(myCircle)
+	sceneGroup:insert(timeBut)
+	sceneGroup:insert(timerText)
+	sceneGroup:insert(hot_water_bag)
+	sceneGroup:insert(buttonText)
 end
 
 function scene:show( event )
