@@ -142,6 +142,7 @@ function scene:create( event )
 	levelSymbol2.x = display.contentCenterX +50
 	levelSymbol2.y = display.contentCenterY -30
 	levelSymbol2.isVisible = false
+	levelSymbol2.touch = goToLevel3
 	levelSymbol2:addEventListener( "touch", levelSymbol2 )
 
 	local levelSymbol3 = display.newImageRect( "images/level select/level 3 icon.png", 80, 80 )

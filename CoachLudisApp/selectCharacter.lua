@@ -94,8 +94,8 @@ function scene:create( event )
 	local sheetData1 = {
 		width= 614,
 		height= 564,
-		numFrames= 75,
-		sheetContentWidth= 46050,
+		numFrames= 15,
+		sheetContentWidth= 9210,
 		sheetContentHeight= 564
 	}
 
@@ -108,9 +108,9 @@ function scene:create( event )
 	}
 
 
-	local blueSheet = graphics.newImageSheet("blueSpriteAllActions.png",sheetData1 )
+	local blueSheet = graphics.newImageSheet("idleBlueGuy.png",sheetData1 )
 	local blueSequenceData = {
-		{ name = "idle", start = 16, count= 15,time=800}
+		{ name = "idle", start = 1, count= 15,time=800}
 	}
 	local player = display.newSprite(blueSheet, blueSequenceData)
 	player.x, player.y = 220,180
@@ -121,7 +121,7 @@ function scene:create( event )
 
 	local girlSheet = graphics.newImageSheet("player-girl-sprite.png",sheetData2 )
 	local girlSequenceData = {
-		{ name = "idle", start = 1, count= 16,time=800}
+		{ name = "idle", start = 1, count= 15,time=800}
 	}
 	local player1 = display.newSprite(girlSheet, girlSequenceData)
 	player1.x, player1.y = 405,180

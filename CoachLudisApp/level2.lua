@@ -95,6 +95,21 @@ function scene:create( event )
 		sheetContentHeight= 454
 	}
 
+	local sheetDataBlueGuyRunning = {
+		width= 614,
+		height= 564,
+		numFrames= 15,
+		sheetContentWidth= 9210,
+		sheetContentHeight= 564
+	}
+
+	local sheetDataBlueGuyDying = {
+		width= 614,
+		height= 564,
+		numFrames= 15,
+		sheetContentWidth= 9210,
+		sheetContentHeight= 564
+	}
 	local function goToRate()
 		composer.stars = 0
 		composer.gotoScene('rate','fade', 500)
@@ -151,10 +166,9 @@ function scene:create( event )
 	local blueSequenceData
 	local player
 	if (composer.playerGender == "boy") then
-		blueSheet = graphics.newImageSheet("blueSpriteAllActions.png",sheetData1 )
+		blueSheet = graphics.newImageSheet("runBlueGuy.png",sheetDataBlueGuyRunning )
 		blueSequenceData = {
-			{ name = "run", start = 46, count= 15,time=800},
-			{name = "dead", start = 1, count= 15,time=800, loopCount=1}
+			{ name = "run", start = 1, count= 15,time=800},
 		}
 		player = display.newSprite(blueSheet, blueSequenceData)
 		player.x, player.y = 80,160
@@ -162,6 +176,16 @@ function scene:create( event )
 		player:setSequence("run")
 		player:scale(0.12,0.12)
 		player:play()
+		deadBlueSheetGuy = graphics.newImageSheet("deadBlueGuy.png",sheetDataBlueGuyDying )
+		deadSequenceDataGuy = {
+			{ name = "die", start = 1, count= 15,time=800, loopCount=1}
+		}
+		playerDead = display.newSprite(deadBlueSheetGuy, deadSequenceDataGuy)
+		playerDead.x, playerDead.y = 60,160
+		playerDead.name="playerDead"
+		playerDead:setSequence("die")
+		playerDead:scale(0.12,0.12)
+		playerDead.isVisible = false
 	else
 		blueSheet = graphics.newImageSheet("runGirlsprite.png",sheetDataGirlMoving )
 		blueSequenceData = {
@@ -382,8 +406,9 @@ function scene:create( event )
 					player:pause()
 					healthRectangeGreen.width =  0
 					if (composer.playerGender == "boy") then
-						player:setSequence("dead")
-						player:play()
+						player.isVisible = false
+						playerDead.isVisible = true
+						playerDead:play()
 					else
 						player.isVisible = false
 						playerDead.isVisible = true
@@ -477,9 +502,7 @@ function scene:create( event )
 	sceneGroup:insert(ball)
 	sceneGroup:insert(player2s)
 	sceneGroup:insert(player)
-	if (composer.playerGender == "girl") then
-		sceneGroup:insert(playerDead)
-	end
+	sceneGroup:insert(playerDead)
 	sceneGroup:insert(boom)
 	sceneGroup:insert(healthRectangeRed)
 	sceneGroup:insert(healthRectangeGreen)
