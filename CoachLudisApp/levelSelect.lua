@@ -127,6 +127,7 @@ function scene:create( event )
 		if (game == "soccer") then
 			composer.levelPlaying = 'level3'
 			composer.nextLevel = 'none'
+			composer.removeScene('level3')
 			composer.gotoScene( "level3", "fade", 1 )
 		end
 	end
