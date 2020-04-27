@@ -23,7 +23,12 @@ function scene:create( event )
 
 	local sceneGroup = self.view
 	stars = composer.stars
-	local background = display.newImageRect( "completeScreen.jpg", display.actualContentWidth, display.actualContentHeight )
+
+	local background
+
+	if (composer.game == "soccer") then
+		background = display.newImageRect( "images/background/app background/appBack1.png", display.actualContentWidth, display.actualContentHeight )
+	end
 	background.anchorX = 0
 	background.anchorY = 0
 
@@ -86,6 +91,7 @@ function scene:create( event )
 
 	local function goNext()
 		composer.prevScreen = "selectCharacter"
+		composer.levelPlaying = "level3"
 		if composer.nextLevel == "level3" then
 			composer.nextLevel = "none"
 			composer.gotoScene( "level3", "fade", 500 )
@@ -141,7 +147,6 @@ function scene:create( event )
 	rect4.fill = paint
 	rect4:addEventListener( "tap", goNext )
 
-
 	-- We need physics started to add bodies, but we don't want the simulaton
 	-- running until the scene is on the screen.
 
@@ -163,6 +168,7 @@ function scene:create( event )
 	sceneGroup:insert( replayButton )
 	sceneGroup:insert( levelIconButton )
 	sceneGroup:insert( playIcon )
+	--sceneGroup:insert( factPart )
 
 
 end
@@ -179,6 +185,15 @@ function scene:show( event )
 		-- 
 		stars = composer.stars
 		timer.performWithDelay( 1000, showStars(1), 1)
+		
+		if(composer.levelPlaying == "level2") then
+			factPart = display.newImageRect( "images/facts/level1Facts.PNG", 180, 100 )
+		elseif(composer.levelPlaying == "level3") then
+			factPart = display.newImageRect( "images/facts/level2Facts.PNG", 180, 100 )
+		end
+		factPart.x = display.contentCenterX +30
+		factPart.y = display.contentCenterY +35
+		sceneGroup:insert(factPart)
 		if (sound == "ON") then
 			audio.stop()
 			audio.play(musicTrack, { channel = 1, loops=-1 })

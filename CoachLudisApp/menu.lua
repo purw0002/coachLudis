@@ -6,7 +6,7 @@
 
 local composer = require( "composer" )
 local scene = composer.newScene()
-
+local json = require( "json" )
 -- include Corona's "widget" library
 local widget = require "widget"
 
@@ -18,6 +18,29 @@ local playBtn
 musicTrack = audio.loadSound( "sound/bensound-hey.mp3")
 
 sound = "ON"
+
+--choice = {}
+--injuryData = {}
+
+local function networkListener( event )
+ 
+    if ( event.isError ) then
+        print( "Network error: ", event.response )
+    else
+    	injuryData = json.decode(event.response)
+    	print(event.response)
+    	choices = injuryData
+		weights = {}
+		for k,v in pairs(choices) do
+			table.insert(weights, v["Soccer_Percentage"])
+		end
+    end
+end
+
+
+network.request( "http://localhost:3000/getsoccerinjury", "GET", networkListener)
+
+
 
 -- 'onRelease' event listener for playBtn
 local function onPlayBtnRelease()
@@ -38,7 +61,7 @@ function scene:create( event )
 	-- e.g. add display objects to 'sceneGroup', add touch listeners, etc.
 
 	-- display a background image
-	local background = display.newImageRect( "images/logo/logo.jpeg", display.actualContentWidth, display.actualContentHeight )
+	local background = display.newImageRect( "images/logo/starting screen.jpg", display.actualContentWidth, display.actualContentHeight )
 	background.anchorX = 0
 	background.anchorY = 0
 

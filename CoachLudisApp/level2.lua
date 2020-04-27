@@ -37,10 +37,10 @@ function scene:create( event )
 	-- e.g. add display objects to 'sceneGroup', add touch listeners, etc.
 	
 	local healthRectangeRed = display.newRect( 130, 20, healthValue*2, 20 ) 
-	healthRectangeRed:setFillColor(1, 0, 0, 1)
+	healthRectangeRed:setFillColor(208, 208, 57, 1)
 
 	local healthRectangeGreen = display.newRect( 130, 20, healthValue*2, 20 ) 
-	healthRectangeGreen:setFillColor(0, 1, 0, 1)
+	healthRectangeGreen:setFillColor(1, 0, 0, 1)
 
 	local deadPlayers = 0
 	local boom = display.newImageRect("boom.png", 40,40)
@@ -235,18 +235,14 @@ function scene:create( event )
 					player.y = player.y - 100
 					ball.y = ball.y - 100
 					boom.y = boom.y - 100
-					if (composer.playerGender == "girl") then
-						playerDead.y = playerDead.y-100
-					end
+					playerDead.y = playerDead.y-100
 				end
         	elseif (event.y > event.yStart and swipeLength > 5) then
 				if(player.y < 240) then
 					player.y = player.y + 100
 					ball.y = ball.y + 100
 					boom.y = boom.y + 100
-					if (composer.playerGender == "girl") then
-						playerDead.y = playerDead.y+100
-					end
+					playerDead.y = playerDead.y+100
 				end
         	end
     	end
@@ -254,6 +250,7 @@ function scene:create( event )
 
 	local function showWin()
 		win.isVisible = true
+		settingsButton.isVisible = false
 		if(sound == "ON") then
 			audio.stop()
 			audio.play(winningSound)
@@ -318,8 +315,8 @@ function scene:create( event )
 		local selectedObs = obs[idx]
     	physics.setGravity(-2,0)
     	if(selectedObs == 'stone') then
-    		local stone = display.newImageRect("images/objects/soccer/stone2.png", 30,30)
-			stone.x, stone.y = initialObstacle,randomizeLane()
+    		local stone = display.newImageRect("images/objects/soccer/stone2.png", 20,20)
+			stone.x, stone.y = initialObstacle,randomizeLane()+20
 			stone.name =  "stone"
 			physics.addBody( stone)
 		else
@@ -360,6 +357,7 @@ function scene:create( event )
 				audio.play(lostTrack)
 			end
 			loss.isVisible = true
+			settingsButton.isVisible = false
 			healthRectangeGreen.isVisible = false
 			healthRectangeRed.isVisible = false
 		end
@@ -373,13 +371,52 @@ function scene:create( event )
 		
 	end
 
+
 	local function showInjuryBoard()
-		injuryBoard = display.newImageRect("images/injury window/fracture.png", 250,200)
+
+		print(#weights)
+		print(#choices)
+		local totalWeight = 0
+		for _, weight in pairs(weights) do
+    		totalWeight = totalWeight + weight
+		end
+
+		rand = math.random() * totalWeight
+		choice = nil
+
+		for i, weight in pairs(weights) do
+    		if rand < weight then
+        		choice = choices[i]
+        		break
+    		else
+        		rand = rand - weight
+    		end
+		end
+		print(choice["Image_name"])
+		injuryBoard = display.newImageRect("images/injury window/" .. choice["Image_name"], 250,200)
 		injuryBoard.x = display.contentCenterX
 		injuryBoard.y = display.contentCenterY
 		injuryBoard.params = createObstacles
+		healthValue = healthValue - choice["Severity"]
 		if (healthValue<= 0) then
 			injuryBoard.param1 = loss
+			physics.pause()
+			player:pause()
+			healthRectangeGreen.width =  0
+			if (composer.playerGender == "boy") then
+				player.isVisible = false
+				playerDead.isVisible = true
+				playerDead:play()
+			else
+				player.isVisible = false
+				playerDead.isVisible = true
+				playerDead:play()
+			end
+			Runtime:removeEventListener("touch",globalTouchHandler)
+			Runtime:removeEventListener("collision", onCollision)
+		else
+			healthRectangeGreen.width =  healthValue*2
+			healthRectangeGreen.x = healthRectangeGreen.x - choice["Severity"]
 		end
 		injuryBoard:addEventListener("tap", boardDissapear)
 	end
@@ -399,29 +436,8 @@ function scene:create( event )
 				deadPlayers = deadPlayers + 1
 				physics.pause()
 				timer.pause(createObstacles)
-				healthValue = healthValue - 30
+				
 				showInjuryBoard()
-				if (healthValue <= 0) then
-					physics.pause()
-					player:pause()
-					healthRectangeGreen.width =  0
-					if (composer.playerGender == "boy") then
-						player.isVisible = false
-						playerDead.isVisible = true
-						playerDead:play()
-					else
-						player.isVisible = false
-						playerDead.isVisible = true
-						playerDead:play()
-					end
-					Runtime:removeEventListener("touch",globalTouchHandler)
-					Runtime:removeEventListener("collision", onCollision)
-
-				else
-					healthRectangeGreen.width =  healthValue*2
-					healthRectangeGreen.x = healthRectangeGreen.x - 30
-					healthRectangeGreen:setFillColor(0, 1, 0, 1)
-				end
 				
 			elseif(event.object1.name == "detector" or event.object2.name == "detector") then
 				event.object2:removeSelf()
@@ -483,7 +499,7 @@ function scene:create( event )
 	end
 
 	
-	local settingsButton = display.newImageRect( "images/commons/setting button.png", 50, 50 )
+	settingsButton = display.newImageRect( "images/commons/setting button.png", 50, 50 )
 	settingsButton.x =  display.contentCenterX + 300
 	settingsButton.y = display.contentCenterY - 140
 	settingsButton:addEventListener( "touch", selectSetting )
@@ -567,8 +583,8 @@ function scene:destroy( event )
 	-- e.g. remove display objects, remove touch listeners, save state, etc.
 	local sceneGroup = self.view
 	
-	package.loaded[physics] = nil
-	physics = nil
+	--package.loaded[physics] = nil
+	--physics = nil
 end
 
 ---------------------------------------------------------------------------------
