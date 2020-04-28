@@ -11,12 +11,12 @@ local scene = composer.newScene()
 local physics = require "physics"
 
 --------------------------------------------
+clockTicking = audio.loadSound( "sound/clock_ticking.mp3")
 
 -- forward declarations and other locals
 local screenW, screenH, halfW = display.actualContentWidth, display.actualContentHeight, display.contentCenterX
 
 function scene:create( event )
-
 	-- Called when the scene's view does not exist.
 	-- 
 	-- INSERT code here to initialize the scene
@@ -30,7 +30,7 @@ function scene:create( event )
 	physics.pause()
 
 	--Video code
-
+	-- indicator whether the game is complete or not
 	local gameComplete = false
 	local countDown = 10
 	pauseTime = false;
@@ -40,14 +40,6 @@ function scene:create( event )
 	timerText:translate(55,-40)
 	timerText:setTextColor( 255, 255, 255 )
 
-	local timeBut = display.newRect( 100, 0, 150, 25 )
-	timeBut:setFillColor( 255, 255, 255 )
-	timeBut:translate(50,25)
-	physics.addBody( timeBut, "static" )
-
-	local buttonText = display.newText ( "", 150, 25, native.systemFont, 16)
-	buttonText:setTextColor( 0, 0, 0 )
-	buttonText.text = "Pause"
 
 	function gameOver()
 		if(gameComplete == false) then
@@ -56,10 +48,6 @@ function scene:create( event )
 				gameComplete = true
 				currentTime = countDown
 				local stage = display.getCurrentStage()
-				buttonText:removeSelf()
-				buttonText = nil
-				timeBut:removeSelf()
-				timeBut = nil
 				timerText:removeSelf()
 				timerText = nil
 				ice_pack:removeSelf()
@@ -67,6 +55,7 @@ function scene:create( event )
 				composer.stars = 0
 				composer.gotoScene("rate","fade","100")
 			else
+
 				timerText.text = "Time:"..countDown
 				currentTime = countDown
 				countDown = countDown - 1
@@ -76,23 +65,7 @@ function scene:create( event )
 
 	countDownTimer = timer.performWithDelay( 1000, gameOver, 11 )
 
-	local function timeButton( event )
-	if event.phase == "began" then
-		if resumeTime == true then
-			timer.pause( countDownTimer )
-			pauseTime = true
-			resumeTime = false
-			buttonText.text = "Resume"
-		elseif pauseTime == true then
-			timer.resume( countDownTimer )
-			pauseTime = false
-			resumeTime = true
-			buttonText.text = "Pause"
-		end
-	end
 
-end
-	timeBut:addEventListener( "touch", timeButton )
 
 	local win = display.newImageRect( "celebration.png", screenW, screenH )
 	
@@ -205,20 +178,16 @@ end
 					if (radius == 10) then
 						display.remove(myCircle)
 						myCircle = nil
-						buttonText:removeSelf()
-						buttonText = nil
-						timeBut:removeSelf()
-						timeBut = nil
 						timerText:removeSelf()
 						timerText = nil
 						ice_pack:removeSelf()
 						arm:removeSelf()
 						if countDown <= 3 then
-							composer.stars = 3
+							composer.stars = 1
 						elseif countDown <= 6 then
 							composer.stars = 2 
 						elseif countDown <= 9 then
-							composer.stars = 1
+							composer.stars = 3
 						else
 							composer.stars = 0
 						end
@@ -234,15 +203,83 @@ end
 	Runtime:addEventListener( "enterFrame", gameLoop )
 	ice_pack:addEventListener ("touch",ice_pack)
 
+
+
+	local settingBackground = display.newImageRect( "images/background/app background/appBack.png", screenW, screenH )
+	settingBackground.anchorX = 0 
+	settingBackground.anchorY = 0
+	settingBackground:setFillColor( 0.8 )
+	settingBackground.isVisible = false
+
+
+	local settingWindow = display.newImageRect( "images/background/app background/paused window.png", 150, 200 )
+	settingWindow.x = display.contentCenterX + 45
+	settingWindow.y = display.contentCenterY
+	settingWindow.isVisible = false
+
+	local playButton = display.newImageRect( "images/background/app background/play button.png", 50, 50 )
+	playButton.x =  display.contentCenterX + 25
+	playButton.y = display.contentCenterY - 10
+	playButton.isVisible = false
+
+
+	local replayButton = display.newImageRect( "images/background/app background/restart button.png", 50, 50 )
+
+	local function startPlaying( )
+		settingBackground.isVisible = false
+		settingWindow.isVisible = false
+		playButton.isVisible = false
+		replayButton.isVisible = false
+		timer.resume( countDownTimer )
+		pauseTime = false
+		resumeTime = true
+	end
+
+	playButton:addEventListener( "touch", startPlaying )
+
+
+
+	local function selectSetting()
+		settingBackground.isVisible = true
+		settingWindow.isVisible = true
+		playButton.isVisible = true
+		replayButton.isVisible = true
+		timer.pause( countDownTimer )
+		pauseTime = true
+		resumeTime = false
+	end
+
+	local function replayButtonEvent()
+		composer.removeScene( composer.levelPlaying)
+		composer.gotoScene( composer.levelPlaying, "fade", 500 )
+
+	end
+
+	
+	settingsButton = display.newImageRect( "images/commons/setting button.png", 50, 50 )
+	settingsButton.x =  display.contentCenterX + 300
+	settingsButton.y = display.contentCenterY - 140
+	settingsButton:addEventListener( "touch", selectSetting )
+
+	replayButton.x =  display.contentCenterX + 65
+	replayButton.y = display.contentCenterY - 10
+	replayButton.isVisible = false
+	replayButton:addEventListener( "touch", replayButtonEvent )
+
+
+
 	-- all display objects must be inserted into group
 	sceneGroup:insert( background )
 	sceneGroup:insert( arm)
 	sceneGroup:insert(ice_pack)
 	sceneGroup:insert(myCircle)
-	sceneGroup:insert(timeBut)
 	sceneGroup:insert(timerText)
 	sceneGroup:insert(hot_water_bag)
-	sceneGroup:insert(buttonText)
+	sceneGroup:insert(settingBackground)
+	sceneGroup:insert(settingsButton)
+	sceneGroup:insert(settingWindow)
+	sceneGroup:insert(playButton)
+	sceneGroup:insert(replayButton)
 end
 
 function scene:show( event )
@@ -254,6 +291,14 @@ function scene:show( event )
 	elseif phase == "did" then
 		-- Called when the scene is now on screen
 		-- 
+		if(sound == "ON") then
+
+			audio.stop()
+			audio.play(clockTicking, { channel=2, loops=-1})
+		else
+			audio.stop()
+		end
+
 		-- INSERT code here to make the scene come alive
 		-- e.g. start timers, begin animation, play audio, etc.
 		physics.start()
