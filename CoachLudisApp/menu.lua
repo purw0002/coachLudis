@@ -21,7 +21,7 @@ sound = "ON"
 
 --choice = {}
 --injuryData = {}
-
+-- We first make sure that we receive data from the backend and we insert that to a table on the app
 local function networkListener( event )
  
     if ( event.isError ) then
@@ -36,9 +36,22 @@ local function networkListener( event )
 		end
     end
 end
-
-
-network.request( "http://localhost:3000/getsoccerinjury", "GET", networkListener)
+-- Used for encoding the url
+function string.urlEncode( str )
+ 
+    if ( str ) then
+        str = string.gsub( str, "\n", "\r\n" )
+        str = string.gsub( str, "([^%w ])",
+            function( c )
+                return string.format( "%%%02X", string.byte(c) )
+            end
+        )
+        str = string.gsub( str, " ", "+" )
+    end
+    return str
+end
+local url = "https://coachludis.herokuapp.com/"
+network.request( url .. string.urlEncode('getsoccerinjury'), "GET", networkListener)
 
 
 

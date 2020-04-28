@@ -40,7 +40,7 @@ function scene:create( event )
 	frame.x = display.contentCenterX+30
 	frame.y = display.contentCenterY
 
-	local starsGp = display.newGroup()
+	starsGp = display.newGroup()
 
 	local star1 = display.newImageRect( "images/ratings/star.png", 85, 85)
 	star1.x = display.contentCenterX-21
@@ -63,6 +63,7 @@ function scene:create( event )
 
 	function showStars(num)
 		if (stars > 0) then
+			print("heyyyyy")
 			starsGp[num].isVisible = true
 			stars = stars - 1
 			timer.performWithDelay( 1000, showStars(num+1), 1)
@@ -94,6 +95,7 @@ function scene:create( event )
 		composer.levelPlaying = "level3"
 		if composer.nextLevel == "level3" then
 			composer.nextLevel = "none"
+			composer.removeScene( "level3")
 			composer.gotoScene( "level3", "fade", 500 )
 		else
 			composer.gotoScene( composer.levelSelectLink, "fade", 500 )
@@ -184,6 +186,9 @@ function scene:show( event )
 		-- Called when the scene is now on screen
 		-- 
 		stars = composer.stars
+		starsGp[1].isVisible = false
+		starsGp[2].isVisible = false
+		starsGp[3].isVisible = false
 		timer.performWithDelay( 1000, showStars(1), 1)
 		
 		if(composer.levelPlaying == "level2") then

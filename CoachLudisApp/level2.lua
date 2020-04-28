@@ -15,6 +15,8 @@ local scene = composer.newScene()
 local screenW, screenH, halfW = display.actualContentWidth, display.actualContentHeight, display.contentCenterX
 
 local physics = require "physics"
+
+-- Loading music tracks
 levelTrack = audio.loadSound( "sound/levels/bensound-rumble.mp3")
 
 collisionSound = audio.loadSound( "sound/injury/Concussive_Hit_Guitar_Boing.mp3")
@@ -24,6 +26,7 @@ winningSound = audio.loadSound( "sound/clapping/Tomlija_-_Small_Crowd_Cheering_a
 lostTrack = audio.loadSound( "sound/lost/Male_Laugh.mp3")
 
 function scene:create( event )
+	-- Adding physics to the game engine
 	physics = require "physics"
 	healthValue = 100
 	local sceneGroup = self.view
@@ -35,18 +38,24 @@ function scene:create( event )
 	-- Called when the scene's view does not exist.
 	-- INSERT code here to initialize the scene
 	-- e.g. add display objects to 'sceneGroup', add touch listeners, etc.
-	
+
+	-- Health bar background
 	local healthRectangeRed = display.newRect( 130, 20, healthValue*2, 20 ) 
 	healthRectangeRed:setFillColor(208, 208, 57, 1)
 
+	-- health bar
 	local healthRectangeGreen = display.newRect( 130, 20, healthValue*2, 20 ) 
 	healthRectangeGreen:setFillColor(1, 0, 0, 1)
 
+	-- Keeps track of players that crossed the scene
 	local deadPlayers = 0
+	-- Displayed  on collision
 	local boom = display.newImageRect("boom.png", 40,40)
 	boom.x, boom.y = 80,175
 	boom.name =  "boom"
 	boom.isVisible = false
+
+	-- Sheet data for graphics
 	local sheetData = {
 		width= 614,
 		height= 564,
@@ -110,11 +119,13 @@ function scene:create( event )
 		sheetContentWidth= 9210,
 		sheetContentHeight= 564
 	}
+
+	-- On fail stars allocated will be 0
 	local function goToRate()
 		composer.stars = 0
 		composer.gotoScene('rate','fade', 500)
 	end
-
+	-- Loading In game assets 
 	local background = display.newImageRect( "ground.jpg", screenW, screenH )
 	background.anchorX = 0
 	background.anchorY = 0
@@ -126,6 +137,7 @@ function scene:create( event )
 
 	local win = display.newImageRect( "celebration.png", screenW, screenH )
 	
+	-- Once you win the game, the stars are displayed based  on your health bar
 	local function showRatings()
 		if(healthValue >= 80) then
 			composer.stars = 3
@@ -153,6 +165,7 @@ function scene:create( event )
 	local ballSequenceData = {
 		{ name = "spin", start = 1, count= 11,time=1500}
 	}
+	-- Animating sprites
 	local ball = display.newSprite(ballSheet, ballSequenceData)
 	ball.x, ball.y = 90,180
 	ball.name =  "ball"
@@ -165,6 +178,7 @@ function scene:create( event )
 	local blueSheet
 	local blueSequenceData
 	local player
+	-- Animation is loaded based on gender
 	if (composer.playerGender == "boy") then
 		blueSheet = graphics.newImageSheet("runBlueGuy.png",sheetDataBlueGuyRunning )
 		blueSequenceData = {
@@ -210,14 +224,14 @@ function scene:create( event )
 		
 	end
 	
-
+	-- Exists in the end of the screen, Used for detecting dead players
 	local detector = display.newImageRect("ball.png", 500,500)
 	detector.x, detector.y = -500,180
 	detector.name =  "detector"
 	physics.addBody( detector , "static")
 
 
-
+	-- Touch handler for swiping up/down
 	local function globalTouchHandler(event)
 
     	local swipeLength = math.abs(event.y - event.yStart) 
@@ -247,7 +261,7 @@ function scene:create( event )
         	end
     	end
 	end
-
+	-- This function is used to show the win screen
 	local function showWin()
 		win.isVisible = true
 		settingsButton.isVisible = false
@@ -256,7 +270,7 @@ function scene:create( event )
 			audio.play(winningSound)
 		end
 	end
-
+	-- Once the player wins the game we show an animation where the player scores the goal
 	local function moveBackground()
 		if(background1.x < 360) then
 			Runtime:removeEventListener( "enterFrame", moveBackground );
@@ -269,7 +283,7 @@ function scene:create( event )
 			background1.x = background1.x-3
 		end
 	end
-
+	-- Just to make the boom visible on collision
 	local function boomVisible(event)
 		boom.isVisible = false
 	end
@@ -282,7 +296,7 @@ function scene:create( event )
 
 	local player2s = display.newGroup()
 
-
+	-- This would make the players/stones pop up randomply in the lanes
 	local function randomizeLane()
 
 		local lanes = {1, 2, 3}
@@ -308,7 +322,7 @@ function scene:create( event )
 		{ name = "run", start = 1, count= 20, time=800}
 	}
 
-
+	-- To create obstacles
 	local function createCrate()
 		local obs = {'stone','player'}
 		local idx = math.random(#obs)
@@ -346,7 +360,7 @@ function scene:create( event )
 
 	local createObstacles = timer.performWithDelay( 1500, createCrate, 13)
 
-
+	--On touch of the injury we make the injury pop up dissapear
 	local function boardDissapear(event)
 		event.target:removeSelf()
 
@@ -371,11 +385,9 @@ function scene:create( event )
 		
 	end
 
-
+	-- On collision we show the injury board.
 	local function showInjuryBoard()
 
-		print(#weights)
-		print(#choices)
 		local totalWeight = 0
 		for _, weight in pairs(weights) do
     		totalWeight = totalWeight + weight
@@ -392,7 +404,6 @@ function scene:create( event )
         		rand = rand - weight
     		end
 		end
-		print(choice["Image_name"])
 		injuryBoard = display.newImageRect("images/injury window/" .. choice["Image_name"], 250,200)
 		injuryBoard.x = display.contentCenterX
 		injuryBoard.y = display.contentCenterY
@@ -420,7 +431,7 @@ function scene:create( event )
 		end
 		injuryBoard:addEventListener("tap", boardDissapear)
 	end
-
+	-- The events that occur during collision
 	local function onCollision(event)
 		if(event.phase == "began") then
 
@@ -449,7 +460,7 @@ function scene:create( event )
 		end
 	end
 
-
+	-- On click of the settings button these buttons r used
 	local settingBackground = display.newImageRect( "images/background/app background/appBack.png", screenW, screenH )
 	settingBackground.anchorX = 0 
 	settingBackground.anchorY = 0
@@ -469,7 +480,7 @@ function scene:create( event )
 
 
 	local replayButton = display.newImageRect( "images/background/app background/restart button.png", 50, 50 )
-
+	-- On click of resume in settings
 	local function startPlaying( )
 		settingBackground.isVisible = false
 		settingWindow.isVisible = false
@@ -482,7 +493,7 @@ function scene:create( event )
 	playButton:addEventListener( "touch", startPlaying )
 
 
-
+	-- On click of settings button
 	local function selectSetting()
 		settingBackground.isVisible = true
 		settingWindow.isVisible = true
@@ -491,7 +502,7 @@ function scene:create( event )
 		physics.pause()
 		timer.pause(createObstacles)
 	end
-
+	-- This would occur when you click the replay button
 	local function replayButtonEvent()
 		composer.removeScene( composer.levelPlaying)
 		composer.gotoScene( composer.levelPlaying, "fade", 500 )
@@ -544,6 +555,7 @@ function scene:show( event )
 	elseif phase == "did" then
 		-- Called when the scene is now on screen
 		-- 
+		-- Sound is played based on the global sound indicator
 		if(sound == "ON") then
 
 			audio.stop()

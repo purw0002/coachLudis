@@ -66,7 +66,7 @@ function scene:create( event )
 	musicButtonOFF.y = 20
 	musicButtonOFF:addEventListener( "touch", startAudio )
 
-
+	-- Go to chaaracter select screen
 	local function goBackToPrev(event)
 		composer.prevScreen = event.target.prev
 		if (prevScreen ~= "None") then

@@ -59,6 +59,8 @@ function scene:create( event )
 	-- 
 	-- INSERT code here to initialize the scene
 	-- e.g. add display objects to 'sceneGroup', add touch listeners, etc.
+
+	-- GO back to the sport select screen
 	local function goBackToPrev(event)
 		composer.prevScreen = event.target.prev
 		if (prevScreen ~= "None") then
@@ -114,6 +116,7 @@ function scene:create( event )
 	locks:insert(lockSymbol4)
 	locks:insert(lockSymbol5)
 
+	-- Go to level 1
 	local function goToLevel2()
 		if (game == "soccer") then
 			composer.levelPlaying = 'level2'
@@ -122,7 +125,7 @@ function scene:create( event )
 			composer.gotoScene( "level2", "fade", 1 )
 		end
 	end
-
+	-- Go to level 2
 	local function goToLevel3()
 		if (game == "soccer") then
 			composer.levelPlaying = 'level3'
@@ -167,6 +170,7 @@ function scene:create( event )
 	levels:insert(levelSymbol4)
 	levels:insert(levelSymbol5)
 
+	-- This is used to show available levels
 	local function showAvailableLevels(num)
 		if (unlockedLevels > 0) then
 			levels[num].isVisible = true
