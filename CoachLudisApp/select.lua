@@ -7,7 +7,6 @@
 local composer = require( "composer" )
 local scene = composer.newScene()
 -- include Corona's "physics" library
-local physics = require "physics"
 
 --------------------------------------------
 
@@ -141,6 +140,7 @@ function scene:show( event )
 	elseif phase == "did" then
 		-- Called when the scene is now on screen
 		-- 
+		physics.start()
 		if (sound == "ON") then
 
 			if audio.isChannelPlaying( 1 ) then
@@ -158,7 +158,6 @@ function scene:show( event )
 		end
 		-- INSERT code here to make the scene come alive
 		-- e.g. start timers, begin animation, play audio, etc.
-		physics.start()
 	end
 end
 
@@ -186,8 +185,6 @@ function scene:destroy( event )
 	-- e.g. remove display objects, remove touch listeners, save state, etc.
 	local sceneGroup = self.view
 	
-	package.loaded[physics] = nil
-	physics = nil
 end
 
 ---------------------------------------------------------------------------------

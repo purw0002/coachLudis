@@ -79,6 +79,7 @@ function scene:create( event )
 	end
 
 	local function replayLevel()
+		composer.chance =  1
 		composer.removeScene( composer.levelPlaying)
 		composer.gotoScene( composer.levelPlaying, "fade", 500 )
 	end
