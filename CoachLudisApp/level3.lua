@@ -52,8 +52,8 @@ function scene:create( event )
 				timerText = nil
 				ice_pack:removeSelf()
 				arm:removeSelf()
-				composer.stars = 0
-				composer.gotoScene("rate","fade","100")
+				composer.healthIncrease = 0
+				composer.gotoScene("level2","fade","100")
 			else
 
 				timerText.text = "Time:"..countDown
@@ -183,16 +183,19 @@ function scene:create( event )
 						ice_pack:removeSelf()
 						arm:removeSelf()
 						if countDown <= 3 then
-							composer.stars = 1
+							composer.healthIncrease = 20
+
 						elseif countDown <= 6 then
-							composer.stars = 2 
+							composer.healthIncrease = 40 
 						elseif countDown <= 9 then
-							composer.stars = 3
+							composer.healthIncrease = 60
 						else
-							composer.stars = 0
+							composer.healthIncrease = 0
 						end
 						gameComplete = true
-						composer.gotoScene("rate","fade",100)
+						timer.cancel(countDownTimer)
+						composer.gotoScene( "level2", "fade", 400 )
+						--composer.gotoScene("level2","fade",100)
 						break
 					end	
 					-- Handle other collision aspects like increasing score, etc.
@@ -306,20 +309,14 @@ function scene:show( event )
 end
 
 function scene:hide( event )
-	local sceneGroup = self.view
-	
-	local phase = event.phase
-	
-	if event.phase == "will" then
-		-- Called when the scene is on screen and is about to move off screen
-		--
-		-- INSERT code here to pause the scene
-		-- e.g. stop timers, stop animation, unload sounds, etc.)
-		physics.stop()
-	elseif phase == "did" then
-		-- Called when the scene is now off screen
-	end	
-	
+    local sceneGroup = self.view
+    local phase = event.phase
+ 
+    if ( phase == "will" ) then
+        -- Call the "resumeGame()" function in the parent scene
+        --composer.chance = 0
+    end
+
 end
 
 function scene:destroy( event )
