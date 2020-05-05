@@ -402,13 +402,22 @@ local function startPlaying( )
 	timer.resume(createObstacles)
 end
 
-local function selectSetting()
-	settingBackground.isVisible = true
-	settingWindow.isVisible = true
-	playButton.isVisible = true
-	replayButton.isVisible = true
-	physics.pause()
-	timer.pause(createObstacles)
+local function selectSetting(event)
+
+	local phase = event.phase
+    if (phase == "began") then
+
+    elseif (phase == "moved") then
+
+    elseif (phase == "ended" or phase == "cancelled") then
+       	settingBackground.isVisible = true
+		settingWindow.isVisible = true
+		playButton.isVisible = true
+		replayButton.isVisible = true
+		physics.pause()
+		timer.pause(createObstacles)
+   	end
+
 end
 	-- This would occur when you click the replay button
 local function replayButtonEvent()
@@ -594,7 +603,7 @@ function scene:create( event )
 	replayButton.isVisible = false
 	replayButton:addEventListener( "touch", replayButtonEvent )
 
-
+	print("Heyyyyyyyyyyyyyyy")
 	-- make a crate (off-screen), position it, and rotate slightly
 	-- create a grass object and add physics (with custom shape)
 

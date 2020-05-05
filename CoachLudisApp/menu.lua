@@ -14,10 +14,10 @@ local widget = require "widget"
 
 -- forward declarations and other locals
 local playBtn
-
+local background
 musicTrack = audio.loadSound( "sound/bensound-hey.mp3")
 
-sound = "ON"
+sound = "OFF"
 
 --choice = {}
 --injuryData = {}
@@ -29,11 +29,14 @@ local function networkListener( event )
     else
     	injuryData = json.decode(event.response)
     	print(event.response)
+
     	choices = injuryData
 		weights = {}
 		for k,v in pairs(choices) do
 			table.insert(weights, v["Soccer_Percentage"])
 		end
+		playBtn.isVisible =  true
+		background:addEventListener( "touch", background )
     end
 end
 -- Used for encoding the url
@@ -74,14 +77,13 @@ function scene:create( event )
 	-- e.g. add display objects to 'sceneGroup', add touch listeners, etc.
 
 	-- display a background image
-	local background = display.newImageRect( "images/logo/starting screen.jpg", display.actualContentWidth, display.actualContentHeight )
+	background = display.newImageRect( "images/logo/starting screen.jpg", display.actualContentWidth, display.actualContentHeight )
 	background.anchorX = 0
 	background.anchorY = 0
 
 	background.x = display.screenOriginX 
 	background.y = display.screenOriginY
 	background.touch = onPlayBtnRelease
-	background:addEventListener( "touch", background )
 
 	-- create a widget button (which will loads level1.lua on release)
 	playBtn = widget.newButton{
@@ -93,7 +95,7 @@ function scene:create( event )
 	}
 	playBtn.x = display.contentCenterX +50
 	playBtn.y = display.contentHeight - 25
-	
+	playBtn.isVisible = false
 	-- all display objects must be inserted into group
 	sceneGroup:insert( background )
 	sceneGroup:insert( playBtn )
@@ -132,7 +134,7 @@ end
 
 function scene:destroy( event )
 	local sceneGroup = self.view
-	
+	background:removeEventListener( "touch", background )
 	-- Called prior to the removal of scene's "view" (sceneGroup)
 	-- 
 	-- INSERT code here to cleanup the scene
