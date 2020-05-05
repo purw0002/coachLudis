@@ -393,13 +393,22 @@ local settingWindow
 local playButton
 local replayButton
 
-local function startPlaying( )
-	settingBackground.isVisible = false
-	settingWindow.isVisible = false
-	playButton.isVisible = false
-	replayButton.isVisible = false
-	physics.start()
-	timer.resume(createObstacles)
+local function startPlaying(event )
+
+
+	local phase = event.phase
+    if (phase == "began") then
+
+    elseif (phase == "moved") then
+
+    elseif (phase == "ended" or phase == "cancelled") then
+		settingBackground.isVisible = false
+		settingWindow.isVisible = false
+		playButton.isVisible = false
+		replayButton.isVisible = false
+		physics.start()
+		timer.resume(createObstacles)
+   	end
 end
 
 local function selectSetting(event)
