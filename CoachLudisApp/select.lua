@@ -24,6 +24,17 @@ local function onGame4BtnRelease()
 	return true	-- indicates successful touch
 end
 
+local function onGame5BtnRelease()
+	
+	-- go to level1.lua scene
+	composer.game = 'cycle'
+	composer.levelSelectLink = 'test'
+	composer.prevScreen = "select"
+	composer.gotoScene( "cycleLevel2", "fade", 500 )
+	
+	return true	-- indicates successful touch
+end
+
 
 -- forward declarations and other locals
 local screenW, screenH, halfW = display.actualContentWidth, display.actualContentHeight, display.contentCenterX
@@ -113,10 +124,11 @@ function scene:create( event )
 	game4.touch = onGame4BtnRelease
 	game4:addEventListener( "touch", game4 )
 
-	local game5 = display.newImageRect( "images/logo/locked cycling.png", 100, 100 )
+	local game5 = display.newImageRect( "images/logo/game5.jpeg", 100, 100 )
 	game5.x = game5.contentHeight +  270 
 	game5.y = game5.contentHeight + 140
-
+	game5.touch = onGame5BtnRelease
+	game5:addEventListener( "touch", game5 )
 
 	-- all display objects must be inserted into group
 	sceneGroup:insert( background )
