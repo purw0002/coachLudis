@@ -15,14 +15,21 @@ local map = require "native"
 
 --------------------------------------------
 
+local timeElapsed = 0
+
+local rank = 5
+
+local obstaclesCycle = display.newGroup()
+
+local opponentCycles = display.newGroup()
+
 -- forward declarations and other locals
 local screenW, screenH, halfW = display.actualContentWidth, display.actualContentHeight, display.contentCenterX
 
 -- Set Variables
 _W = display.contentWidth; -- Get the width of the screen
 _H = display.contentHeight; -- Get the height of the screen
-scrollSpeed = 3; -- Set Scroll Speed of background
-
+scrollSpeed = 2; -- Set Scroll Speed of background
 -- Add First Background
 local bg1 = display.newImageRect("images/level2Cycling/bicycle level 2 Street 1.png", screenW, screenH)
 bg1.x = _W*0.5 + 45; bg1.y = _H/2;
@@ -52,19 +59,26 @@ local cycle = display.newImageRect("images/level2Cycling/bicycle character top v
 
 cycle.x, cycle.y = 250,280
 cycle.name =  "cycle"
-physics.addBody(cycle, "dynamic")
-physics.setGravity(0,0)
-cycle:setLinearVelocity(0,-50)
+physics.addBody(cycle, "static")
+
+local boom = display.newImageRect("boom.png", 40,40)
+boom.x, boom.y = 250,255
+boom.name =  "boom"
+boom.isVisible = false
+
+local finished = false
 
 local function goLeftPosition(event)
 	if(cycle.x > 212) then
 		cycle.x = cycle.x - 1
+		boom.x = boom.x -  1
 	end
 end
 
 local function goRightPosition(event)
 	if(cycle.x < 346) then
 		cycle.x = cycle.x + 1
+		boom.x = boom.x + 1
 	end
 end
 
@@ -75,18 +89,46 @@ goLeft.touch = goLeftPosition
 goLeft:addEventListener( "touch", goLeft )
 
 
-local function moveCamera()
-	if cycle.y < 0 then
-		cycle.y = cycle.y + screenH
-	end
-end
-
 local goRight = display.newImageRect("images/level2Cycling/bicycle character top view.png", 50, 50)
 goRight.x, goRight.y = 550,150
 goRight.name =  "buttonRight"
 goRight.touch = goRightPosition
 goRight:addEventListener( "touch", goRight )
 
+local function randomizeLane()
+	local lane = {'1', '2'}
+	local idx = math.random(#lane)
+	local selectedLane = lane[idx]
+	if(selectedLane == '1') then
+		return 320
+	else
+		return 250
+	end
+end
+
+local function randomizePlayers()
+	local obstacle = {'player1','player2'}
+	local idx = math.random(#obstacle)
+	local selectedObstacle = obstacle[idx]
+	if(selectedObstacle == 'player1') then
+		local player = display.newImageRect("images/cycling level assets/obstacles/cyclists/cyclist1.png", 50, 50)
+		player.x, player.y = randomizeLane(),-10
+		player.name =  "op-cycle"
+		physics.addBody(player)
+		obstaclesCycle:insert(player)
+	elseif(selectedObstacle == 'player2') then
+		local player = display.newImageRect("images/cycling level assets/obstacles/cyclists/cyclist2.png", 50, 50)
+		player.x, player.y = randomizeLane(),-10
+		player.name =  "op-cycle"
+		physics.addBody(player)
+		obstaclesCycle:insert(player)
+	end
+end
+
+
+local function spawnOpponentPlayer()
+	randomizePlayers()
+end
 
 local screenLoop = 0
 local done = false
@@ -98,6 +140,28 @@ local function move(event)
  	bg4.y = bg4.y + scrollSpeed
  	bg5.y = bg5.y + scrollSpeed
  	bg6.y = bg6.y + scrollSpeed
+ 	local beatOpponentIndex = -5 
+ 	for i = 1, obstaclesCycle.numChildren do
+		obstaclesCycle[i].y = obstaclesCycle[i].y + scrollSpeed
+		if(obstaclesCycle[i].name == 'op-cycle') then
+			obstaclesCycle[i].y = obstaclesCycle[i].y - 1
+		end
+		if(obstaclesCycle[i].name == 'op-cycle' and obstaclesCycle[i].y > screenH) then
+			rank= rank- 1
+			beatOpponentIndex = i
+			print(rank)
+		end
+	end
+
+	if(beatOpponentIndex > -1) then
+		obstaclesCycle[beatOpponentIndex]:removeSelf()
+		beatOpponentIndex = -5
+	end
+
+	--if (done == false) then
+	--else
+	--	timer.performWithDelay( 1000, showGameOver(), 1)
+	--end
 
  -- Set up listeners so when backgrounds hits a certain point off the screen,
  -- move the background to the right off screen
@@ -131,6 +195,40 @@ local function move(event)
  	end
 end
 
+local function boomVisible(event)
+	boom.isVisible = false
+end
+
+local function onCollision(event)
+	if(event.phase == "began") then
+		print(event.object1.name)
+		print(event.object2.name)
+
+		if(event.object1.name == "cycle" and ( (event.object2.name  == "kangaroo") or (event.object2.name  == "pothole") or (event.object2.name  == "speedBreaker") )) then
+			print(event.object1.name)
+			print(event.object2.name)
+			if(sound == "ON") then
+				--audio.play(collisionSound)
+			end
+			event.object2:removeSelf()
+			boom.isVisible = true
+			timer.performWithDelay( 800, boomVisible, 1 )
+		elseif(event.object1.name == "cycle" and event.object2.name  == "bottle") then
+			if(sound == "ON") then
+				--audio.play(collisionSound)
+			end
+			event.object2:removeSelf()
+		elseif(event.object1.name == "cycle" and event.object2.name  == "finishLine") then
+			if(sound == "ON") then
+				--audio.play(collisionSound)
+			end
+			event.object2:removeSelf()
+			print("You win!!!!!")
+		end	
+	end
+end
+
+
 function scene:create( event )
 
 	local sceneGroup = self.view
@@ -143,6 +241,88 @@ function scene:create( event )
 	-- 
 	-- INSERT code here to initialize the scene
 	-- e.g. add display objects to 'sceneGroup', add touch listeners, etc.
+	sceneGroup:insert(bg1)
+	sceneGroup:insert(bg2)
+	sceneGroup:insert(bg3)
+	sceneGroup:insert(bg4)
+	sceneGroup:insert(bg5)	
+	sceneGroup:insert(bg6)
+	sceneGroup:insert(cycle)
+
+end
+
+local kangaroos = display.newGroup()
+
+
+local function randomizeObstaclesForSuburb()
+	local obstacles = {'potholes', 'speedBreaker', 'bottle'}
+	local idx = math.random(#obstacles)
+	local selectedObstacle = obstacles[idx]
+	if(selectedObstacle == 'potholes') then
+		local pothole = display.newImageRect("images/cycling level assets/obstacles/potholes/pothole.png", 50, 50)
+		pothole.x, pothole.y = randomizeLane(),-10
+		pothole.name =  "pothole"
+		physics.addBody(pothole)
+		obstaclesCycle:insert(pothole)
+	elseif (selectedObstacle == 'speedBreaker') then
+		local speedBreaker = display.newImageRect("images/cycling level assets/obstacles/speed-breaker/road breaker.png", 50, 50)
+		speedBreaker.x, speedBreaker.y = randomizeLane(),-10
+		speedBreaker.name =  "speedBreaker"
+		physics.addBody(speedBreaker)
+		obstaclesCycle:insert(speedBreaker)
+	elseif (selectedObstacle == 'bottle') then
+		local bottle = display.newImageRect("images/cycling level assets/obstacles/bottle/water bottle.png", 50, 50)
+		bottle.x, bottle.y = randomizeLane(),-10
+		bottle.name =  "bottle"
+		physics.addBody(bottle)
+		obstaclesCycle:insert(bottle)
+	end
+end
+
+local function randomizeObstaclesForForest()
+	local obstacles = {'kangaroo', 'potholes', 'bottle'}
+	local idx = math.random(#obstacles)
+	local selectedObstacle = obstacles[idx]
+	if(selectedObstacle == 'potholes') then
+		local pothole = display.newImageRect("images/cycling level assets/obstacles/potholes/pothole.png", 50, 50)
+		pothole.x, pothole.y = randomizeLane(),-10
+		pothole.name =  "pothole"
+		physics.addBody(pothole)
+		obstaclesCycle:insert(pothole)
+	elseif (selectedObstacle == 'kangaroo') then
+		local kangaroo = display.newImageRect("images/cycling level assets/obstacles/animals/kangaroo.png", 50, 50)
+		kangaroo.x, kangaroo.y = randomizeLane(),-10
+		kangaroo.name =  "kangaroo"
+		physics.addBody(kangaroo)
+		obstaclesCycle:insert(kangaroo)
+	elseif (selectedObstacle == 'bottle') then
+		local bottle = display.newImageRect("images/cycling level assets/obstacles/bottle/water bottle.png", 50, 50)
+		bottle.x, bottle.y = randomizeLane(),-10
+		bottle.name =  "bottle"
+		physics.addBody(bottle)
+		obstaclesCycle:insert(bottle)
+	end
+end
+
+
+local function createObstacles()
+	timeElapsed = timeElapsed + 3
+
+	if(timeElapsed >= 18 and finished == false and timeElapsed < 40 ) then
+		randomizeObstaclesForForest()
+	elseif (timeElapsed < 18 and finished == false) then
+		randomizeObstaclesForSuburb()
+	end
+
+	if timeElapsed > 40 and finished == false then
+		finished = true
+		local finishLine = display.newImageRect("images/cycling level assets/finish line/finish line.png", 200, 20)
+		finishLine.x, finishLine.y = 285,-10
+		finishLine.name =  "finishLine"
+		physics.addBody(finishLine)
+		obstaclesCycle:insert(finishLine)
+	end
+
 end
 
 
@@ -156,14 +336,9 @@ function scene:show( event )
 		-- 
 		--print(cycle.x)
 		--map.positionCamera(cycle.x,cycle.y )
-
-		sceneGroup:insert(bg1)
-		sceneGroup:insert(bg2)
-		sceneGroup:insert(bg3)
-		sceneGroup:insert(bg4)
-		sceneGroup:insert(bg5)	
-		sceneGroup:insert(bg6)
-		sceneGroup:insert(cycle)
+		timer.performWithDelay( 3000, createObstacles, -1)
+		timer.performWithDelay( 9000, spawnOpponentPlayer, 4)
+		physics.setGravity( 0, 0 )
 
 		-- INSERT code here to make the scene come alive
 		-- e.g. start timers, begin animation, play audio, etc.
@@ -178,6 +353,7 @@ function scene:hide( event )
 	if event.phase == "will" then
 		-- Called when the scene is on screen and is about to move off screen
 		--
+
 		-- INSERT code here to pause the scene
 		-- e.g. stop timers, stop animation, unload sounds, etc.)
 		physics.stop()
@@ -194,7 +370,6 @@ function scene:destroy( event )
 	-- INSERT code here to cleanup the scene
 	-- e.g. remove display objects, remove touch listeners, save state, etc.
 	local sceneGroup = self.view
-	
 	package.loaded[physics] = nil
 	physics = nil
 end
@@ -208,7 +383,8 @@ scene:addEventListener( "hide", scene )
 scene:addEventListener( "destroy", scene )
 -- Create a runtime event to move backgrounds
 Runtime:addEventListener( "enterFrame", move )
-Runtime:addEventListener( "enterFrame", moveCamera )
+Runtime:addEventListener("collision", onCollision)
+
 -----------------------------------------------------------------------------------------
 
 return scene 
