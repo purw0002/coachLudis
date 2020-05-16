@@ -29,6 +29,7 @@ local function onGame5BtnRelease()
 	-- go to level1.lua scene
 	composer.game = 'cycle'
 	composer.levelSelectLink = 'test'
+	composer.chance = 1
 	composer.prevScreen = "select"
 	composer.gotoScene( "cycleLevel2", "fade", 500 )
 	

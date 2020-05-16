@@ -28,7 +28,10 @@ function scene:create( event )
 
 	if (composer.game == "soccer") then
 		background = display.newImageRect( "images/background/app background/appBack1.png", display.actualContentWidth, display.actualContentHeight )
+	else
+		background = display.newImageRect( "images/background/app background/appBack2.png", display.actualContentWidth, display.actualContentHeight )
 	end
+
 	background.anchorX = 0
 	background.anchorY = 0
 
@@ -192,14 +195,14 @@ function scene:show( event )
 		starsGp[3].isVisible = false
 		timer.performWithDelay( 1000, showStars(1), 1)
 		
-		if(composer.levelPlaying == "level2") then
-			factPart = display.newImageRect( "images/facts/level1Facts.PNG", 180, 100 )
-		elseif(composer.levelPlaying == "level3") then
-			factPart = display.newImageRect( "images/facts/level2Facts.PNG", 180, 100 )
-		end
-		factPart.x = display.contentCenterX +30
-		factPart.y = display.contentCenterY +35
-		sceneGroup:insert(factPart)
+		--if(composer.levelPlaying == "level2") then
+		--	factPart = display.newImageRect( "images/facts/level1Facts.PNG", 180, 100 )
+		--elseif(composer.levelPlaying == "level3") then
+		--	factPart = display.newImageRect( "images/facts/level2Facts.PNG", 180, 100 )
+		--end
+		--factPart.x = display.contentCenterX +30
+		--factPart.y = display.contentCenterY +35
+		--sceneGroup:insert(factPart)
 		if (sound == "ON") then
 			audio.stop()
 			audio.play(musicTrack, { channel = 1, loops=-1 })

@@ -17,11 +17,133 @@ local map = require "native"
 
 local timeElapsed = 0
 
+local collided = false
+
 local rank = 5
 
 local obstaclesCycle = display.newGroup()
 
-local opponentCycles = display.newGroup()
+local spawnOp
+
+local bottles = display.newGroup()
+local stamina = 3
+local healthValue = 50
+
+local healthRectangeRed = display.newRect( 130, 20, healthValue*2, 20 ) 
+healthRectangeRed:setFillColor(208, 208, 57, 1)
+healthRectangeRed.x = 450
+	-- health bar
+local healthRectangeGreen = display.newRect( 130, 20, healthValue*2, 20 ) 
+healthRectangeGreen:setFillColor(1, 0, 0, 1)
+healthRectangeGreen.x = 450
+
+local function reduceHealth(redHealth)
+	healthValue = healthValue - (redHealth/2)
+	if(healthValue <= 20) then
+		--composer
+		composer.gotoScene("precautionOpenWound", "fade", 100)
+	end
+
+	healthRectangeGreen.width =  healthValue*2
+	healthRectangeGreen.x = healthRectangeGreen.x - (redHealth/2)
+end
+
+local function showBottle(stamina)
+
+ 	for i = 1, bottles.numChildren do
+		bottles[i].removeSelf()
+	end
+
+	if(stamina == 4) then
+		local bottle = display.newImageRect("images/cycling level assets/obstacles/bottle/water bottle.png", 50, 50)
+		bottle.x, bottle.y = 30,20
+		local bottle1 = display.newImageRect("images/cycling level assets/obstacles/bottle/water bottle.png", 50, 50)
+		bottle1.x, bottle1.y = 50,20
+		local bottle2 = display.newImageRect("images/cycling level assets/obstacles/bottle/water bottle.png", 50, 50)
+		bottle2.x, bottle2.y = 70,20
+		local bottle3 = display.newImageRect("images/cycling level assets/obstacles/bottle/water bottle.png", 50, 50)
+		bottle3.x, bottle3.y = 90,20
+		bottles:insert(bottle)
+		bottles:insert(bottle1)
+		bottles:insert(bottle2)
+		bottles:insert(bottle3)
+	elseif(stamina == 3) then
+		local bottle = display.newImageRect("images/cycling level assets/obstacles/bottle/water bottle.png", 50, 50)
+		bottle.x, bottle.y = 30,20
+		local bottle1 = display.newImageRect("images/cycling level assets/obstacles/bottle/water bottle.png", 50, 50)
+		bottle1.x, bottle1.y = 50,20
+		local bottle2 = display.newImageRect("images/cycling level assets/obstacles/bottle/water bottle.png", 50, 50)
+		bottle2.x, bottle2.y = 70,20
+		bottles:insert(bottle)
+		bottles:insert(bottle1)
+		bottles:insert(bottle2)
+	elseif(stamina == 2) then
+		local bottle = display.newImageRect("images/cycling level assets/obstacles/bottle/water bottle.png", 50, 50)
+		bottle.x, bottle.y = 30,20
+		local bottle1 = display.newImageRect("images/cycling level assets/obstacles/bottle/water bottle.png", 50, 50)
+		bottle1.x, bottle1.y = 50,20
+		bottles:insert(bottle)
+		bottles:insert(bottle1)
+	elseif(stamina == 1) then
+		local bottle = display.newImageRect("images/cycling level assets/obstacles/bottle/water bottle.png", 50, 50)
+		bottle.x, bottle.y = 30,20
+		bottles:insert(bottle)
+	end
+end
+
+showBottle(stamina)
+
+local function randomizeLane()
+	local lane = {'1', '2'}
+	local idx = math.random(#lane)
+	local selectedLane = lane[idx]
+	if(selectedLane == '1') then
+		return 320
+	else
+		return 250
+	end
+end
+
+
+local options = 
+{
+    text = "Rank 5",     
+    x = 480,
+    y = 300,
+    width = 128,
+    font = native.systemFont,   
+    fontSize = 18,
+    align = "right"  -- Alignment parameter
+}
+
+
+local function randomizePlayers()
+	local obstacle = {'player1','player2'}
+	local idx = math.random(#obstacle)
+	local selectedObstacle = obstacle[idx]
+	if(selectedObstacle == 'player1') then
+		local player = display.newImageRect("images/cycling level assets/obstacles/cyclists/cyclist1.png", 50, 50)
+		player.x, player.y = randomizeLane(),-10
+		player.name =  "op-cycle"
+		physics.addBody(player)
+		obstaclesCycle:insert(player)
+	elseif(selectedObstacle == 'player2') then
+		local player = display.newImageRect("images/cycling level assets/obstacles/cyclists/cyclist2.png", 50, 50)
+		player.x, player.y = randomizeLane(),-10
+		player.name =  "op-cycle"
+		physics.addBody(player)
+		obstaclesCycle:insert(player)
+	end
+end
+
+
+local function spawnOpponentPlayer()
+	randomizePlayers()
+end
+
+
+local myText = display.newText( options )
+myText:setFillColor( 1, 1, 1 )
 
 -- forward declarations and other locals
 local screenW, screenH, halfW = display.actualContentWidth, display.actualContentHeight, display.contentCenterX
@@ -30,6 +152,29 @@ local screenW, screenH, halfW = display.actualContentWidth, display.actualConten
 _W = display.contentWidth; -- Get the width of the screen
 _H = display.contentHeight; -- Get the height of the screen
 scrollSpeed = 2; -- Set Scroll Speed of background
+
+function stopBoost()
+	scrollSpeed = 2
+	timer.cancel(spawnOp)
+	spawnOp = timer.performWithDelay( 7000, spawnOpponentPlayer, rank - 1)
+end
+
+function boost(event)
+	if(event.phase == "began") then
+		if(stamina >  0)  then
+			stamina  = stamina - 1
+			bottles[stamina+1].isVisible = false
+			scrollSpeed = 4
+			timer.performWithDelay( 3000, stopBoost, 1)
+			timer.cancel(spawnOp)
+			spawnOp = timer.performWithDelay( 3000, spawnOpponentPlayer, rank - 1)
+		end
+	end
+end
+
+local nitros  = display.newImageRect("images/cycling level assets/boost/boost button.png", 60, 60)
+nitros.x, nitros.y  = 50,screenH-50
+nitros:addEventListener( "touch", boost )
 -- Add First Background
 local bg1 = display.newImageRect("images/level2Cycling/bicycle level 2 Street 1.png", screenW, screenH)
 bg1.x = _W*0.5 + 45; bg1.y = _H/2;
@@ -82,53 +227,19 @@ local function goRightPosition(event)
 	end
 end
 
-local goLeft = display.newImageRect("images/level2Cycling/bicycle character top view.png", 50, 50)
+local goLeft = display.newImageRect("images/cycling level assets/directions/left arrow.png", 50, 50)
 goLeft.x, goLeft.y = 20,150
 goLeft.name =  "buttonLeft"
 goLeft.touch = goLeftPosition
 goLeft:addEventListener( "touch", goLeft )
 
 
-local goRight = display.newImageRect("images/level2Cycling/bicycle character top view.png", 50, 50)
+local goRight = display.newImageRect("images/cycling level assets/directions/right arrow.png", 50, 50)
 goRight.x, goRight.y = 550,150
 goRight.name =  "buttonRight"
 goRight.touch = goRightPosition
 goRight:addEventListener( "touch", goRight )
 
-local function randomizeLane()
-	local lane = {'1', '2'}
-	local idx = math.random(#lane)
-	local selectedLane = lane[idx]
-	if(selectedLane == '1') then
-		return 320
-	else
-		return 250
-	end
-end
-
-local function randomizePlayers()
-	local obstacle = {'player1','player2'}
-	local idx = math.random(#obstacle)
-	local selectedObstacle = obstacle[idx]
-	if(selectedObstacle == 'player1') then
-		local player = display.newImageRect("images/cycling level assets/obstacles/cyclists/cyclist1.png", 50, 50)
-		player.x, player.y = randomizeLane(),-10
-		player.name =  "op-cycle"
-		physics.addBody(player)
-		obstaclesCycle:insert(player)
-	elseif(selectedObstacle == 'player2') then
-		local player = display.newImageRect("images/cycling level assets/obstacles/cyclists/cyclist2.png", 50, 50)
-		player.x, player.y = randomizeLane(),-10
-		player.name =  "op-cycle"
-		physics.addBody(player)
-		obstaclesCycle:insert(player)
-	end
-end
-
-
-local function spawnOpponentPlayer()
-	randomizePlayers()
-end
 
 local screenLoop = 0
 local done = false
@@ -145,11 +256,15 @@ local function move(event)
 		obstaclesCycle[i].y = obstaclesCycle[i].y + scrollSpeed
 		if(obstaclesCycle[i].name == 'op-cycle') then
 			obstaclesCycle[i].y = obstaclesCycle[i].y - 1
+			if(collided ==  true) then
+				obstaclesCycle[i].y = obstaclesCycle[i].y - 1
+			end
 		end
 		if(obstaclesCycle[i].name == 'op-cycle' and obstaclesCycle[i].y > screenH) then
 			rank= rank- 1
+			myText.text = "Rank "..rank
 			beatOpponentIndex = i
-			print(rank)
+
 		end
 	end
 
@@ -199,23 +314,122 @@ local function boomVisible(event)
 	boom.isVisible = false
 end
 
+local function wait()
+	--spawnOp = timer.performWithDelay( 9000, spawnOpponentPlayer, rank - 1)
+	scrollSpeed = 2
+	collided = false
+end
+
+local function boardDissapear(event)
+	event.target:removeSelf()
+	local function showGameOver(loss)
+		player:pause()
+		if(sound == "ON") then
+			audio.stop()
+			audio.play(lostTrack)
+		end
+		loss.isVisible = true
+		settingsButton.isVisible = false
+		healthRectangeGreen.isVisible = false
+		healthRectangeRed.isVisible = false
+	end
+
+	if(healthValue <= 20 and composer.chance == 1) then
+		composer.chance = 0 
+-- By some method such as a "pause" button, show the overlay
+		timer.pause(createObs)
+		timer.pause(spawnOp)
+		--composer.removeScene( "precautionOpenWound")
+		composer.gotoScene( "precautionOpenWound", "fade", 100 )
+			--composer.gotoScene("level3","fade",100)
+	elseif(injuryBoard.param1 == nil) then
+		timer.resume(event.target.params)
+		timer.resume(spawnOp)
+		Runtime:addEventListener( "enterFrame", move )
+		physics.start()
+	else
+		--timer.performWithDelay( 1000, showGameOver(injuryBoard.param1), 1)
+	end
+end
+
+local function showInjuryBoard()
+	timer.pause(createObs)
+	timer.pause(spawnOp)
+	Runtime:removeEventListener( "enterFrame", move )
+	physics.pause()
+	local totalWeight = 0
+	for _, weight in pairs(weights) do
+   		totalWeight = totalWeight + weight
+	end
+
+	rand = math.random() * totalWeight
+	choice = nil
+
+	for i, weight in pairs(weights) do
+   		if rand < weight then
+       		choice = choices[i]
+       		break
+   		else
+       		rand = rand - weight
+   		end
+	end
+	injuryBoard = display.newImageRect("images/injury window/" .. choice["Image_name"], 250,200)
+	injuryBoard.x = display.contentCenterX
+	injuryBoard.y = display.contentCenterY
+	injuryBoard.params = createObs
+	if( healthValue - choice["Severity"]/2 > 0) then
+		healthValue = healthValue - choice["Severity"]/2
+	else
+		healthValue = 0
+	end
+
+	if (healthValue<= 0 and composer.chance == 0) then
+		injuryBoard.param1 = loss
+
+		physics.pause()
+		
+		healthRectangeGreen.width =  0
+		Runtime:removeEventListener("collision", onCollision)
+	else
+		healthRectangeGreen.width =  healthValue*2
+		healthRectangeGreen.x = healthRectangeGreen.x - choice["Severity"]
+	end
+	injuryBoard:addEventListener("tap", boardDissapear)
+end
+
+
+
 local function onCollision(event)
 	if(event.phase == "began") then
-		print(event.object1.name)
-		print(event.object2.name)
-
-		if(event.object1.name == "cycle" and ( (event.object2.name  == "kangaroo") or (event.object2.name  == "pothole") or (event.object2.name  == "speedBreaker") )) then
-			print(event.object1.name)
-			print(event.object2.name)
+		if(event.object1.name == "cycle" and ( (event.object2.name  == "kangaroo") or (event.object2.name  == "pothole") or (event.object2.name  == "speedBreaker") or (event.object2.name  == "op-cycle") )) then
 			if(sound == "ON") then
 				--audio.play(collisionSound)
 			end
+
+			showInjuryBoard()
 			event.object2:removeSelf()
 			boom.isVisible = true
 			timer.performWithDelay( 800, boomVisible, 1 )
+			if(rank < 5) then
+				--rank = rank+1
+				--myText.text = "Rank "..rank
+			end
+			--timer.cancel(spawnOp)
+ 			--for i = 1, obstaclesCycle.numChildren do
+ 			--	obstaclesCycle[i]:removeSelf()
+			--end
+			scrollSpeed = 1
+			collided  =  true
+			timer.performWithDelay( 3000, wait, 1)
+
 		elseif(event.object1.name == "cycle" and event.object2.name  == "bottle") then
 			if(sound == "ON") then
 				--audio.play(collisionSound)
+			end
+			if(stamina < 3) then
+				stamina = stamina + 1
+				bottles[stamina].isVisible = true
+
 			end
 			event.object2:removeSelf()
 		elseif(event.object1.name == "cycle" and event.object2.name  == "finishLine") then
@@ -223,8 +437,24 @@ local function onCollision(event)
 				--audio.play(collisionSound)
 			end
 			event.object2:removeSelf()
-			print("You win!!!!!")
-		end	
+			composer.stars = 0
+			composer.chance = 1
+			if(rank == 1) then
+				composer.stars = 3
+			elseif(rank  == 2) then
+				composer.stars = 2
+			elseif(rank ==3)  then
+				composer.stars = 1
+			end
+			composer.removeScene('rate')
+			composer.gotoScene('rate','fade', 500)
+		elseif(event.object1.name == "op-cycle" and ((event.object2.name  == "bottle")  or (event.object2.name  == "kangaroo") or (event.object2.name  == "pothole") or (event.object2.name  == "speedBreaker") )) then
+			event.object2:removeSelf()
+		elseif(event.object1.name == "op-cycle" and event.object2.name  == "finishLine") then
+			event.object1:removeSelf()
+		end
+
+
 	end
 end
 
@@ -247,15 +477,29 @@ function scene:create( event )
 	sceneGroup:insert(bg4)
 	sceneGroup:insert(bg5)	
 	sceneGroup:insert(bg6)
+	sceneGroup:insert(boom)
+	sceneGroup:insert(bottles)
+	--sceneGroup:insert(injuryBoard)
 	sceneGroup:insert(cycle)
-
+	sceneGroup:insert(nitros)
+	sceneGroup:insert(obstaclesCycle)
+	sceneGroup:insert(goLeft)
+	sceneGroup:insert(goRight)
+	sceneGroup:insert(myText)
+	sceneGroup:insert(healthRectangeRed)
+	sceneGroup:insert(healthRectangeGreen)
 end
 
 local kangaroos = display.newGroup()
 
 
 local function randomizeObstaclesForSuburb()
-	local obstacles = {'potholes', 'speedBreaker', 'bottle'}
+	local obstacles
+	if(stamina < 3) then
+		obstacles = {'potholes', 'speedBreaker', 'bottle'}
+	else
+		obstacles = {'potholes', 'speedBreaker'}
+	end
 	local idx = math.random(#obstacles)
 	local selectedObstacle = obstacles[idx]
 	if(selectedObstacle == 'potholes') then
@@ -280,7 +524,12 @@ local function randomizeObstaclesForSuburb()
 end
 
 local function randomizeObstaclesForForest()
-	local obstacles = {'kangaroo', 'potholes', 'bottle'}
+	local obstacles
+	if(stamina < 3) then
+		obstacles = {'potholes', 'kangaroo', 'bottle'}
+	else
+		obstacles = {'potholes', 'kangaroo'}
+	end
 	local idx = math.random(#obstacles)
 	local selectedObstacle = obstacles[idx]
 	if(selectedObstacle == 'potholes') then
@@ -322,7 +571,6 @@ local function createObstacles()
 		physics.addBody(finishLine)
 		obstaclesCycle:insert(finishLine)
 	end
-
 end
 
 
@@ -336,10 +584,14 @@ function scene:show( event )
 		-- 
 		--print(cycle.x)
 		--map.positionCamera(cycle.x,cycle.y )
-		timer.performWithDelay( 3000, createObstacles, -1)
-		timer.performWithDelay( 9000, spawnOpponentPlayer, 4)
-		physics.setGravity( 0, 0 )
-
+		if(composer.chance == 1) then
+			createObs = timer.performWithDelay( 3000, createObstacles, -1)
+			spawnOp = timer.performWithDelay( 7000, spawnOpponentPlayer, 4)
+			physics.setGravity( 0, 0 )
+		elseif(composer.chance == 0) then
+			timer.resume(createObs)
+			timer.resume(spawnOp)
+		end
 		-- INSERT code here to make the scene come alive
 		-- e.g. start timers, begin animation, play audio, etc.
 		physics.start()
@@ -384,6 +636,7 @@ scene:addEventListener( "destroy", scene )
 -- Create a runtime event to move backgrounds
 Runtime:addEventListener( "enterFrame", move )
 Runtime:addEventListener("collision", onCollision)
+
 
 -----------------------------------------------------------------------------------------
 
