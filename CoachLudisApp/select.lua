@@ -31,7 +31,7 @@ local function onGame5BtnRelease()
 	composer.levelSelectLink = 'test'
 	composer.chance = 1
 	composer.prevScreen = "select"
-	composer.gotoScene( "cycleLevel2", "fade", 500 )
+	composer.gotoScene( "level02_1", "fade", 500 )
 	
 	return true	-- indicates successful touch
 end
