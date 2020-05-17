@@ -27,13 +27,17 @@ winningSound = audio.loadSound( "sound/openwoundsound/win.mp3")
 
 ----------------------------------------------------------------------------------------
 -- Load all backgrounds
+local redcross
+local youwin
 
 local function endLevel()
+	audio.stop()
+
 	composer.chance = 0
 	bandaid = nil
 	tape = nil
-	redcross = nil
-	youwin = nil
+	--redcross = nil
+	--youwin = nil
 	title = nil
 	background1 = nil
 	composer.gotoScene("cycleLevel2",'fade', 500)
@@ -51,24 +55,28 @@ function scene:create( event )
 		title:setTextColor(0)
 
 
-	local function selectBandaid ()
-		audio.stop()
-		local youwin= display.newImageRect( "images/openwound/Yes.png", 250 , 250 )
-			youwin.x =  display.contentCenterX +190
-			youwin.y = display.contentCenterY -70
+	local function selectBandaid (event)
+		if(event.phase == "began") then
+			audio.stop()
+		--youwin= display.newImageRect( "images/openwound/Yes.png", 250 , 250 )
+		--	youwin.x =  display.contentCenterX +190
+		--	youwin.y = display.contentCenterY -70
 	-- destroy
-		audio.play(winningSound,{ channel=2, loops=-1})
-		timer.performWithDelay( 4000, endLevel, 1)
+			audio.play(winningSound,{ channel=2, loops=-1})
+			timer.performWithDelay( 2000, endLevel, 1)
+		end
 	end
 
 
 	local function selecttape ()
-		audio.stop()
-		local redcross = display.newImageRect( "images/openwound/No.png", 250, 250 )
-			redcross.x =  display.contentCenterX +195
-			redcross.y = display.contentCenterY +75
-		timer.performWithDelay( 4000, endLevel, 1)
+		if(event.phase == "began") then
+			audio.stop()
+		--redcross = display.newImageRect( "images/openwound/No.png", 250, 250 )
+		--	redcross.x =  display.contentCenterX +195
+		--	redcross.y = display.contentCenterY +75
+			timer.performWithDelay( 4000, endLevel, 1)
 	-- audio.play(ADD WRONG BUZZER SOUND{ channel=2, loops=-1})
+		end
 	end
 
 ----------------------------------------------------------------------------------------
@@ -98,12 +106,12 @@ function scene:create( event )
 
 
 
-	sceneGroup:insert(bandaid)
-	sceneGroup:insert(tape)
-	sceneGroup:insert(redcross)
-	sceneGroup:insert(youwin)
+	--sceneGroup:insert(redcross)
+	--sceneGroup:insert(youwin)
 	sceneGroup:insert(title)	
 	sceneGroup:insert(background1)
+	sceneGroup:insert(bandaid)
+	sceneGroup:insert(tape)
 end
 
 function scene:show( event )
@@ -144,6 +152,11 @@ function scene:destroy( event )
 	-- e.g. remove display objects, remove touch listeners, save state, etc.
 	local sceneGroup = self.view
 end
+
+scene:addEventListener( "create", scene )
+scene:addEventListener( "show", scene )
+scene:addEventListener( "hide", scene )
+scene:addEventListener( "destroy", scene )
 
 
 return scene
