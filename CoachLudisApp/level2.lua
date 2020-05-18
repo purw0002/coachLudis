@@ -281,9 +281,11 @@ local function boardDissapear(event)
 		healthRectangeRed.isVisible = false
 	end
 
-	if(healthValue <= 20 and composer.chance == 1) then
-		composer.chance = 0 
--- By some method such as a "pause" button, show the overlay
+	if(healthValue <= 20 and composer.chance >= 1) then
+		composer.chance = composer.chance - 1
+		print("Composer dead")
+		print(composer.chance)
+		-- By some method such as a "pause" button, show the overlay
 		print("go to next scene")
 		composer.deadPlayers = deadPlayers
 		timer.cancel(createObstacles)
@@ -661,7 +663,8 @@ function scene:show( event )
 			audio.stop()
 		end
 
-		if(composer.chance ==  1) then
+		if(composer.start == true) then
+			composer.start =  false
 			physics.start()
 			createObstacles = timer.performWithDelay( 1500, createCrate, 13)
 		else

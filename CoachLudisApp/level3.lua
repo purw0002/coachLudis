@@ -136,8 +136,8 @@ function scene:create( event )
 		if ( event.phase == "began" ) then
 			gameComplete = true
 			countDown = 0
-			composer.stars = 0
-			composer.gotoScene("rate","fade",100)
+			composer.healthIncrease = 0
+			composer.gotoScene("level2","fade",100)
 		end
 		return true
 	end

@@ -1,109 +1,252 @@
------------------------------------------------------------------------------------------
--- main.lua
+------------------------------------------------------------------------------------------
+-- Open wound Level
 ---------------------------------------------------------------------------------------
 -- Initializing Composer
-
 local composer = require "composer"
+local scene = composer.newScene()
+
+-- include Corona's "physics" library
+
+local physics = require "physics"
+
+
 ----------------------------------------------------------------------------------------
 -- Screen Display H&W
-local scene = composer.newScene()
 
 local screenW = display.actualContentWidth
 local screenH = display.actualContentHeight
 ----------------------------------------------------------------------------------------
 -- Loading music tracks
 
-levelTrack = audio.loadSound( "sound/openwoundsound/play.mp3")
-winningSound = audio.loadSound( "sound/openwoundsound/win.mp3")
--- collisionSound = audio.loadSound( "sound/injury/Concussive_Hit_Guitar_Boing.mp3")
+levelTrack = audio.loadSound( "sound/openwound/play.mp3")
+winningSound = audio.loadSound( "sound/openwound/win.mp3")
+wrongbuzzerSound = audio.loadSound( "sound/openwound/wrong.mp3")
 ----------------------------------------------------------------------------------------
 -- Play background music
 
---audio.play(levelTrack, { channel=2, loops=-1})
+audio.play(levelTrack, { channel=2, loops=-1})
 ----------------------------------------------------------------------------------------
 -- Load all titles
 
-
+local timerText = display.newText( " ", 100, 100, native.systemFont, 16)
+	timerText:translate(55,-40)
+	timerText:setTextColor( 255, 255, 255 )
 
 ----------------------------------------------------------------------------------------
 -- Load all backgrounds
 
-local function endLevel()
-	composer.chance = 0
-	bandaid = nil
-	tape = nil
-	redcross = nil
-	youwin = nil
-	title = nil
-	background1 = nil
-	composer.gotoScene("cycleLevel2",'fade', 500)
+local background1 = display.newImageRect( "images/openwound/open wound page background.png", screenW, screenH )
+	background1.anchorX = 0.08
+	background1.anchorY = 0
+
+local rightAnswers = 0
+
+local title = display.newText("Click on the correct item", display.contentCenterX, 15 , native.systemFontBold, 20) 
+	title:setTextColor(0)
+
+local toothpaste
+local iodine
+local wipe
+local napkin
+local bandaid
+local tape
+local youwin1
+--------------------------------------------------------------------------------------------------------------------
+-- Create images
+
+local youwin= display.newImageRect( "images/openwound/correct.png", 150 , 150 )
+	youwin.x =  display.contentCenterX +190
+	youwin.y = display.contentCenterY -70
+youwin.isVisible = false
+
+local redcross = display.newImageRect( "images/openwound/wrong.png", 150, 150 )
+	redcross.x =  display.contentCenterX +195
+	redcross.y = display.contentCenterY +75
+
+youwin1= display.newImageRect( "images/openwound/correct.png", 150 , 150 )
+	youwin1.x =  display.contentCenterX +195
+	youwin1.y = display.contentCenterY +75
+
+youwin1.isVisible = false
+
+local redcross1 = display.newImageRect( "images/openwound/wrong.png", 150, 150 )
+	redcross1.x =  display.contentCenterX +190
+	redcross1.y = display.contentCenterY -70
+
+redcross.isVisible = false
+redcross1.isVisible = false
+
+---------------------------------------------------------------------------------------------------------------------
+-- Event Listeners
+
+local function makeWinDissapear()
+	youwin.isVisible = false
+	print(rightAnswers)
 end
 
-function scene:create( event )
-	local sceneGroup = self.view
+
+local function makeWin1Dissapear()
+	print("diassdjkd")
+	youwin1.isVisible = false
+end
+
+local function makeLooseDissapear()
+	redcross.isVisible = false
+end
 
 
-	local background1 = display.newImageRect( "images/openwound/open wound page background.png", screenW, screenH )
-		background1.anchorX = 0.08
-		background1.anchorY = 0
 
-	local title = display.newText("Click on the correct item", display.contentCenterX, 15 , native.systemFontBold, 20) 
-		title:setTextColor(0)
-
-
-	local function selectBandaid ()
-		audio.stop()
-		local youwin= display.newImageRect( "images/openwound/Yes.png", 250 , 250 )
-			youwin.x =  display.contentCenterX +190
-			youwin.y = display.contentCenterY -70
-	-- destroy
-		audio.play(winningSound,{ channel=2, loops=-1})
-		timer.performWithDelay( 4000, endLevel, 1)
-	end
+local function selectWipe (e)
+	wipe:removeSelf()
+	rightAnswers = rightAnswers + 1
+	napkin:removeSelf()
+	youwin.isVisible = true
+	audio.stop()
+	audio.play(winningSound)
+end
 
 
-	local function selecttape ()
-		audio.stop()
-		local redcross = display.newImageRect( "images/openwound/No.png", 250, 250 )
-			redcross.x =  display.contentCenterX +195
-			redcross.y = display.contentCenterY +75
-		timer.performWithDelay( 4000, endLevel, 1)
-	-- audio.play(ADD WRONG BUZZER SOUND{ channel=2, loops=-1})
-	end
+local function selectNapkin (e)
+	napkin:removeSelf()
+	wipe:removeSelf()
+	redcross.isVisible =true
+	audio.stop()
+	audio.play(wrongbuzzerSound)
+end
+
+
+local function selectIodine (e)
+	iodine:removeSelf()
+	toothpaste:removeSelf()
+	youwin1.isVisible = true
+	rightAnswers = rightAnswers + 1
+	audio.stop()
+	audio.play(winningSound)
+end
+
+	
+local function selectToothpaste (e)
+	toothpaste:removeSelf()
+	iodine:removeSelf()
+	redcross1.isVisible =true
+
+	audio.stop()
+	audio.play(wrongbuzzerSound)
+end
 
 ----------------------------------------------------------------------------------------
 -- Load all events
 
-	local bandaid = display.newImageRect( "images/openwound/band-aid.png", 100,45  )
+
+	
+local function question1()
+	wipe = display.newImageRect( "images/openwound/wipe.png", 150,120  )
+		wipe.x =  display.contentCenterX +190
+		wipe.y = display.contentCenterY -70
+	wipe:addEventListener( "touch", selectWipe )
+
+	napkin = display.newImageRect( "images/openwound/napkin.png", 300 ,140 )
+		napkin.x =  display.contentCenterX +195
+		napkin.y = display.contentCenterY +75
+	napkin:addEventListener( "touch", selectNapkin )
+end
+
+	
+local function question2()
+	audio.stop()
+	audio.play(levelTrack, { channel=2, loops=-1})
+
+	redcross.isVisible = false
+	youwin.isVisible = false
+	
+	toothpaste = display.newImageRect( "images/openwound/toothpaste.png", 200,95  )
+		toothpaste.x =  display.contentCenterX +190
+		toothpaste.y = display.contentCenterY -70
+	toothpaste:addEventListener( "touch", selectToothpaste )
+
+	iodine = display.newImageRect( "images/openwound/iodine.png", 150 ,75 )
+		iodine.x =  display.contentCenterX +195
+		iodine.y = display.contentCenterY +75
+	iodine:addEventListener( "touch", selectIodine )
+end
+
+
+
+local function selectBandaid (e)
+	bandaid:removeSelf()
+	tape:removeSelf()
+	local youwin= display.newImageRect( "images/openwound/correct.png", 150 , 150 )
+	youwin.x =  display.contentCenterX +190
+	youwin.y = display.contentCenterY -70
+	function destroyWin()
+		youwin:removeSelf()
+		composer.rightAnswers = rightAnswers
+		composer.gotoScene( "cycleLevel2", "fade", 500 )
+	end
+	timer.performWithDelay( 2000, destroyWin, 1)
+
+	rightAnswers = rightAnswers + 1
+	audio.stop()
+	audio.play(winningSound)
+	
+end
+
+
+
+local function selecttape (e)
+	tape:removeSelf()
+	bandaid:removeSelf()
+	redcross.isVisible =true
+	local redcross = display.newImageRect( "images/openwound/wrong.png", 150, 150 )
+	redcross.x =  display.contentCenterX +195
+	redcross.y = display.contentCenterY +75
+	function destroyLoose()
+		redcross:removeSelf()
+		composer.rightAnswers = rightAnswers
+		composer.gotoScene( "cycleLevel2", "fade", 500 )
+	end
+	timer.performWithDelay( 2000, destroyLoose, 1)
+	audio.stop()
+	audio.play(wrongbuzzerSound)
+end
+
+
+local function question3()
+	audio.stop()
+	audio.play(levelTrack, { channel=2, loops=-1})
+	redcross.isVisible = false
+	youwin.isVisible = false
+	redcross1.isVisible = false
+	youwin1.isVisible = false
+
+	bandaid = display.newImageRect( "images/openwound/band-aid.png", 100,45  )
 		bandaid.x =  display.contentCenterX +190
 		bandaid.y = display.contentCenterY -70
 	bandaid:addEventListener( "touch", selectBandaid )
-
-
-
-
-	local tape = display.newImageRect( "images/openwound/tape icon.png", 100 , 45 )
+	
+	tape = display.newImageRect( "images/openwound/tape.png", 100 , 45 )
 		tape.x =  display.contentCenterX +195
 		tape.y = display.contentCenterY +75
 	tape:addEventListener( "touch", selecttape )
+end
 
+question1()
 
-----------------------------------------------------------------------------------------
--- Set timmer
+timer.performWithDelay( 10000, question2, 1)
 
-	local timerText = display.newText( " ", 100, 100, native.systemFont, 16)
-		timerText:translate(55,-40)
-		timerText:setTextColor( 255, 255, 255 )
+timer.performWithDelay( 20000, question3, 1)
 
-
-
-
-	sceneGroup:insert(bandaid)
-	sceneGroup:insert(tape)
-	sceneGroup:insert(redcross)
-	sceneGroup:insert(youwin)
-	sceneGroup:insert(title)	
+-------------------------------------------------------------------------------------------------------------
+function scene:create( event )
+	local sceneGroup = self.view
 	sceneGroup:insert(background1)
+	sceneGroup:insert(youwin)
+	sceneGroup:insert(youwin1)	
+	sceneGroup:insert(redcross)
+	sceneGroup:insert(redcross1)
+	sceneGroup:insert(title)
+
+
 end
 
 function scene:show( event )
@@ -115,25 +258,22 @@ function scene:show( event )
 	elseif phase == "did" then
 		-- Called when the scene is now on screen
 		-- 
+
 		-- INSERT code here to make the scene come alive
 		-- e.g. start timers, begin animation, play audio, etc.
+		physics.start()
 	end
 end
 
 function scene:hide( event )
-	local sceneGroup = self.view
-	
-	local phase = event.phase
-	
-	if event.phase == "will" then
-		-- Called when the scene is on screen and is about to move off screen
-		--
-		-- INSERT code here to pause the scene
-		-- e.g. stop timers, stop animation, unload sounds, etc.)
-	elseif phase == "did" then
-		-- Called when the scene is now off screen
-	end	
-	
+    local sceneGroup = self.view
+    local phase = event.phase
+ 
+    if ( phase == "will" ) then
+        -- Call the "resumeGame()" function in the parent scene
+        --composer.chance = 0
+    end
+
 end
 
 function scene:destroy( event )
@@ -143,7 +283,27 @@ function scene:destroy( event )
 	-- INSERT code here to cleanup the scene
 	-- e.g. remove display objects, remove touch listeners, save state, etc.
 	local sceneGroup = self.view
+	
+	package.loaded[physics] = nil
+	physics = nil
 end
+
+---------------------------------------------------------------------------------
+
+---------------------------------------------------------------------------------
+
+-- Listener setup
+scene:addEventListener( "create", scene )
+scene:addEventListener( "show", scene )
+scene:addEventListener( "hide", scene )
+scene:addEventListener( "destroy", scene )
+
 
 
 return scene
+----------------------------------------------------------------------------------------
+-- Set timmer
+
+-- local timerText = display.newText( " ", 100, 100, native.systemFont, 16)
+--  	timerText:translate(55,-40)
+-- 	timerText:setTextColor( 255, 255, 255 )

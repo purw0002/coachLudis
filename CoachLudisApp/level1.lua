@@ -20,8 +20,75 @@ local screenW, screenH, halfW = display.actualContentWidth, display.actualConten
 
 function scene:create( event )
 
-	healthValue = 3
+	
 	local sceneGroup = self.view
+
+	local sheetDataBlueGuyRunning = {
+		width= 614,
+		height= 564,
+		numFrames= 15,
+		sheetContentWidth= 9210,
+		sheetContentHeight= 564
+	}
+
+	local sheetDataGirlMoving = {
+		width= 416,
+		height= 454,
+		numFrames= 20,
+		sheetContentWidth= 8320,
+		sheetContentHeight= 454	
+	}
+
+	local sheetTapData = {
+		width= 300,
+		height= 300,
+		numFrames= 2,
+		sheetContentWidth= 600,
+		sheetContentHeight= 300}
+	
+	local timerText = display.newText( "", 100, 100, native.systemFont, 16)
+	timerText:translate(150, -30)
+	timerText:setTextColor( 255, 255, 255 )
+
+	
+
+
+	local countDown = 10
+	pauseTime = false;
+	resumeTime = true;
+	gameComplete = false;
+	
+	local function gameOver()
+		timerText.text = "Time:"..countDown
+		countDown = countDown - 1
+		if (countDown == 0) then
+			gameComplete = true;
+			composer.chance = 1
+			composer.start = true
+			composer.gotoScene("level2","fade",400)
+		end
+
+	end
+
+	countDownTimer = timer.performWithDelay( 1000, gameOver, 11 )
+
+	
+
+
+	-- Health bar background
+	physics.start()
+
+	local healthValue = 0
+
+	healthRectangeWhite = display.newRect( 130, 20, 500, 20 ) 
+	healthRectangeWhite:setFillColor(208, 208, 57, 1)
+	healthRectangeWhite.x = 300
+	
+
+	-- health bar
+	healthRectangeRed = display.newRect( 130, 20, 0, 20 ) 
+	healthRectangeRed:setFillColor(1, 0, 0, 1)
+	healthRectangeRed.x = 300
 
 	-- We need physics started to add bodies, but we don't want the simulaton
 	-- running until the scene is on the screen.
@@ -31,137 +98,103 @@ function scene:create( event )
 	-- 
 	-- INSERT code here to initialize the scene
 	-- e.g. add display objects to 'sceneGroup', add touch listeners, etc.
-	local healths = display.newGroup()
-	local function onCollision(event)
-
-		if(event.phase == "began") then
-			if(event.object1.name == "player" or event.object2.name == "player") then
-				event.object2:removeSelf()
-				if (healthValue == 1) then
-					healths[1].alpha = 0
-					physics.pause()
-				elseif (healthValue == 3) then
-					healths[3].alpha = 0
-				elseif (healthValue == 2) then
-					healths[2].alpha = 0
-				end
-				healthValue = healthValue - 1
-			end
-		end
-	end
+	
 	-- create a grey rectangle as the backdrop
 	-- the physical screen will likely be a different shape than our defined content area
 	-- since we are going to position the background from it's top, left corner, draw the
 	-- background at the real top, left corner.
-	local background = display.newRect( display.screenOriginX, display.screenOriginY, screenW, screenH )
+	background = display.newImageRect( "warm-up level background.png", screenW, screenH )
 	background.anchorX = 0 
 	background.anchorY = 0
 	background:setFillColor( .5 )
-	dist = 5
-	for i= 1,3,1 
-	do 
-		health = display.newImageRect( "crate.png", 20, 20) 
-		health.x, health.y = dist,20
-		health.name  = i
-		dist = dist + 30
-		healths:insert(health)
+
+	if (composer.playerGender == "boy") then
+		blueSheet = graphics.newImageSheet("runBlueGuy.png",sheetDataBlueGuyRunning )
+		blueSequenceData = {
+			{ name = "run", start = 1, count= 15,time=800},
+		}
+		player = display.newSprite(blueSheet, blueSequenceData)
+		player.x, player.y = 80,160
+		player.name="player"
+		player:setSequence("run")
+		player:scale(0.12,0.12)
+		player:play()
+		
+	else
+		blueSheet = graphics.newImageSheet("runGirlsprite.png",sheetDataGirlMoving )
+		blueSequenceData = {
+			{ name = "run", start = 1, count= 15,time=800},
+		}
+		player = display.newSprite(blueSheet, blueSequenceData)
+		player.x, player.y = 80,160
+		player.name="player"
+		player:setSequence("run")
+		player:scale(0.12,0.12)
+		player:play()
+		
 	end
 
 
-	local crates = display.newGroup()
 
-	local function randomizeLane()
+	tapSheet = graphics.newImageSheet("spritesheet.png",sheetTapData )
+	tapSheetData = {
+			{ name = "tap", start = 1, count= 2, time=800}
+	}
 
-		local lanes = {1, 2, 3, 4, 5 }
-		local idx = math.random(#lanes)
-		local selectedLane = lanes[idx]
-		if(selectedLane == 1) then
-			return 100
-		elseif (selectedLane == 2) then
-			return 160
-		elseif (selectedLane == 3) then
-			return 220
-		elseif (selectedLane == 4) then
-			return 280
-		elseif (selectedLane == 5) then
-			return 340
-		end
-	end
-	initialObstacle = -500
-	crate_id = 0
-	local function createCrate()
-    	crate = display.newImageRect( "crate.png", 50, 50 )
-    	crate.x = randomizeLane()
-    	crate_id = crate_id + 1
-    	crate.name = "crate" .. tostring(crate_id)
-    	crate.y = initialObstacle
-		physics.addBody( crate )
-    	crate.gravityScale = 0.25
+	
+	
+	local tap_button1 = display.newSprite(tapSheet, tapSheetData)
+	tap_button1.x, tap_button1.y = 50,270
+	tap_button1:setSequence("tap")
+	tap_button1:scale(0.3,0.3)
+	tap_button1:play()
 
-    	crates:insert(crate)
-    end
-
-	timer.performWithDelay( 1000, createCrate,13 )
+	
 
 
-	local player = display.newImageRect( "soccer.png", 50, 50)
+	local function tapbutton (event)
+		print("within tap")
+		if(event.phase == "began") then
+			player.x = player.x + 10
+			healthValue = healthValue + 10.8	
+			healthRectangeRed.width =  healthValue
+			healthRectangeRed.x = 300
+			healthRectangeRed.x = healthRectangeRed.x - 250 + (healthValue/2)
 
-	player.name = "player"
-	player.x, player.y = 160,220
-	physics.addBody( player, "static" )
 
-
-
-	local function moveLeft(event)
-		if (event.phase == "ended") then
-			if(player.x > 100) then
-				player.x = player.x - 60
+			if (player.x == 560) then
+				composer.start = true
+				composer.chance = 2
+				timer.cancel(countDownTimer)
+				composer.gotoScene("level2","fade",400)
 			end
 		end
-		return true
-	end
+	end 
 
-	local function moveRight( event )
-		if (event.phase == "ended") then
-			if(player.x < 340) then
-				player.x = player.x + 60
-			end
-		end
-		return true
-	end
-
-	local leftArrow = display.newImageRect( "Icon-hdpi.png", 50, 50 )
-	leftArrow.x, leftArrow.y = 0,110
-	leftArrow:addEventListener( "touch", moveLeft )
-
-	local rightArrow = display.newImageRect( "Icon-hdpi.png", 50, 50 )
-	rightArrow.x, rightArrow.y = 480,110
-	rightArrow:addEventListener( "touch", moveRight )
+	tap_button1:addEventListener( "touch", tapbutton )
 
 
+	
+	
+
+	
+
+	
 
 	-- make a crate (off-screen), position it, and rotate slightly
 	-- create a grass object and add physics (with custom shape)
-	local grass = display.newImageRect( "grass.png", screenW, 82 )
-	grass.anchorX = 0
-	grass.anchorY = 1
-	--  draw the grass at the very bottom of the screen
-	grass.x, grass.y = display.screenOriginX, display.actualContentHeight + display.screenOriginY
+	
 	
 	-- define a shape that's slightly shorter than image bounds (set draw mode to "hybrid" or "debug" to see)
-	local grassShape = { -halfW,-34, halfW,-34, halfW,34, -halfW,34 }
 	-- all display objects must be inserted into group
 
 
 	sceneGroup:insert( background )
-	sceneGroup:insert( grass)
-	sceneGroup:insert( crates )
 	sceneGroup:insert(player)
-	sceneGroup:insert(leftArrow)
-	sceneGroup:insert(rightArrow)
-	sceneGroup:insert(healths)
-
-	Runtime:addEventListener("collision", onCollision)
+	sceneGroup:insert(tap_button1)
+	sceneGroup:insert(healthRectangeWhite)
+	sceneGroup:insert(healthRectangeRed)
+	sceneGroup:insert(timerText)
 end
 
 
