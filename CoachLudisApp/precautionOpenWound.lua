@@ -46,6 +46,10 @@ local title = display.newText("Click on the correct item", display.contentCenter
 
 local toothpaste
 local iodine
+local wipe
+local bandaid
+local napkin
+local tape
 --------------------------------------------------------------------------------------------------------------------
 -- Create images
 
@@ -251,7 +255,7 @@ scene:addEventListener( "destroy", scene )
 
 
 
-
+return scene
 ----------------------------------------------------------------------------------------
 -- Set timmer
 

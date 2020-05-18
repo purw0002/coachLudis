@@ -192,3 +192,4 @@ scene:addEventListener( "destroy", scene )
 --  	timerText:translate(55,-40)
 -- 	timerText:setTextColor( 255, 255, 255 )
 
+return scene
