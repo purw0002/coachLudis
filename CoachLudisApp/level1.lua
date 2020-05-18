@@ -32,11 +32,11 @@ function scene:create( event )
 	}
 
 	local sheetDataGirlMoving = {
-		width= 614,
-		height= 564,
-		numFrames= 15,
-		sheetContentWidth= 9210,
-		sheetContentHeight= 564
+		width= 416,
+		height= 454,
+		numFrames= 20,
+		sheetContentWidth= 8320,
+		sheetContentHeight= 454	
 	}
 
 	local sheetTapData = {
@@ -122,8 +122,11 @@ function scene:create( event )
 		
 	else
 		blueSheet = graphics.newImageSheet("runGirlsprite.png",sheetDataGirlMoving )
+		blueSequenceData = {
+			{ name = "run", start = 1, count= 15,time=800},
+		}
 		player = display.newSprite(blueSheet, blueSequenceData)
-		player.x, player.y = 60,160
+		player.x, player.y = 80,160
 		player.name="player"
 		player:setSequence("run")
 		player:scale(0.12,0.12)
