@@ -41,6 +41,7 @@ local hospital
 local school
 local parents
 local friends
+local rightAnswers = 0
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Create images
 
@@ -89,7 +90,7 @@ end
 local function selectHospital ()
 	hospital:removeSelf()
 	rightAnswers = rightAnswers + 1
-	nineOne:removeSelf()
+	school:removeSelf()
 	youwin.isVisible = true
 	audio.stop()
 	audio.play(winningSound)
@@ -97,7 +98,7 @@ end
 
 
 local function selectSchool ()
-	nineOne:removeSelf()
+	school:removeSelf()
 	hospital:removeSelf()
 	redcross.isVisible =true
 	audio.stop()
