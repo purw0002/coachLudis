@@ -110,7 +110,7 @@ end
 local function selectCorrectNumber ()
 	correctNumber:removeSelf()
 	rightAnswers = rightAnswers + 1
-	napkin:removeSelf()
+	nineOne:removeSelf()
 	youwin.isVisible = true
 	audio.stop()
 	audio.play(winningSound)
@@ -118,8 +118,8 @@ end
 
 
 local function selectNine ()
-	wipe:removeSelf()
 	correctNumber:removeSelf()
+	nineOne:removeSelf()
 	redcross.isVisible =true
 	audio.stop()
 	audio.play(wrongbuzzerSound)
