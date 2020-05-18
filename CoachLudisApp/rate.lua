@@ -28,7 +28,10 @@ function scene:create( event )
 
 	if (composer.game == "soccer") then
 		background = display.newImageRect( "images/background/app background/appBack1.png", display.actualContentWidth, display.actualContentHeight )
+	else
+		background = display.newImageRect( "images/background/app background/appBack2.png", display.actualContentWidth, display.actualContentHeight )
 	end
+
 	background.anchorX = 0
 	background.anchorY = 0
 
@@ -63,7 +66,6 @@ function scene:create( event )
 
 	function showStars(num)
 		if (stars > 0) then
-			print("heyyyyy")
 			starsGp[num].isVisible = true
 			stars = stars - 1
 			timer.performWithDelay( 1000, showStars(num+1), 1)
@@ -73,33 +75,36 @@ function scene:create( event )
 	
 
 	local function goToSportSelect()
-		print("sport select")
 		composer.prevScreen = "selectCharacter"
 		composer.gotoScene( "select", "fade", 500 )
 	end
 
 	local function replayLevel()
 		composer.chance =  1
-		composer.removeScene( composer.levelPlaying)
-		composer.gotoScene( composer.levelPlaying, "fade", 500 )
+		if composer.game == "soccer" then
+			composer.removeScene( "level2")
+			composer.gotoScene( "level2", "fade", 500 )
+		else 
+			composer.removeScene( "cycleLevel2")
+			composer.gotoScene( "cycleLevel2", "fade", 500 )
+		end
 	end
 
 	local function goToLevelSelect()
-
-		print(composer.levelSelectLink)
 		composer.prevScreen = "select"
 		composer.gotoScene( composer.levelSelectLink, "fade", 500 )
 	end
 
 	local function goNext()
 		composer.prevScreen = "selectCharacter"
-		composer.levelPlaying = "level3"
-		if composer.nextLevel == "level3" then
-			composer.nextLevel = "none"
-			composer.removeScene( "level3")
-			composer.gotoScene( "level3", "fade", 500 )
-		else
-			composer.gotoScene( composer.levelSelectLink, "fade", 500 )
+		composer.chance = 1
+		if composer.game == "soccer" then
+			composer.game = "cycle"
+			composer.removeScene( "cycleLevel2")
+			composer.gotoScene( "cycleLevel2", "fade", 500 )
+		else 
+			composer.removeScene( "select")
+			composer.gotoScene( "select", "fade", 500 )
 		end
 	end
 
@@ -192,14 +197,14 @@ function scene:show( event )
 		starsGp[3].isVisible = false
 		timer.performWithDelay( 1000, showStars(1), 1)
 		
-		if(composer.levelPlaying == "level2") then
-			factPart = display.newImageRect( "images/facts/level1Facts.PNG", 180, 100 )
-		elseif(composer.levelPlaying == "level3") then
-			factPart = display.newImageRect( "images/facts/level2Facts.PNG", 180, 100 )
-		end
-		factPart.x = display.contentCenterX +30
-		factPart.y = display.contentCenterY +35
-		sceneGroup:insert(factPart)
+		--if(composer.levelPlaying == "level2") then
+		--	factPart = display.newImageRect( "images/facts/level1Facts.PNG", 180, 100 )
+		--elseif(composer.levelPlaying == "level3") then
+		--	factPart = display.newImageRect( "images/facts/level2Facts.PNG", 180, 100 )
+		--end
+		--factPart.x = display.contentCenterX +30
+		--factPart.y = display.contentCenterY +35
+		--sceneGroup:insert(factPart)
 		if (sound == "ON") then
 			audio.stop()
 			audio.play(musicTrack, { channel = 1, loops=-1 })

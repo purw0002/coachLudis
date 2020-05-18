@@ -1,4 +1,4 @@
------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------
 -- Open wound Level
 ---------------------------------------------------------------------------------------
 -- Initializing Composer
@@ -18,9 +18,9 @@ local screenH = display.actualContentHeight
 ----------------------------------------------------------------------------------------
 -- Loading music tracks
 
-levelTrack = audio.loadSound( "sound/openwound/play.mp3")
-winningSound = audio.loadSound( "sound/openwound/win.mp3")
-wrongbuzzerSound = audio.loadSound( "sound/openwound/wrong.mp3")
+levelTrack = audio.loadSound( "sound/play.mp3")
+winningSound = audio.loadSound( "sound/win.mp3")
+wrongbuzzerSound = audio.loadSound( "sound/wrong.mp3")
 ----------------------------------------------------------------------------------------
 -- Play background music
 
@@ -35,7 +35,7 @@ local timerText = display.newText( " ", 100, 100, native.systemFont, 16)
 ----------------------------------------------------------------------------------------
 -- Load all backgrounds
 
-local background1 = display.newImageRect( "images/openwound/open wound page background.png", screenW, screenH )
+local background1 = display.newImageRect( "openwound/open wound page background.png", screenW, screenH )
 	background1.anchorX = 0.08
 	background1.anchorY = 0
 
@@ -49,16 +49,16 @@ local iodine
 --------------------------------------------------------------------------------------------------------------------
 -- Create images
 
-local youwin= display.newImageRect( "images/openwound/correct.png", 150 , 150 )
+local youwin= display.newImageRect( "openwound/correct.png", 150 , 150 )
 	youwin.x =  display.contentCenterX +190
 	youwin.y = display.contentCenterY -70
 youwin.isVisible = false
 
-local redcross = display.newImageRect( "images/openwound/wrong.png", 150, 150 )
+local redcross = display.newImageRect( "openwound/wrong.png", 150, 150 )
 	redcross.x =  display.contentCenterX +195
 	redcross.y = display.contentCenterY +75
 
-local youwin1= display.newImageRect( "images/openwound/correct.png", 150 , 150 )
+local youwin1= display.newImageRect( "openwound/correct.png", 150 , 150 )
 	youwin1.x =  display.contentCenterX +195
 	youwin1.y = display.contentCenterY +75
 
@@ -121,12 +121,12 @@ end
 
 	
 local function question1()
-	wipe = display.newImageRect( "images/openwound/wipe.png", 150,120  )
+	wipe = display.newImageRect( "openwound/wipe.png", 150,120  )
 		wipe.x =  display.contentCenterX +190
 		wipe.y = display.contentCenterY -70
 	wipe:addEventListener( "touch", selectWipe )
 
-	napkin = display.newImageRect( "images/openwound/napkin.png", 300 ,140 )
+	napkin = display.newImageRect( "openwound/napkin.png", 300 ,140 )
 		napkin.x =  display.contentCenterX +195
 		napkin.y = display.contentCenterY +75
 	napkin:addEventListener( "touch", selectNapkin )
@@ -143,12 +143,12 @@ local function question2()
 	redcross.isVisible = false
 	youwin.isVisible = false
 	
-	toothpaste = display.newImageRect( "images/openwound/toothpaste.png", 200,95  )
+	toothpaste = display.newImageRect( "openwound/toothpaste.png", 200,95  )
 		toothpaste.x =  display.contentCenterX +190
 		toothpaste.y = display.contentCenterY -70
 	toothpaste:addEventListener( "touch", selectToothpaste )
 
-	iodine = display.newImageRect( "images/openwound/iodine.png", 150 ,75 )
+	iodine = display.newImageRect( "openwound/iodine.png", 150 ,75 )
 		iodine.x =  display.contentCenterX +195
 		iodine.y = display.contentCenterY +75
 	iodine:addEventListener( "touch", selectIodine )
@@ -164,12 +164,12 @@ local function question3()
 	redcross.isVisible = false
 	youwin.isVisible = false
 	
-	local bandaid = display.newImageRect( "images/openwound/band-aid.png", 100,45  )
+	local bandaid = display.newImageRect( "openwound/band-aid.png", 100,45  )
 		bandaid.x =  display.contentCenterX +190
 		bandaid.y = display.contentCenterY -70
 	bandaid:addEventListener( "touch", selectBandaid )
 	
-	local tape = display.newImageRect( "images/openwound/tape.png", 100 , 45 )
+	local tape = display.newImageRect( "openwound/tape.png", 100 , 45 )
 		tape.x =  display.contentCenterX +195
 		tape.y = display.contentCenterY +75
 	tape:addEventListener( "touch", selecttape )

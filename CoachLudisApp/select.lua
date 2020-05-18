@@ -19,7 +19,7 @@ local function onGame4BtnRelease()
 	composer.game = 'soccer'
 	composer.levelSelectLink = 'levelSelect'
 	composer.prevScreen = "select"
-	composer.gotoScene( "levelSelect", "fade", 500 )
+	composer.gotoScene( "level1", "fade", 500 )
 	
 	return true	-- indicates successful touch
 end
@@ -29,6 +29,7 @@ local function onGame5BtnRelease()
 	-- go to level1.lua scene
 	composer.game = 'cycle'
 	composer.levelSelectLink = 'test'
+	composer.chance = 1
 	composer.prevScreen = "select"
 	composer.gotoScene( "cycleLevel2", "fade", 500 )
 	
