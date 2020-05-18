@@ -53,7 +53,12 @@ function scene:create( event )
 				ice_pack:removeSelf()
 				arm:removeSelf()
 				composer.healthIncrease = 0
-				composer.gotoScene("level2","fade","100")
+				composer.success = false
+				if composer.game == 'soccer' then
+					composer.gotoScene("level2","fade",100)
+				else
+					composer.gotoScene("cycleLevel2","fade",100)
+				end
 			else
 
 				timerText.text = "Time:"..countDown
@@ -137,7 +142,13 @@ function scene:create( event )
 			gameComplete = true
 			countDown = 0
 			composer.healthIncrease = 0
-			composer.gotoScene("level2","fade",100)
+			composer.chance = 0
+			composer.success = false
+			if composer.game == 'soccer' then
+				composer.gotoScene("level2","fade",100)
+			else
+				composer.gotoScene("cycleLevel2","fade",100)
+			end
 		end
 		return true
 	end
@@ -194,7 +205,14 @@ function scene:create( event )
 						end
 						gameComplete = true
 						timer.cancel(countDownTimer)
-						composer.gotoScene( "level2", "fade", 400 )
+
+						if composer.game == 'soccer' then
+							composer.gotoScene("level2","fade",100)
+						else
+							composer.success =  true
+							composer.gotoScene("cycleLevel2","fade",100)
+						end
+						--composer.gotoScene( "level2", "fade", 400 )
 						--composer.gotoScene("level2","fade",100)
 						break
 					end	
