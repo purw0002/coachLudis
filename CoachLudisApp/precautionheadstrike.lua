@@ -191,8 +191,7 @@ end
 local function question2()
 	audio.stop()
 	audio.play(levelTrack, { channel=2, loops=-1})
-	hospital:removeSelf()
-	school:removeSelf()
+	
 	redcross.isVisible = false
 	youwin.isVisible = false
 	redcross1.isVisible = false
@@ -214,8 +213,6 @@ local function question3()
 	audio.stop()
 	audio.play(levelTrack, { channel=2, loops=-1})
 
-	correctNumber:removeSelf()
-	nineOne:removeSelf()
 		
 	redcross.isVisible = false
 	youwin.isVisible = false
