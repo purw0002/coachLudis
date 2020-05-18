@@ -132,7 +132,7 @@ local function selectParents ()
 	parents:removeSelf()
 	friends:removeSelf()
 	youwin.isVisible = true
-	local youwin= display.newImageRect( "images/openwound/correct.png", 150 , 150 )
+	local youwin= display.newImageRect( "images/headstrike/correct.png", 150 , 150 )
 	youwin.x =  display.contentCenterX +190
 	youwin.y = display.contentCenterY -70
 	function destroyWin()
@@ -155,7 +155,7 @@ local function selectFriends ()
 	friends:removeSelf()
 	parents:removeSelf()
 	redcross.isVisible =true
-	local redcross = display.newImageRect( "images/openwound/wrong.png", 150, 150 )
+	local redcross = display.newImageRect( "images/headstrike/wrong.png", 150, 150 )
 	redcross.x =  display.contentCenterX +195
 	redcross.y = display.contentCenterY +75
 	function destroyLoose()
