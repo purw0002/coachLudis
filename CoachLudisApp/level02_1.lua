@@ -14,13 +14,6 @@ local startCycling = display.newImageRect( "images/cyclinglevel1/let's go button
   startCycling.x = 498
   startCycling.y = 150
 
-local function startCyclingTapListener()
-   startCycling.isVisible = false
-   composer.removeScene( "level02_1" )
-   composer.gotoScene( "level02_2", "fade", 500 )
-   return true
-end
-
 function scene:create( event )
   local sceneGroup = self.view
 
@@ -31,7 +24,7 @@ function scene:create( event )
   local instruction = display.newText("What do you need to check before cycling? Click items above~", display.contentCenterX+45, 125, native.systemFont, 12)
   instruction:setFillColor(black)	
 
-  local ending = display.newText("Are you ready for cycling? Click the button on right side now!", display.contentCenterX+45, 145, native.systemFont, 12)
+  local ending = display.newText("Are you ready for cycling?", display.contentCenterX+45, 145, native.systemFont, 12)
   ending:setFillColor(black)
   ending.isVisible = false
 
@@ -78,6 +71,18 @@ function scene:create( event )
   wheelPopup.x = 485
   wheelPopup.y = 205
   wheelPopup.isVisible = false
+
+  local function startCyclingTapListener()
+     if (helmet.alpha < 1 ) then
+        startCycling.isVisible = false
+        composer.removeScene( "level02_1" )
+        composer.gotoScene( "level02_3", "fade", 500 )
+     else
+        startCycling.isVisible = false
+        composer.removeScene( "level02_1" )
+        composer.gotoScene( "level02_2", "fade", 500 )
+     end
+  end
 
   local function helmetTapListener()
 
@@ -186,6 +191,22 @@ function scene:hide( event )
     end
 end
 
+function scene:show( event )
+ 
+    local sceneGroup = self.view
+    local phase = event.phase
+ 
+    if ( phase == "will" ) then
+        -- Code here runs when the scene is still off screen (but is about to come on screen)
+        
+
+    elseif ( phase == "did" ) then
+        -- Code here runs when the scene is entirely on screen
+        --backLevel1.isVisible = true
+
+    end
+end
+
 function scene:destroy( event )
   local sceneGroup = self.view
   
@@ -202,6 +223,7 @@ end
 scene:addEventListener( "create", scene )
 scene:addEventListener( "destroy", scene )
 scene:addEventListener( "hide", scene )
+scene:addEventListener( "show", scene)
 
 return scene
 --local function chooseItem(event)

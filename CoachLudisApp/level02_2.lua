@@ -1,36 +1,50 @@
 local composer = require( "composer" )
 local scene = composer.newScene()
 
-local startCycling = display.newImageRect( "images/cyclinglevel1/play icon.png", 100, 100)
-   startCycling.x = 300
-   startCycling.y = 200
-
-local backLevel1 = display.newImageRect("images/cyclinglevel1/back button.png", 75, 75)
-   backLevel1.x = 350
-   backLevel1.y = 200
-
-local function backLevelTapListener()
-   composer.gotoScene( "level02_1", "fade", 500 )
-   return true
-end
-
-backLevel1:addEventListener("tap", backLevelTapListener)
+local startCycling = display.newImageRect( "images/cyclinglevel1/play icon.png", 120, 120)
+   startCycling.x = display.contentCenterX+45
+   startCycling.y = 270
 
 local function startCyclingTapListener()
+    composer.removeScene( "level02_2" )
     composer.gotoScene( "cycleLevel2", "fade", 500 )
     return true
 end
 
-    local caliperContent =
-  {
-    text = "Caliper has been checked! Always remember use brake reduce your speed!",
-    x = 73,
-    y = 60,
+function scene:create( event )
+   local sceneGroup = self.view
+	 display.setStatusBar(display.HiddenStatusBar)
+
+   local background = display.newImageRect(sceneGroup, "images/cyclinglevel1/Bicycle preparation game page 2.png", 570, 320)
+       background.x = display.contentCenterX+45
+       background.y = display.contentCenterY
+
+   local caliper = display.newImageRect("images/cyclinglevel1/caliper.png", 80, 80)
+   caliper.x = 100
+   caliper.y = 73
+
+   local helmet = display.newImageRect("images/cyclinglevel1/helmet.png", 80, 80)
+   helmet.x = 225
+   helmet.y = 73
+
+   local taillight = display.newImageRect("images/cyclinglevel1/taillight.png", 80, 80)
+   taillight.x = 350
+   taillight.y = 72
+
+   local wheel = display.newImageRect("images/cyclinglevel1/wheel.png", 80, 80)
+   wheel.x = 470
+   wheel.y = 75
+
+   local caliperContent =
+   {
+    text = "Always remember use brake reduce your speed!",
+    x = 103,
+    y = 170,
     width = 100,
     font = native.systemFont,
-    fontSize = 13,
+    fontSize = 12,
     align = "left"
-  }
+   }
 
   local caliperMessage = display.newText(caliperContent)
   caliperMessage:setFillColor(black)
@@ -38,12 +52,12 @@ end
 
   local helmetContent = 
   {
-    text = "Helmet has been checked! Always remember wear your helmet before cycling, it can prevent head injury!",
-    x = 215,
-    y = 60,
+    text = "Always remember wear your helmet before cycling, it can prevent head injury!",
+    x = 228,
+    y = 170,
     width = 100,
     font = native.systemFont,
-    fontSize = 11,
+    fontSize = 12,
     align = "left"
   }
 
@@ -53,9 +67,9 @@ end
 
   local taillightContent = 
   {
-    text = "Taillight has been checked! Taillight can reminder vehicles behind you to prevent crushing!",
-    x = 360,
-    y = 60,
+    text = "Taillight can reminder vehicles behind you to prevent crushing!",
+    x = 353,
+    y = 171,
     width = 100,
     font = native.systemFont,
     fontSize = 12,
@@ -68,35 +82,33 @@ end
 
   local wheelContent = 
   {
-   text =   "Wheels have been checked! Make sure your tyres are not worn and have engough pressure to prevent bike out of control!",
-   x = 498,
-   y = 60,
+   text = "Make sure your tyres are not worn and have engough pressure to prevent bike out of control!",
+   x = 473,
+   y = 170,
    width = 100,
    font = native.systemFont,
-   fontSize = 11,
+   fontSize = 11.5,
    align = "left"
- }
+  }
 
- local wheelMessage = display.newText(wheelContent)
- wheelMessage:setFillColor(black) 
- wheelMessage.isVisible = true
-
-function scene:create( event )
-	local sceneGroup = self.view
-	display.setStatusBar(display.HiddenStatusBar)
-
-    local background = display.newImageRect(sceneGroup, "images/cyclinglevel1/level complete page background.png", 570, 320)
-       background.x = display.contentCenterX+45
-       background.y = display.contentCenterY
-
+  local wheelMessage = display.newText(wheelContent)
+  wheelMessage:setFillColor(black) 
+  wheelMessage.isVisible = true
+    
+  startCycling:addEventListener("tap", startCyclingTapListener)
 
     
-    
-    startCycling:addEventListener("tap", startCyclingTapListener)
+  sceneGroup:insert(background)
+  sceneGroup:insert(startCycling)
+  sceneGroup:insert(caliper)
+  sceneGroup:insert(helmet)
+  sceneGroup:insert(taillight)
+  sceneGroup:insert(wheel)
+  sceneGroup:insert(caliperMessage)
+  sceneGroup:insert(helmetMessage)
+  sceneGroup:insert(taillightMessage)
+  sceneGroup:insert(wheelMessage)
 
-    
-    sceneGroup:insert(background)
-    sceneGroup:insert(startCycling)
 end
 
 function scene:show( event )
@@ -106,8 +118,9 @@ function scene:show( event )
  
     if ( phase == "will" ) then
         -- Code here runs when the scene is still off screen (but is about to come on screen)
-        backLevel1.isVisible = true
         startCycling.isVisible = true
+        
+
     elseif ( phase == "did" ) then
         -- Code here runs when the scene is entirely on screen
         --backLevel1.isVisible = true
@@ -121,11 +134,7 @@ function scene:hide( event )
  
     if ( phase == "will" ) then
         -- Code here runs when the scene is on screen (but is about to go off screen)
-         caliperMessage.isVisible = false
-         wheelMessage.isVisible = false
-         helmetMessage.isVisible = false
-         taillightMessage.isVisible = false
-         backLevel1.isVisible = false
+
     elseif ( phase == "did" ) then
         -- Code here runs immediately after the scene goes entirely off screen
         
