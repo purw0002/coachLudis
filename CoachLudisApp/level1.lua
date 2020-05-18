@@ -61,10 +61,10 @@ function scene:create( event )
 	local function gameOver()
 		timerText.text = "Time:"..countDown
 		countDown = countDown - 1
-		print(countDown)
 		if (countDown == 0) then
 			gameComplete = true;
 			composer.chance = 1
+			composer.start = true
 			composer.gotoScene("level2","fade",400)
 		end
 
@@ -163,11 +163,11 @@ function scene:create( event )
 
 
 			if (player.x == 560) then
-				composer.chance = 1
+				composer.start = true
+				composer.chance = 2
 				timer.cancel(countDownTimer)
 				composer.gotoScene("level2","fade",400)
 			end
-		print("Tap done")
 		end
 	end 
 

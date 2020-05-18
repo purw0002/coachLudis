@@ -81,6 +81,7 @@ function scene:create( event )
 
 	local function replayLevel()
 		composer.chance =  1
+		composer.start = true
 		if composer.game == "soccer" then
 			composer.removeScene( "level2")
 			composer.gotoScene( "level2", "fade", 500 )
