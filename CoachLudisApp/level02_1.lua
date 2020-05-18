@@ -8,12 +8,15 @@
 local composer = require( "composer" )
 local scene = composer.newScene()
 
-local startCycling = display.newImageRect( "images/cyclinglevel1/play icon.png", 100, 100)
-  startCycling.x = 453
+composer.recycleOnSceneChange = true
+
+local startCycling = display.newImageRect( "images/cyclinglevel1/let's go button.png", 180, 140)
+  startCycling.x = 498
   startCycling.y = 150
 
 local function startCyclingTapListener()
    startCycling.isVisible = false
+   composer.removeScene( "level02_1" )
    composer.gotoScene( "level02_2", "fade", 500 )
    return true
 end
@@ -21,143 +24,133 @@ end
 function scene:create( event )
   local sceneGroup = self.view
 
-  
-
   local background = display.newImageRect("images/cyclinglevel1/bicycle_level_1_background.jpg", 570, 320)
-  background.x = display.contentCenterX
+  background.x = display.contentCenterX+45
   background.y = display.contentCenterY
 
-  local instruction = display.newText("What do you need to check before cycling? Click items above~", display.contentCenterX, 125, native.systemFont, 12)
+  local instruction = display.newText("What do you need to check before cycling? Click items above~", display.contentCenterX+45, 125, native.systemFont, 12)
   instruction:setFillColor(black)	
 
-  local ending = display.newText("Are you ready for cycling? Click the button on right side now!", display.contentCenterX, 145, native.systemFont, 12)
+  local ending = display.newText("Are you ready for cycling? Click the button on right side now!", display.contentCenterX+45, 145, native.systemFont, 12)
   ending:setFillColor(black)
   ending.isVisible = false
 
   local character = display.newImageRect("images/cyclinglevel1/Idle (15).png", 210, 210)
-  character.x = 70
+  character.x = 115
   character.y = 230
 
   local caliper = display.newImageRect("images/cyclinglevel1/caliper.png", 95, 95)
-  caliper.x = 28
+  caliper.x = 73
   caliper.y = 60
+  caliper.alpha = 0.5
 
   local helmet = display.newImageRect("images/cyclinglevel1/helmet.png", 95, 95)
-  helmet.x = 170
+  helmet.x = 215
   helmet.y = 60
+  helmet.alpha = 0.5
 
   local taillight = display.newImageRect("images/cyclinglevel1/taillight.png", 95, 95)
-  taillight.x = 310
+  taillight.x = 355
   taillight.y = 57
+  taillight.alpha = 0.5
 
   local wheel = display.newImageRect("images/cyclinglevel1/wheel.png", 95, 95)
-  wheel.x = 453
+  wheel.x = 498
   wheel.y = 60
+  wheel.alpha = 0.5
+  
+  local caliperPopup = display.newImageRect("images/cyclinglevel1/Caliper checked.png", 270, 210)
+  caliperPopup.x = 325
+  caliperPopup.y = 210
+  caliperPopup.isVisible = false
 
-  local caliperContent =
-  {
-    text = "Caliper has been checked! Always remember use brake reduce your speed!",
-    x = 28,
-    y = 60,
-    width = 100,
-    font = native.systemFont,
-    fontSize = 13,
-    align = "left"
-  }
+  local helmetPopup = display.newImageRect("images/cyclinglevel1/helmet checked.png", 270, 210)
+  helmetPopup.x = 190
+  helmetPopup.y = 160
+  helmetPopup.isVisible = false
 
-  local caliperMessage = display.newText(caliperContent)
-  caliperMessage:setFillColor(black)
-  caliperMessage.isVisible = false
+  local taillightPopup = display.newImageRect("images/cyclinglevel1/taillight checked.png", 270, 210)
+  taillightPopup.x = 335
+  taillightPopup.y = 160
+  taillightPopup.isVisible = false
 
-  local helmetContent = 
-  {
-    text = "Helmet has been checked! Always remember wear your helmet before cycling, it can prevent head injury!",
-    x = 170,
-    y = 60,
-    width = 100,
-    font = native.systemFont,
-    fontSize = 11,
-    align = "left"
-  }
+  local wheelPopup = display.newImageRect("images/cyclinglevel1/wheels checked.png", 270, 210)
+  wheelPopup.x = 485
+  wheelPopup.y = 205
+  wheelPopup.isVisible = false
 
-  local helmetMessage = display.newText(helmetContent)
-  helmetMessage:setFillColor(black)
-  helmetMessage.isVisible = false
-
-  local taillightContent = 
-  {
-    text = "Taillight has been checked! Taillight can reminder vehicles behind you to prevent crushing!",
-    x = 315,
-    y = 60,
-    width = 100,
-    font = native.systemFont,
-    fontSize = 12,
-    align = "left"
-  }
-
-  local taillightMessage = display.newText(taillightContent)
-  taillightMessage:setFillColor(black)
-  taillightMessage.isVisible = false
-
-  local wheelContent = 
-  {
-   text = 	"Wheels have been checked! Make sure your tyres are not worn and have engough pressure to prevent bike out of control!",
-   x = 453,
-   y = 60,
-   width = 100,
-   font = native.systemFont,
-   fontSize = 11,
-   align = "left"
- }
-
- local wheelMessage = display.newText(wheelContent)
- wheelMessage:setFillColor(black) 
- wheelMessage.isVisible = false
-
- local function helmetTapListener()
+  local function helmetTapListener()
 
   -- Code executed when the button is tapped
-  helmet.isVisible = false
-  helmetMessage.isVisible = true
-  instruction.isVisible = false
-  ending.isVisible = true
-end
+     if (helmet.alpha < 1) then
+        helmetPopup.isVisible = true
+     end
+     helmet.alpha = 1
+     instruction.isVisible = false
+     ending.isVisible = true
+  end
 
-helmet:addEventListener("tap", helmetTapListener)
+  local function helmetPopupTapListener()
+     helmetPopup.isVisible = false 
+  end
 
-local function caliperTapListener()
+  helmet:addEventListener("tap", helmetTapListener)
+  helmetPopup:addEventListener("tap", helmetPopupTapListener)
 
-  -- Code executed when the button is tapped
-  caliper.isVisible = false
-  caliperMessage.isVisible = true
-  instruction.isVisible = false
-  ending.isVisible = true
-end
-
-caliper:addEventListener("tap", caliperTapListener)
-
-local function taillightTapListener()
+  local function caliperTapListener()
 
   -- Code executed when the button is tapped
-  taillight.isVisible = false
-  taillightMessage.isVisible = true
-  instruction.isVisible = false
-  ending.isVisible = true
-end
+    if (caliper.alpha < 1) then
+       caliperPopup.isVisible = true
+    end
+    caliper.alpha = 1
+    instruction.isVisible = false
+    ending.isVisible = true
+  end
 
-taillight:addEventListener("tap", taillightTapListener)
+  local function caliperPopupTapListener()
+    caliperPopup.isVisible = false
+  end
 
-local function wheelTapListener()
+  caliper:addEventListener("tap", caliperTapListener)
+  caliperPopup:addEventListener("tap", caliperPopupTapListener)
+
+  local function taillightTapListener()
 
   -- Code executed when the button is tapped
-  wheel.isVisible = false
-  wheelMessage.isVisible = true
-  instruction.isVisible = false
-  ending.isVisible = true
-end
+    if (taillight.alpha < 1) then
+       taillightPopup.isVisible = true
+    end
+    taillight.alpha = 1
+    instruction.isVisible = false
+    ending.isVisible = true
+  end
 
-wheel:addEventListener("tap", wheelTapListener)
+  local function taillightPopupListener() 
+    -- body
+    taillightPopup.isVisible = false
+  end
 
+  taillight:addEventListener("tap", taillightTapListener)
+  taillightPopup:addEventListener("tap", taillightPopupListener)
+
+  local function wheelTapListener()
+
+  -- Code executed when the button is tapped
+    if (wheel.alpha < 1) then
+       wheelPopup.isVisible = true
+    end
+    wheel.alpha = 1
+    instruction.isVisible = false
+    ending.isVisible = true
+  end
+
+  local function wheelPopupTapListener()
+    wheelPopup.isVisible = false
+  end
+
+  wheel:addEventListener("tap", wheelTapListener)
+  wheelPopup:addEventListener("tap", wheelPopupTapListener)
 
 
 
@@ -171,12 +164,26 @@ sceneGroup:insert(caliper)
 sceneGroup:insert(helmet)
 sceneGroup:insert(taillight)
 sceneGroup:insert(wheel)
-sceneGroup:insert(helmetMessage)
-sceneGroup:insert(caliperMessage)
-sceneGroup:insert(taillightMessage)
-sceneGroup:insert(wheelMessage)
+sceneGroup:insert(caliperPopup)
+sceneGroup:insert(helmetPopup)
+sceneGroup:insert(taillightPopup)
+sceneGroup:insert(wheelPopup)
 
 
+end
+
+function scene:hide( event )
+ 
+    local sceneGroup = self.view
+    local phase = event.phase
+ 
+    if ( phase == "will" ) then
+        -- Code here runs when the scene is on screen (but is about to go off screen)
+ 
+    elseif ( phase == "did" ) then
+        -- Code here runs immediately after the scene goes entirely off screen
+ 
+    end
 end
 
 function scene:destroy( event )
@@ -194,6 +201,7 @@ end
 
 scene:addEventListener( "create", scene )
 scene:addEventListener( "destroy", scene )
+scene:addEventListener( "hide", scene )
 
 return scene
 --local function chooseItem(event)
