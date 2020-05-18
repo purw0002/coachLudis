@@ -412,7 +412,7 @@ local function goLeftPosition(event)
 		cycle.x = cycle.x - 1
 		boom.x = boom.x -  1
 	end
-	if(cycle.x < 213) then
+	if(cycle.x < 213 and timeElapsed>20) then
 		cycle.x = 300
 		boom.x = 300
 		showInjuryBoard()
@@ -429,7 +429,7 @@ local function goRightPosition(event)
 		cycle.x = cycle.x + 1
 		boom.x = boom.x + 1
 	end
-	if(cycle.x > 345) then
+	if(cycle.x > 345 and timeElapsed>20) then
 		cycle.x = 300
 		boom.x = 300
 		showInjuryBoard()

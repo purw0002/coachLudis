@@ -19,6 +19,7 @@ local function onGame4BtnRelease()
 	composer.game = 'soccer'
 	composer.levelSelectLink = 'levelSelect'
 	composer.prevScreen = "select"
+	composer.removeScene('level1')
 	composer.gotoScene( "level1", "fade", 500 )
 	
 	return true	-- indicates successful touch
@@ -31,6 +32,7 @@ local function onGame5BtnRelease()
 	composer.levelSelectLink = 'test'
 	composer.chance = 1
 	composer.prevScreen = "select"
+	composer.removeScene('cycleLevel2')
 	composer.gotoScene( "cycleLevel2", "fade", 500 )
 	
 	return true	-- indicates successful touch

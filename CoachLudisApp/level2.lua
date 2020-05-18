@@ -663,7 +663,8 @@ function scene:show( event )
 			audio.stop()
 		end
 
-		if(composer.chance >=  1) then
+		if(composer.start == true) then
+			composer.start =  false
 			physics.start()
 			createObstacles = timer.performWithDelay( 1500, createCrate, 13)
 		else
