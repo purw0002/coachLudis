@@ -21,6 +21,10 @@ collisionSound = audio.loadSound( "sound/injury/Concussive_Hit_Guitar_Boing.mp3"
 winningSound = audio.loadSound( "sound/clapping/Tomlija_-_Small_Crowd_Cheering_and_Clapping_3_Biberche_Belgrade_Serbia.mp3")
 
 lostTrack = audio.loadSound( "sound/lost/Male_Laugh.mp3")
+
+
+local injuriesOccured  = {}
+
 local nwb, nhb
 local injuryBoard
 local healthRectangeRed
@@ -324,6 +328,8 @@ local function showInjuryBoard()
 	injuryBoard.x = display.contentCenterX
 	injuryBoard.y = display.contentCenterY
 	injuryBoard.params = createObstacles
+	injuriesOccured[#injuriesOccured+1] = choice["Image_name"]
+
 	if( healthValue - choice["Severity"] > 0) then
 		healthValue = healthValue - choice["Severity"]
 	else
