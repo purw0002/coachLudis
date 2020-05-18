@@ -62,6 +62,7 @@ function scene:create( event )
 		timerText.text = "Time:"..countDown
 		countDown = countDown - 1
 		if (countDown == 0) then
+			composer.suceeded = false
 			gameComplete = true;
 			composer.chance = 1
 			composer.start = true
@@ -166,6 +167,7 @@ function scene:create( event )
 				composer.start = true
 				composer.chance = 2
 				timer.cancel(countDownTimer)
+				composer.suceeded  =  true
 				composer.gotoScene("level2","fade",400)
 			end
 		end

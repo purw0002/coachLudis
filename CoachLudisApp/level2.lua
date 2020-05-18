@@ -286,6 +286,9 @@ local function boardDissapear(event)
 	end
 
 	if(healthValue <= 20 and composer.chance >= 1) then
+		local idx = math.random(#injuriesOccured)
+		local selectedLevel = injuriesOccured[idx]
+
 		composer.chance = composer.chance - 1
 		print("Composer dead")
 		print(composer.chance)
@@ -293,8 +296,8 @@ local function boardDissapear(event)
 		print("go to next scene")
 		composer.deadPlayers = deadPlayers
 		timer.cancel(createObstacles)
-		composer.removeScene( "level3")
-		composer.gotoScene( "level3", "fade", 100 )
+		composer.removeScene( selectedLevel)
+		composer.gotoScene( selectedLevel, "fade", 100 )
 			--composer.gotoScene("level3","fade",100)
 
 	elseif(injuryBoard.param1 == nil) then
@@ -328,7 +331,13 @@ local function showInjuryBoard()
 	injuryBoard.x = display.contentCenterX
 	injuryBoard.y = display.contentCenterY
 	injuryBoard.params = createObstacles
-	injuriesOccured[#injuriesOccured+1] = choice["Image_name"]
+	if(choice["Image_name"] == 'leg fracture.png') then
+		injuriesOccured[#injuriesOccured+1] = 'level3'
+	elseif(choice["Image_name"] == 'intracranial injury.png') then
+		injuriesOccured[#injuriesOccured+1] = 'precautionheadstrike'
+	else
+		injuriesOccured[#injuriesOccured+1] = 'precautionOpenWound'
+	end
 
 	if( healthValue - choice["Severity"] > 0) then
 		healthValue = healthValue - choice["Severity"]
@@ -619,8 +628,6 @@ function scene:create( event )
 	replayButton.y = display.contentCenterY - 10
 	replayButton.isVisible = false
 	replayButton:addEventListener( "touch", replayButtonEvent )
-
-	print("Heyyyyyyyyyyyyyyy")
 	-- make a crate (off-screen), position it, and rotate slightly
 	-- create a grass object and add physics (with custom shape)
 
@@ -670,6 +677,18 @@ function scene:show( event )
 		end
 
 		if(composer.start == true) then
+			local title
+			if(composer.suceeded == true) then
+				title = display.newText("Warmup level Successful", display.contentCenterX, 250 , native.systemFontBold, 20) 
+			else
+				title = display.newText("Warmup level Failed", display.contentCenterX, 250 , native.systemFontBold, 20) 
+			end
+
+			local function hideText()
+				title.isVisible =  false
+			end
+
+			timer.performWithDelay( 3000, hideText, 13)
 			composer.start =  false
 			physics.start()
 			createObstacles = timer.performWithDelay( 1500, createCrate, 13)

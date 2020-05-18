@@ -173,41 +173,76 @@ end
 
 
 local function selectBandaid (e)
-	bandaid:removeSelf()
-	tape:removeSelf()
-	local youwin= display.newImageRect( "images/openwound/correct.png", 150 , 150 )
-	youwin.x =  display.contentCenterX +190
-	youwin.y = display.contentCenterY -70
-	function destroyWin()
-		youwin:removeSelf()
-		composer.rightAnswers = rightAnswers
-		composer.gotoScene( "cycleLevel2", "fade", 500 )
-	end
-	timer.performWithDelay( 2000, destroyWin, 1)
+	if e.phase  ==  "began"  then
+		bandaid:removeSelf()
+		tape:removeSelf()
+		local youwin= display.newImageRect( "images/openwound/correct.png", 150 , 150 )
+		youwin.x =  display.contentCenterX +190
+		youwin.y = display.contentCenterY -70
+		function destroyWin()
+			youwin:removeSelf()
+			composer.rightAnswers = rightAnswers
+			if(composer.game == "soccer") then
+				if(rightAnswers >1) then
+					composer.healthIncrease = 50
+				elseif(rightAnswers == 1) then
+					composer.healthIncrease = 30
+				else
+					composer.healthIncrease = 0
+				end
+				composer.gotoScene( "level2", "fade", 500 )
+			else
+				if(rightAnswers >= 3) then
+					composer.success = true
+				else
+					composer.success = false
+				end
+				composer.gotoScene( "cycleLevel2", "fade", 500 )
+			end
+		end
+		timer.performWithDelay( 2000, destroyWin, 1)
 
-	rightAnswers = rightAnswers + 1
-	audio.stop()
-	audio.play(winningSound)
-	
+		rightAnswers = rightAnswers + 1
+		audio.stop()
+		audio.play(winningSound)
+	end
 end
 
 
 
 local function selecttape (e)
-	tape:removeSelf()
-	bandaid:removeSelf()
-	redcross.isVisible =true
-	local redcross = display.newImageRect( "images/openwound/wrong.png", 150, 150 )
-	redcross.x =  display.contentCenterX +195
-	redcross.y = display.contentCenterY +75
-	function destroyLoose()
-		redcross:removeSelf()
-		composer.rightAnswers = rightAnswers
-		composer.gotoScene( "cycleLevel2", "fade", 500 )
+	if e.phase  ==  "began"  then
+		tape:removeSelf()
+		bandaid:removeSelf()
+		redcross.isVisible =true
+		local redcross = display.newImageRect( "images/openwound/wrong.png", 150, 150 )
+		redcross.x =  display.contentCenterX +195
+		redcross.y = display.contentCenterY +75
+		function destroyLoose()
+			redcross:removeSelf()
+			composer.rightAnswers = rightAnswers
+			if(composer.game == "soccer") then
+				if(rightAnswers >1) then
+					composer.healthIncrease = 50
+				elseif(rightAnswers == 1) then
+					composer.healthIncrease = 30
+				else
+					composer.healthIncrease = 0
+				end
+				composer.gotoScene( "level2", "fade", 500 )
+			else
+				if(rightAnswers >= 3) then
+					composer.success = true
+				else
+					composer.success = false
+				end
+				composer.gotoScene( "cycleLevel2", "fade", 500 )
+			end
+		end
+		timer.performWithDelay( 2000, destroyLoose, 1)
+		audio.stop()
+		audio.play(wrongbuzzerSound)
 	end
-	timer.performWithDelay( 2000, destroyLoose, 1)
-	audio.stop()
-	audio.play(wrongbuzzerSound)
 end
 
 
@@ -245,8 +280,6 @@ function scene:create( event )
 	sceneGroup:insert(redcross)
 	sceneGroup:insert(redcross1)
 	sceneGroup:insert(title)
-
-
 end
 
 function scene:show( event )

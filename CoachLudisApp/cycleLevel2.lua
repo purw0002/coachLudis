@@ -26,7 +26,10 @@ local spawnedplay  = 0
 
 obstaclesCycle = display.newGroup()
 
-local spawnOp
+
+local injuriesOccured  = {}
+
+physics.start()
 
 bottles = display.newGroup()
 stamina = 3
@@ -218,7 +221,6 @@ bg5.isVisible = false
 bg6 = display.newImageRect("images/level2Cycling/forest background.png", screenW, screenH)
 bg6.x = _W*0.5+ 45; bg6.y = bg5.y+screenH;
 bg6.isVisible = false
-physics.start()
 physics.pause()
 cycle = display.newImageRect("images/level2Cycling/bicycle character top view.png", 50, 50)
 
@@ -339,20 +341,27 @@ local function boardDissapear(event)
 		--goRight.isVisible =  false
 		myText.isVisible  = false
 		Runtime:removeEventListener( "enterFrame", move )
+		timer.cancel(createObs)
+		timer.cancel(spawnOp)
 		composer.stars  =  0
 		composer.gotoScene("rate", "fade", 500)
 
 	end
 
 	if(healthValue <= 20 and composer.chance == 1) then
+		local idx = math.random(#injuriesOccured)
+		local selectedLevel = injuriesOccured[idx]
+		composer.healthValue = healthValue
 		composer.chance = 0 
 -- By some method such as a "pause" button, show the overlay
 		timer.pause(createObs)
 		timer.pause(spawnOp)
 		--composer.removeScene( "precautionOpenWound")
 		composer.rank = rank
+		Runtime:removeEventListener( "enterFrame", move )
 		composer.timeElapsed = timeElapsed
-		composer.gotoScene( "precautionOpenWound", "fade", 100 )
+		composer.removeScene( selectedLevel)
+		composer.gotoScene( selectedLevel, "fade", 100 )
 			--composer.gotoScene("level3","fade",100)
 	elseif(injuryBoard.param1 == nil) then
 		timer.resume(event.target.params)
@@ -388,6 +397,15 @@ local function showInjuryBoard()
 	injuryBoard.x = display.contentCenterX
 	injuryBoard.y = display.contentCenterY
 	injuryBoard.params = createObs
+
+	if(choice["Image_name"] == 'leg fracture.png') then
+		injuriesOccured[#injuriesOccured+1] = 'precautionheadstrike'
+	elseif(choice["Image_name"] == 'intracranial injury.png') then
+		injuriesOccured[#injuriesOccured+1] = 'precautionheadstrike'
+	else
+		injuriesOccured[#injuriesOccured+1] = 'precautionheadstrike'
+	end
+
 	if( healthValue - choice["Severity"]/2 > 0) then
 		healthValue = healthValue - choice["Severity"]/2
 	else
@@ -584,6 +602,7 @@ local function randomizeObstaclesForSuburb()
 		local pothole = display.newImageRect("images/cycling level assets/obstacles/potholes/pothole.png", 50, 50)
 		pothole.x, pothole.y = randomizeLane(),-10
 		pothole.name =  "pothole"
+
 		physics.addBody(pothole)
 		obstaclesCycle:insert(pothole)
 	elseif (selectedObstacle == 'speedBreaker') then
@@ -661,6 +680,7 @@ function scene:show( event )
 		-- Called when the scene is now on screen
 		-- 
 		--map.positionCamera(cycle.x,cycle.y )
+		composer.game = 'cycle'
 		if(composer.chance == 1) then
 			physics.start()
 			healthValue  = 50
@@ -672,7 +692,15 @@ function scene:show( event )
 			physics.start()
 			physics.setGravity( 0, 0 )
 			physics.addBody(cycle, "static")
-			Runtime:addEventListener( "enterFrame", move )
+			--Runtime:addEventListener( "enterFrame", move )
+			print("heyyyy")
+			print(composer.success)
+			print(composer.healthValue)
+			if composer.success  ==  true then
+				healthValue =  composer.healthValue + 15
+				healthRectangeGreen.width =  healthValue*2
+				healthRectangeGreen.x = healthRectangeGreen.x - 7.5
+			end
 			timer.resume(createObs)
 			timer.resume(spawnOp)
 		end
@@ -706,8 +734,9 @@ function scene:destroy( event )
 	-- INSERT code here to cleanup the scene
 	-- e.g. remove display objects, remove touch listeners, save state, etc.
 	local sceneGroup = self.view
-	package.loaded[physics] = nil
-	physics = nil
+	Runtime:removeEventListener( "enterFrame", move )
+	--package.loaded[physics] = nil
+	--physics = nil
 end
 
 ---------------------------------------------------------------------------------

@@ -17,7 +17,7 @@ local playBtn
 local background
 musicTrack = audio.loadSound( "sound/bensound-hey.mp3")
 
-sound = "ON"
+sound = "OFF"
 
 --choice = {}
 --injuryData = {}
