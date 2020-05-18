@@ -197,12 +197,12 @@ local function question2()
 	redcross1.isVisible = false
 	youwin1.isVisible = false
 	
-	correctNumber = display.newImageRect( "headstrike/000.png", 100,45  )
+	correctNumber = display.newImageRect( "images/headstrike/000.png", 100,45  )
 		correctNumber.x =  display.contentCenterX +190
 		correctNumber.y = display.contentCenterY -70
 	correctNumber:addEventListener("touch", selectCorrectNumber)
 
-	nineOne = display.newImageRect( "headstrike/911.png", 100 , 45 )
+	nineOne = display.newImageRect( "images/headstrike/911.png", 100 , 45 )
 		nineOne.x =  display.contentCenterX +195
 		nineOne.y = display.contentCenterY +75
 	nineOne:addEventListener("touch", selectNine)
