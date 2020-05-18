@@ -35,22 +35,22 @@ function scene:create( event )
   local caliper = display.newImageRect("images/cyclinglevel1/caliper.png", 95, 95)
   caliper.x = 73
   caliper.y = 60
-  caliper.alpha = 0.5
+  caliper.alpha = 0.3
 
   local helmet = display.newImageRect("images/cyclinglevel1/helmet.png", 95, 95)
   helmet.x = 215
   helmet.y = 60
-  helmet.alpha = 0.5
+  helmet.alpha = 0.3
 
   local taillight = display.newImageRect("images/cyclinglevel1/taillight.png", 95, 95)
   taillight.x = 355
   taillight.y = 57
-  taillight.alpha = 0.5
+  taillight.alpha = 0.3
 
   local wheel = display.newImageRect("images/cyclinglevel1/wheel.png", 95, 95)
   wheel.x = 498
   wheel.y = 60
-  wheel.alpha = 0.5
+  wheel.alpha = 0.3
   
   local caliperPopup = display.newImageRect("images/cyclinglevel1/Caliper checked.png", 270, 210)
   caliperPopup.x = 325
