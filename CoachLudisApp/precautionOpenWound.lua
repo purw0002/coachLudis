@@ -39,7 +39,7 @@ local background1 = display.newImageRect( "images/openwound/open wound page back
 	background1.anchorX = 0.08
 	background1.anchorY = 0
 
-
+local rightAnswers = 0
 
 local title = display.newText("Click on the correct item", display.contentCenterX, 15 , native.systemFontBold, 20) 
 	title:setTextColor(0)
@@ -47,9 +47,10 @@ local title = display.newText("Click on the correct item", display.contentCenter
 local toothpaste
 local iodine
 local wipe
-local bandaid
 local napkin
+local bandaid
 local tape
+local youwin1
 --------------------------------------------------------------------------------------------------------------------
 -- Create images
 
@@ -62,7 +63,7 @@ local redcross = display.newImageRect( "images/openwound/wrong.png", 150, 150 )
 	redcross.x =  display.contentCenterX +195
 	redcross.y = display.contentCenterY +75
 
-local youwin1= display.newImageRect( "images/openwound/correct.png", 150 , 150 )
+youwin1= display.newImageRect( "images/openwound/correct.png", 150 , 150 )
 	youwin1.x =  display.contentCenterX +195
 	youwin1.y = display.contentCenterY +75
 
@@ -78,43 +79,57 @@ redcross1.isVisible = false
 ---------------------------------------------------------------------------------------------------------------------
 -- Event Listeners
 
-local function selectBandaid ()
+local function makeWinDissapear()
+	youwin.isVisible = false
+	print(rightAnswers)
+end
+
+
+local function makeWin1Dissapear()
+	print("diassdjkd")
+	youwin1.isVisible = false
+end
+
+local function makeLooseDissapear()
+	redcross.isVisible = false
+end
+
+
+
+local function selectWipe (e)
+	wipe:removeSelf()
+	rightAnswers = rightAnswers + 1
+	napkin:removeSelf()
 	youwin.isVisible = true
 	audio.stop()
 	audio.play(winningSound)
 end
 
 
-local function selecttape ()
+local function selectNapkin (e)
+	napkin:removeSelf()
+	wipe:removeSelf()
 	redcross.isVisible =true
 	audio.stop()
 	audio.play(wrongbuzzerSound)
 end
 
 
-local function selectWipe ()
-	youwin.isVisible = true
-	audio.stop()
-	audio.play(winningSound)
-end
-
-
-local function selectNapkin ()
-	redcross.isVisible =true
-	audio.stop()
-	audio.play(wrongbuzzerSound)
-end
-
-
-local function selectIodine ()
+local function selectIodine (e)
+	iodine:removeSelf()
+	toothpaste:removeSelf()
 	youwin1.isVisible = true
+	rightAnswers = rightAnswers + 1
 	audio.stop()
 	audio.play(winningSound)
 end
 
 	
-local function selectToothpaste ()
+local function selectToothpaste (e)
+	toothpaste:removeSelf()
+	iodine:removeSelf()
 	redcross1.isVisible =true
+
 	audio.stop()
 	audio.play(wrongbuzzerSound)
 end
@@ -141,9 +156,6 @@ local function question2()
 	audio.stop()
 	audio.play(levelTrack, { channel=2, loops=-1})
 
-	wipe:removeSelf()
-	napkin:removeSelf()
-		
 	redcross.isVisible = false
 	youwin.isVisible = false
 	
@@ -158,28 +170,67 @@ local function question2()
 	iodine:addEventListener( "touch", selectIodine )
 end
 
+
+
+local function selectBandaid (e)
+	bandaid:removeSelf()
+	tape:removeSelf()
+	local youwin= display.newImageRect( "images/openwound/correct.png", 150 , 150 )
+	youwin.x =  display.contentCenterX +190
+	youwin.y = display.contentCenterY -70
+	function destroyWin()
+		youwin:removeSelf()
+		composer.rightAnswers = rightAnswers
+		composer.gotoScene( "cycleLevel2", "fade", 500 )
+	end
+	timer.performWithDelay( 2000, destroyWin, 1)
+
+	rightAnswers = rightAnswers + 1
+	audio.stop()
+	audio.play(winningSound)
+	
+end
+
+
+
+local function selecttape (e)
+	tape:removeSelf()
+	bandaid:removeSelf()
+	redcross.isVisible =true
+	local redcross = display.newImageRect( "images/openwound/wrong.png", 150, 150 )
+	redcross.x =  display.contentCenterX +195
+	redcross.y = display.contentCenterY +75
+	function destroyLoose()
+		redcross:removeSelf()
+		composer.rightAnswers = rightAnswers
+		composer.gotoScene( "cycleLevel2", "fade", 500 )
+	end
+	timer.performWithDelay( 2000, destroyLoose, 1)
+	audio.stop()
+	audio.play(wrongbuzzerSound)
+end
+
+
 local function question3()
 	audio.stop()
 	audio.play(levelTrack, { channel=2, loops=-1})
-
-	toothpaste:removeSelf()
-	iodine:removeSelf()
-
 	redcross.isVisible = false
 	youwin.isVisible = false
-	
-	local bandaid = display.newImageRect( "images/openwound/band-aid.png", 100,45  )
+	redcross1.isVisible = false
+	youwin1.isVisible = false
+
+	bandaid = display.newImageRect( "images/openwound/band-aid.png", 100,45  )
 		bandaid.x =  display.contentCenterX +190
 		bandaid.y = display.contentCenterY -70
 	bandaid:addEventListener( "touch", selectBandaid )
 	
-	local tape = display.newImageRect( "images/openwound/tape.png", 100 , 45 )
+	tape = display.newImageRect( "images/openwound/tape.png", 100 , 45 )
 		tape.x =  display.contentCenterX +195
 		tape.y = display.contentCenterY +75
 	tape:addEventListener( "touch", selecttape )
 end
 
-timer.performWithDelay( 0000, question1, 1)
+question1()
 
 timer.performWithDelay( 10000, question2, 1)
 
@@ -187,21 +238,15 @@ timer.performWithDelay( 20000, question3, 1)
 
 -------------------------------------------------------------------------------------------------------------
 function scene:create( event )
-	print("hey!")
 	local sceneGroup = self.view
 	sceneGroup:insert(background1)
-	sceneGroup:insert(napkin)
-	sceneGroup:insert(wipe)
-	sceneGroup:insert(toothpaste)
-	sceneGroup:insert(iodine)
-	sceneGroup:insert(bandaid)
-	sceneGroup:insert(tape)
 	sceneGroup:insert(youwin)
 	sceneGroup:insert(youwin1)	
 	sceneGroup:insert(redcross)
 	sceneGroup:insert(redcross1)
-	sceneGroup:insert(playButton)
-	sceneGroup:insert(replayButton)
+	sceneGroup:insert(title)
+
+
 end
 
 function scene:show( event )

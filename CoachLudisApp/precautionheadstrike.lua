@@ -68,7 +68,28 @@ redcross1.isVisible = false
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Event Listeners
 
+local function makeWinDissapear()
+	youwin.isVisible = false
+	print(rightAnswers)
+end
+
+
+local function makeWin1Dissapear()
+	print("diassdjkd")
+	youwin1.isVisible = false
+end
+
+local function makeLooseDissapear()
+	redcross.isVisible = false
+end
+
+
+
+
 local function selectHospital ()
+	hospital:removeSelf()
+	rightAnswers = rightAnswers + 1
+	nineOne:removeSelf()
 	youwin.isVisible = true
 	audio.stop()
 	audio.play(winningSound)
@@ -76,13 +97,19 @@ end
 
 
 local function selectSchool ()
+	nineOne:removeSelf()
+	hospital:removeSelf()
 	redcross.isVisible =true
 	audio.stop()
 	audio.play(wrongbuzzerSound)
 end
 
 
+
 local function selectCorrectNumber ()
+	correctNumber:removeSelf()
+	rightAnswers = rightAnswers + 1
+	napkin:removeSelf()
 	youwin.isVisible = true
 	audio.stop()
 	audio.play(winningSound)
@@ -90,20 +117,54 @@ end
 
 
 local function selectNine ()
+	wipe:removeSelf()
+	correctNumber:removeSelf()
 	redcross.isVisible =true
 	audio.stop()
 	audio.play(wrongbuzzerSound)
 end
 
 
+
+
 local function selectParents ()
-	youwin1.isVisible = true
+	parents:removeSelf()
+	friends:removeSelf()
+	youwin.isVisible = true
+	local youwin= display.newImageRect( "images/openwound/correct.png", 150 , 150 )
+	youwin.x =  display.contentCenterX +190
+	youwin.y = display.contentCenterY -70
+	function destroyWin()
+		youwin:removeSelf()
+		composer.rightAnswers = rightAnswers
+		composer.gotoScene( "cycleLevel2", "fade", 500 )
+	end
+	timer.performWithDelay( 2000, destroyWin, 1)
+
+	rightAnswers = rightAnswers + 1
+	audio.stop()
+	audio.play(winningSound)
 	audio.stop()
 	audio.play(winningSound)
 end
 
+
+
 local function selectFriends ()
-	redcross1.isVisible =true
+	friends:removeSelf()
+	parents:removeSelf()
+	redcross.isVisible =true
+	local redcross = display.newImageRect( "images/openwound/wrong.png", 150, 150 )
+	redcross.x =  display.contentCenterX +195
+	redcross.y = display.contentCenterY +75
+	function destroyLoose()
+		redcross:removeSelf()
+		composer.rightAnswers = rightAnswers
+		composer.gotoScene( "cycleLevel2", "fade", 500 )
+	end
+	timer.performWithDelay( 2000, destroyLoose, 1)
+	audio.stop()
+	audio.play(wrongbuzzerSound)
 	audio.stop()
 	audio.play(wrongbuzzerSound)
 end
@@ -172,29 +233,24 @@ local function question3()
 end
 
 
-timer.performWithDelay(0000, question1, 1)
+question1()
 
-timer.performWithDelay(10000, question2, 1)
+timer.performWithDelay( 10000, question2, 1)
 
-timer.performWithDelay(20000, question3, 1)
+timer.performWithDelay( 20000, question3, 1)
+
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 function scene:create( event )
-	print("hey!")
 	local sceneGroup = self.view
 	sceneGroup:insert(background1)
-	sceneGroup:insert(hospital)
-	sceneGroup:insert(school)
-	sceneGroup:insert(friends)
-	sceneGroup:insert(parents)
-	sceneGroup:insert(correctNumber)
-	sceneGroup:insert(nineOne)
 	sceneGroup:insert(youwin)
 	sceneGroup:insert(youwin1)	
 	sceneGroup:insert(redcross)
 	sceneGroup:insert(redcross1)
-	sceneGroup:insert(playButton)
-	sceneGroup:insert(replayButton)
+	sceneGroup:insert(title)
+
+
 end
 
 function scene:show( event )
@@ -236,9 +292,9 @@ function scene:destroy( event )
 	physics = nil
 end
 
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
 
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
 
 -- Listener setup
 scene:addEventListener( "create", scene )
@@ -248,6 +304,10 @@ scene:addEventListener( "destroy", scene )
 
 
 
-
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 return scene
+----------------------------------------------------------------------------------------
+-- Set timmer
+
+-- local timerText = display.newText( " ", 100, 100, native.systemFont, 16)
+--  	timerText:translate(55,-40)
+-- 	timerText:setTextColor( 255, 255, 255 )
