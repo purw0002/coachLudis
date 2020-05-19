@@ -101,8 +101,8 @@ function scene:create( event )
 		composer.chance = 1
 		if composer.game == "soccer" then
 			composer.game = "cycle"
-			composer.removeScene( "cycleLevel2")
-			composer.gotoScene( "cycleLevel2", "fade", 500 )
+			composer.removeScene( "injurySheet")
+			composer.gotoScene( "injurySheet", "fade", 500 )
 		else 
 			composer.removeScene( "select")
 			composer.gotoScene( "select", "fade", 500 )
@@ -132,7 +132,7 @@ function scene:create( event )
 	local rect2 = display.newRect( display.contentCenterX +12, display.contentCenterY +105, 30, 30 )
 
 	rect2.fill = paint
-	rect2:addEventListener( "tap", goToLevelSelect )
+	--rect2:addEventListener( "tap", goToLevelSelect )
 	--levelIconButton:addEventListener( "tap", goToLevelSelect )
 
 	local replayButton = display.newImageRect( "images/ratings/replay icon.png", 75, 75 )
@@ -141,7 +141,7 @@ function scene:create( event )
 	local rect3 = display.newRect( display.contentCenterX+47, display.contentCenterY +105, 30, 30 )
 
 	rect3.fill = paint
-	rect3:addEventListener( "tap", replayLevel )
+	--rect3:addEventListener( "tap", replayLevel )
 
 	--replayButton:addEventListener( "tap", replayLevel )
 

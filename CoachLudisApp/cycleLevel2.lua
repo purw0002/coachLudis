@@ -43,6 +43,7 @@ healthRectangeGreen = display.newRect( 130, 20, healthValue*2, 20 )
 healthRectangeGreen:setFillColor(1, 0, 0, 1)
 healthRectangeGreen.x = 100
 
+-- initialize the stamina
 local function showBottle(stamina)
 
  	for i = 1, bottles.numChildren do
@@ -85,9 +86,10 @@ local function showBottle(stamina)
 		bottles:insert(bottle)
 	end
 end
-
+-- CAll the function
 showBottle(stamina)
 
+-- Randomizes the x axis for the obstacles
 local function randomizeLane()
 	local lane = {'1', '2'}
 	local idx = math.random(#lane)
@@ -99,7 +101,7 @@ local function randomizeLane()
 	end
 end
 
-
+-- For the rank text
 local options = 
 {
     text = "Rank 5",     
@@ -111,7 +113,7 @@ local options =
     align = "right"  -- Alignment parameter
 }
 
-
+-- We have 2 types of images for players, we are randomizing these images
 local function randomizePlayers()
 	if spawnedplay + 1 <= 4 then
 		spawnedplay = spawnedplay + 1
@@ -134,18 +136,19 @@ local function randomizePlayers()
 	end
 end
 
-
+-- Spawns opponent players
 local function spawnOpponentPlayer()
 	randomizePlayers()
 end
 
-
+-- rank textbox
 local myText = display.newText( options )
 myText:setFillColor( 1, 1, 1 )
 
 -- forward declarations and other locals
 local screenW, screenH, halfW = display.actualContentWidth, display.actualContentHeight, display.contentCenterX
 
+-- Game over screen
 local loss = display.newImageRect( "gameOver.png", screenW, screenH )
 loss.anchorX = 0
 loss.anchorY = 0
@@ -157,12 +160,14 @@ _W = display.contentWidth; -- Get the width of the screen
 _H = display.contentHeight; -- Get the height of the screen
 scrollSpeed = 2; -- Set Scroll Speed of background
 
+-- function  to stop boost 
 function stopBoost()
 	scrollSpeed = 2
 	timer.cancel(spawnOp)
 	spawnOp = timer.performWithDelay( 7000, spawnOpponentPlayer, rank - 1)
 end
 
+-- Boost function , also has a timer of 3 second(3  second  boost)
 function boost(event)
 	if(event.phase == "began") then
 		if(stamina >  0)  then
@@ -176,10 +181,12 @@ function boost(event)
 	end
 end
 
-
+-- GO back to normal speed
 function goNormal()
 	scrollSpeed = 2
 end
+
+-- 3 seconds break and goNormal is invoked
 function applyBreak(event)
 	if(event.phase == "began") then
 		scrollSpeed = 1
@@ -188,12 +195,12 @@ function applyBreak(event)
 	end
 end
 
-
+--brakes button
 local brakes = display.newImageRect("images/cycling level assets/boost/slow down button.png", 60, 60)
 brakes.x, brakes.y  = 110,screenH-50
 brakes:addEventListener( "touch", applyBreak )
 
-
+-- nitros button
 local nitros  = display.newImageRect("images/cycling level assets/boost/boost button.png", 60, 60)
 nitros.x, nitros.y  = 50,screenH-50
 nitros:addEventListener( "touch", boost )
@@ -224,10 +231,12 @@ bg6.isVisible = false
 physics.pause()
 cycle = display.newImageRect("images/level2Cycling/bicycle character top view.png", 50, 50)
 
+-- cycle, position is set  to static
 cycle.x, cycle.y = 250,280
 cycle.name =  "cycle"
 physics.addBody(cycle, "static")
 
+-- nitros button
 boom = display.newImageRect("boom.png", 40,40)
 boom.x, boom.y = 250,255
 boom.name =  "boom"
@@ -239,6 +248,7 @@ local finished = false
 screenLoop = 0
 done = false
 
+-- on crash boom is invisible after some time
 local function boomVisible(event)
 	boom.isVisible = false
 end
@@ -252,7 +262,7 @@ end
 
 
 
-
+-- Used to move the backgroud
 local function move(event)
  -- move backgrounds to the left by scrollSpeed, default is 2
 	bg1.y = bg1.y + scrollSpeed
@@ -262,6 +272,7 @@ local function move(event)
  	bg5.y = bg5.y + scrollSpeed
  	bg6.y = bg6.y + scrollSpeed
  	local beatOpponentIndex = -5 
+ 	-- Collided player would move faster the user
  	for i = 1, obstaclesCycle.numChildren do
 		obstaclesCycle[i].y = obstaclesCycle[i].y + scrollSpeed
 		if(obstaclesCycle[i].name == 'op-cycle') then
@@ -325,7 +336,7 @@ end
 
 
 
-
+-- Similar to soccer level, board gets dissapeard on click
 local function boardDissapear(event)
 	event.target:removeSelf()
 	local function showGameOver(loss)
@@ -372,20 +383,20 @@ local function boardDissapear(event)
 	end
 end
 
-
+-- Shows the inhjury board on collision
 local function showInjuryBoard()
 	timer.pause(createObs)
 	timer.pause(spawnOp)
 	Runtime:removeEventListener( "enterFrame", move )
 	local totalWeight = 0
-	for _, weight in pairs(weights) do
+	for _, weight in pairs(weights1) do
    		totalWeight = totalWeight + weight
 	end
 
 	rand = math.random() * totalWeight
 	choice = nil
 
-	for i, weight in pairs(weights) do
+	for i, weight in pairs(weights1) do
    		if rand < weight then
        		choice = choices[i]
        		break
@@ -399,11 +410,11 @@ local function showInjuryBoard()
 	injuryBoard.params = createObs
 
 	if(choice["Image_name"] == 'leg fracture.png') then
-		injuriesOccured[#injuriesOccured+1] = 'precautionheadstrike'
+		injuriesOccured[#injuriesOccured+1] = 'level3'
 	elseif(choice["Image_name"] == 'intracranial injury.png') then
 		injuriesOccured[#injuriesOccured+1] = 'precautionheadstrike'
 	else
-		injuriesOccured[#injuriesOccured+1] = 'precautionheadstrike'
+		injuriesOccured[#injuriesOccured+1] = 'precautionOpenWound'
 	end
 
 	if( healthValue - choice["Severity"]/2 > 0) then
@@ -424,7 +435,7 @@ local function showInjuryBoard()
 	injuryBoard:addEventListener("tap", boardDissapear)
 end
 
-
+-- Going left (by 1 pixel)
 local function goLeftPosition(event)
 	if(cycle.x > 212) then
 		cycle.x = cycle.x - 1
@@ -441,7 +452,7 @@ local function goLeftPosition(event)
 		timer.performWithDelay( 3000, wait, 1)
 	end
 end
-
+-- Going right (by 1 pixel)
 local function goRightPosition(event)
 	if(cycle.x < 346) then
 		cycle.x = cycle.x + 1
@@ -461,20 +472,14 @@ local function goRightPosition(event)
 end
 
 
-
-
-
-
-
-
-
+-- Go left button
 local goLeft = display.newImageRect("images/cycling level assets/directions/left arrow.png", 50, 50)
 goLeft.x, goLeft.y = 20,150
 goLeft.name =  "buttonLeft"
 goLeft.touch = goLeftPosition
 goLeft:addEventListener( "touch", goLeft )
 
-
+-- Go right button
 local goRight = display.newImageRect("images/cycling level assets/directions/right arrow.png", 50, 50)
 goRight.x, goRight.y = 550,150
 goRight.name =  "buttonRight"
@@ -486,7 +491,7 @@ goRight:addEventListener( "touch", goRight )
 
 
 
-
+-- This function is used to detect collision (Here player 1 on collision with animals or obstacles obstacles would dissapear with injury board ) and player would slow down
 local function onCollision(event)
 	if(event.phase == "began") then
 		if(event.object1.name == "cycle" and ( (event.object2.name  == "kangaroo") or (event.object2.name  == "pothole") or (event.object2.name  == "speedBreaker") or (event.object2.name  == "op-cycle") )) then
@@ -588,7 +593,7 @@ end
 
 local kangaroos = display.newGroup()
 
-
+-- Only potholes , speed-breaker and stamina available on suburbs, we r randomizing the options
 local function randomizeObstaclesForSuburb()
 	local obstacles
 	if(stamina < 3) then
@@ -619,6 +624,7 @@ local function randomizeObstaclesForSuburb()
 		obstaclesCycle:insert(bottle)
 	end
 end
+-- Only potholes , speed-breaker, kangaroo and stamina available on suburbs, we r randomizing the options
 
 local function randomizeObstaclesForForest()
 	local obstacles
@@ -650,7 +656,7 @@ local function randomizeObstaclesForForest()
 	end
 end
 
-
+-- Randomizing obstacles
 local function createObstacles()
 	timeElapsed = timeElapsed + 3
 
@@ -681,6 +687,7 @@ function scene:show( event )
 		-- 
 		--map.positionCamera(cycle.x,cycle.y )
 		composer.game = 'cycle'
+		-- First time entering the level, otherwose chance=0
 		if(composer.chance == 1) then
 			physics.start()
 			healthValue  = 50
@@ -688,12 +695,11 @@ function scene:show( event )
 			createObs = timer.performWithDelay( 3000, createObstacles, -1)
 			spawnOp = timer.performWithDelay( 7000, spawnOpponentPlayer, 4)
 			physics.setGravity( 0, 0 )
-		elseif(composer.chance == 0) then
+		elseif(composer.chance == 0) then 
 			physics.start()
 			physics.setGravity( 0, 0 )
 			physics.addBody(cycle, "static")
 			--Runtime:addEventListener( "enterFrame", move )
-			print("heyyyy")
 			print(composer.success)
 			print(composer.healthValue)
 			if composer.success  ==  true then

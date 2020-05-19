@@ -16,7 +16,7 @@ local widget = require "widget"
 local playBtn
 local background
 musicTrack = audio.loadSound( "sound/bensound-hey.mp3")
-
+totalRequests = 0
 sound = "OFF"
 
 --choice = {}
@@ -35,10 +35,36 @@ local function networkListener( event )
 		for k,v in pairs(choices) do
 			table.insert(weights, v["Soccer_Percentage"])
 		end
-		playBtn.isVisible =  true
-		background:addEventListener( "touch", background )
+		totalRequests = totalRequests + 1
+		if(totalRequests == 2) then
+			playBtn.isVisible =  true
+			background:addEventListener( "touch", background )
+		end
     end
 end
+
+local function networkListener1( event )
+ 
+    if ( event.isError ) then
+        print( "Network error: ", event.response )
+    else
+    	injuryData1 = json.decode(event.response)
+    	print(event.response)
+
+    	choices1 = injuryData1
+		weights1 = {}
+		for k,v in pairs(choices1) do
+			table.insert(weights1, v["Count"])
+		end
+		totalRequests = totalRequests + 1
+		if(totalRequests == 2) then
+			playBtn.isVisible =  true
+			background:addEventListener( "touch", background )
+		end
+    end
+end
+
+
 -- Used for encoding the url
 function string.urlEncode( str )
  
@@ -55,6 +81,7 @@ function string.urlEncode( str )
 end
 local url = "https://coachludis.herokuapp.com/"
 network.request( url .. string.urlEncode('getsoccerinjury'), "GET", networkListener)
+network.request( url .. string.urlEncode('getcyclinginjury'), "GET", networkListener1)
 
 
 
