@@ -128,46 +128,58 @@ end
 
 
 
-local function selectParents ()
-	parents:removeSelf()
-	friends:removeSelf()
-	youwin.isVisible = true
-	local youwin= display.newImageRect( "images/openwound/correct.png", 150 , 150 )
-	youwin.x =  display.contentCenterX +190
-	youwin.y = display.contentCenterY -70
-	function destroyWin()
-		youwin:removeSelf()
-		composer.rightAnswers = rightAnswers
-		composer.gotoScene( "cycleLevel2", "fade", 500 )
-	end
-	timer.performWithDelay( 2000, destroyWin, 1)
+local function selectParents (e)
+	if e.phase == "began" then
 
-	rightAnswers = rightAnswers + 1
-	audio.stop()
-	audio.play(winningSound)
-	audio.stop()
-	audio.play(winningSound)
+		parents:removeSelf()
+		friends:removeSelf()
+		youwin.isVisible = false
+		redcross.isVisible = false
+		local youwin= display.newImageRect( "images/headstrike/correct.png", 150 , 150 )
+		youwin.x =  display.contentCenterX +195
+		youwin.y = display.contentCenterY +75
+		function destroyWin()
+			youwin:removeSelf()
+			composer.rightAnswers = rightAnswers
+			if rightAnswers >= 3 then
+				composer.success = true
+			else
+				composer.success = false
+			end
+			composer.gotoScene( "cycleLevel2", "fade", 500 )
+		end
+		timer.performWithDelay( 2000, destroyWin, 1)
+
+		rightAnswers = rightAnswers + 1
+		audio.stop()
+		audio.play(winningSound)
+		audio.stop()
+		audio.play(winningSound)
+	end
 end
 
 
 
 local function selectFriends ()
-	friends:removeSelf()
-	parents:removeSelf()
-	redcross.isVisible =true
-	local redcross = display.newImageRect( "images/openwound/wrong.png", 150, 150 )
-	redcross.x =  display.contentCenterX +195
-	redcross.y = display.contentCenterY +75
-	function destroyLoose()
-		redcross:removeSelf()
-		composer.rightAnswers = rightAnswers
-		composer.gotoScene( "cycleLevel2", "fade", 500 )
+	if e.phase == "began" then
+		friends:removeSelf()
+		parents:removeSelf()
+		redcross.isVisible =false
+		local redcross = display.newImageRect( "images/headstrike/wrong.png", 150, 150 )
+		redcross.x =  display.contentCenterX +190
+		redcross.y = display.contentCenterY -70
+		function destroyLoose()
+			redcross:removeSelf()
+			composer.rightAnswers = rightAnswers
+			composer.success = false
+			composer.gotoScene( "cycleLevel2", "fade", 500 )
+		end
+		timer.performWithDelay( 2000, destroyLoose, 1)
+		audio.stop()
+		audio.play(wrongbuzzerSound)
+		audio.stop()
+		audio.play(wrongbuzzerSound)
 	end
-	timer.performWithDelay( 2000, destroyLoose, 1)
-	audio.stop()
-	audio.play(wrongbuzzerSound)
-	audio.stop()
-	audio.play(wrongbuzzerSound)
 end
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -191,19 +203,17 @@ end
 local function question2()
 	audio.stop()
 	audio.play(levelTrack, { channel=2, loops=-1})
-	hospital:removeSelf()
-	school:removeSelf()
 	redcross.isVisible = false
 	youwin.isVisible = false
 	redcross1.isVisible = false
 	youwin1.isVisible = false
 	
-	correctNumber = display.newImageRect( "headstrike/000.png", 100,45  )
+	correctNumber = display.newImageRect( "images/headstrike/000.png", 100,45  )
 		correctNumber.x =  display.contentCenterX +190
 		correctNumber.y = display.contentCenterY -70
 	correctNumber:addEventListener("touch", selectCorrectNumber)
 
-	nineOne = display.newImageRect( "headstrike/911.png", 100 , 45 )
+	nineOne = display.newImageRect( "images/headstrike/911.png", 100 , 45 )
 		nineOne.x =  display.contentCenterX +195
 		nineOne.y = display.contentCenterY +75
 	nineOne:addEventListener("touch", selectNine)
@@ -214,8 +224,6 @@ local function question3()
 	audio.stop()
 	audio.play(levelTrack, { channel=2, loops=-1})
 
-	correctNumber:removeSelf()
-	nineOne:removeSelf()
 		
 	redcross.isVisible = false
 	youwin.isVisible = false
