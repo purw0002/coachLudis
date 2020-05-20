@@ -364,22 +364,28 @@ local function boardDissapear(event)
 		local selectedLevel = injuriesOccured[idx]
 		composer.healthValue = healthValue
 		composer.chance = 0 
+		print("Going to precaution")
+
 -- By some method such as a "pause" button, show the overlay
-		timer.pause(createObs)
-		timer.pause(spawnOp)
 		--composer.removeScene( "precautionOpenWound")
 		composer.rank = rank
 		Runtime:removeEventListener( "enterFrame", move )
 		composer.timeElapsed = timeElapsed
+		print(composer.timeElapsed)
+		local options = {
+   			effect = "fade",
+    		time = 500,
+    		isModal = true
+		}
 		composer.removeScene( selectedLevel)
-		composer.gotoScene( selectedLevel, "fade", 100 )
+		composer.showOverlay( selectedLevel, options )
 			--composer.gotoScene("level3","fade",100)
 	elseif(injuryBoard.param1 == nil) then
 		timer.resume(event.target.params)
 		timer.resume(spawnOp)
 		Runtime:addEventListener( "enterFrame", move )
 	else
-		timer.performWithDelay( 1000, showGameOver(injuryBoard.param1), 1)
+		timer.performWithDelay( 5000, showGameOver(injuryBoard.param1), 1)
 	end
 end
 
@@ -556,6 +562,19 @@ local function onCollision(event)
 end
 
 
+function scene:resumeGame()
+    Runtime:addEventListener('enterFrame',move)
+    --Runtime:addEventListener("collision", onCollision)
+	if composer.success  ==  true then
+		healthValue =  healthValue + 20
+		healthRectangeGreen.width =  healthValue*2
+		healthRectangeGreen.x = healthRectangeRed.x - 50 + (healthValue/2)
+	end
+	timer.resume(createObs)
+	timer.resume(spawnOp)
+end
+
+
 function scene:create( event )
 
 	local sceneGroup = self.view
@@ -696,19 +715,21 @@ function scene:show( event )
 			spawnOp = timer.performWithDelay( 7000, spawnOpponentPlayer, 4)
 			physics.setGravity( 0, 0 )
 		elseif(composer.chance == 0) then 
-			physics.start()
-			physics.setGravity( 0, 0 )
-			physics.addBody(cycle, "static")
+			--physics.start()
+			--physics.setGravity( 0, 0 )
+			--physics.addBody(cycle, "static")
+			--print("started after precaution")
+			--print(composer.timeElapsed)
 			--Runtime:addEventListener( "enterFrame", move )
-			print(composer.success)
-			print(composer.healthValue)
-			if composer.success  ==  true then
-				healthValue =  composer.healthValue + 15
-				healthRectangeGreen.width =  healthValue*2
-				healthRectangeGreen.x = healthRectangeGreen.x - 7.5
-			end
-			timer.resume(createObs)
-			timer.resume(spawnOp)
+			--print(composer.success)
+			--print(composer.healthValue)
+			--if composer.success  ==  true then
+			--	healthValue =  composer.healthValue + 15
+			--	healthRectangeGreen.width =  healthValue*2
+			--	healthRectangeGreen.x = healthRectangeGreen.x - 7.5
+			--end
+			--timer.resume(createObs)
+			--timer.resume(spawnOp)
 		end
 		-- INSERT code here to make the scene come alive
 		-- e.g. start timers, begin animation, play audio, etc.
@@ -741,6 +762,7 @@ function scene:destroy( event )
 	-- e.g. remove display objects, remove touch listeners, save state, etc.
 	local sceneGroup = self.view
 	Runtime:removeEventListener( "enterFrame", move )
+	Runtime:removeEventListener("collision", onCollision)
 	--package.loaded[physics] = nil
 	--physics = nil
 end

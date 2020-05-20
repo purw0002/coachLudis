@@ -197,7 +197,9 @@ local function selectBandaid (e)
 				else
 					composer.success = false
 				end
-				composer.gotoScene( "cycleLevel2", "fade", 500 )
+
+				composer.hideOverlay( "fade", 400 )
+ 
 			end
 		end
 		timer.performWithDelay( 2000, destroyWin, 1)
@@ -305,6 +307,10 @@ function scene:hide( event )
     if ( phase == "will" ) then
         -- Call the "resumeGame()" function in the parent scene
         --composer.chance = 0
+        if (composer.game ==  'cycle') then
+        	local parent = event.parent
+        	parent:resumeGame()
+        end
     end
 
 end
