@@ -747,7 +747,7 @@ function scene:hide( event )
 
 		-- INSERT code here to pause the scene
 		-- e.g. stop timers, stop animation, unload sounds, etc.)
-		physics.stop()
+		--physics.stop()
 	elseif phase == "did" then
 		-- Called when the scene is now off screen
 	end	

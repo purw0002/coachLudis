@@ -332,9 +332,9 @@ local function showInjuryBoard()
 	injuryBoard.y = display.contentCenterY
 	injuryBoard.params = createObstacles
 	if(choice["Image_name"] == 'leg fracture.png') then
-		injuriesOccured[#injuriesOccured+1] = 'precautionOpenWound'
+		injuriesOccured[#injuriesOccured+1] = 'level3'
 	elseif(choice["Image_name"] == 'intracranial injury.png') then
-		injuriesOccured[#injuriesOccured+1] = 'precautionOpenWound'
+		injuriesOccured[#injuriesOccured+1] = 'precautionheadstrike'
 	else
 		injuriesOccured[#injuriesOccured+1] = 'precautionOpenWound'
 	end

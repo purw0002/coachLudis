@@ -13,6 +13,17 @@ local scene = composer.newScene()
 -- forward declarations and other locals
 local screenW, screenH, halfW = display.actualContentWidth, display.actualContentHeight, display.contentCenterX
 
+function goToMainLevel(e)
+	if e.phase == "began" then
+		if(composer.game == 'soccer') then
+			composer.removeScene('level1')
+			composer.gotoScene( "level1", "fade", 500 )
+		else
+			composer.removeScene('level02_1')
+			composer.gotoScene( "level02_1", "fade", 500 )
+		end
+	end
+end
 
 
 function scene:create( event )
@@ -20,20 +31,11 @@ function scene:create( event )
 	local backgroundimg = display.newImageRect( "images/instruction sheet/soccer game instruction.png", screenW, screenH)
 		backgroundimg.anchorX = 0
 		backgroundimg.anchorY = 0
-
+	backgroundimg:addEventListener('touch', goToMainLevel)
 	sceneGroup:insert(backgroundimg)
 
 end
 
-function goToMainLevel()
-	if(composer.game == 'soccer') then
-		composer.removeScene('level1')
-		composer.gotoScene( "level1", "fade", 500 )
-	else
-		composer.removeScene('level02_1')
-		composer.gotoScene( "level02_1", "fade", 500 )
-	end
-end
 
 function scene:show( event )
 	local sceneGroup = self.view
