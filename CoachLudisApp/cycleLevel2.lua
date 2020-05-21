@@ -148,12 +148,15 @@ myText:setFillColor( 1, 1, 1 )
 -- forward declarations and other locals
 local screenW, screenH, halfW = display.actualContentWidth, display.actualContentHeight, display.contentCenterX
 
+local function moveToRate()
+	composer.gotoScene("rate","fade",500)
+end
 -- Game over screen
 local loss = display.newImageRect( "gameOver.png", screenW, screenH )
 loss.anchorX = 0
 loss.anchorY = 0
 loss.isVisible = false
-
+loss:addEventListener( "touch", moveToRate )
 
 -- Set Variables
 _W = display.contentWidth; -- Get the width of the screen
@@ -355,8 +358,6 @@ local function boardDissapear(event)
 		timer.cancel(createObs)
 		timer.cancel(spawnOp)
 		composer.stars  =  0
-		composer.gotoScene("rate", "fade", 500)
-
 	end
 
 	if(healthValue <= 20 and composer.chance == 1) then
