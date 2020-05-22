@@ -130,9 +130,8 @@ end
 
 local function selectParents (e)
 	if e.phase == "began" then
-
-		parents:removeSelf()
-		friends:removeSelf()
+		e.target:removeSelf()
+		e.target.friendsObj:removeSelf()
 		youwin.isVisible = false
 		redcross.isVisible = false
 		local youwin= display.newImageRect( "images/headstrike/correct.png", 150 , 150 )
@@ -141,18 +140,25 @@ local function selectParents (e)
 		function destroyWin()
 			youwin:removeSelf()
 			composer.rightAnswers = rightAnswers
-			if rightAnswers >= 3 then
-				composer.success = true
+			if(composer.game == "soccer") then
+				if(rightAnswers >= 3) then
+					composer.healthIncrease = 50
+				else
+					composer.healthIncrease = 0
+				end
+				composer.gotoScene( "level2", "fade", 500 )
 			else
-				composer.success = false
+				if(rightAnswers >= 3) then
+					composer.success = true
+				else
+					composer.success = false
+				end
+				composer.hideOverlay( "fade", 400 )
 			end
-			composer.gotoScene( "cycleLevel2", "fade", 500 )
 		end
 		timer.performWithDelay( 2000, destroyWin, 1)
 
 		rightAnswers = rightAnswers + 1
-		audio.stop()
-		audio.play(winningSound)
 		audio.stop()
 		audio.play(winningSound)
 	end
@@ -162,8 +168,8 @@ end
 
 local function selectFriends ()
 	if e.phase == "began" then
-		friends:removeSelf()
-		parents:removeSelf()
+		e.target:removeSelf()
+		e.target.parentsObj:removeSelf()
 		redcross.isVisible =false
 		local redcross = display.newImageRect( "images/headstrike/wrong.png", 150, 150 )
 		redcross.x =  display.contentCenterX +190
@@ -171,12 +177,23 @@ local function selectFriends ()
 		function destroyLoose()
 			redcross:removeSelf()
 			composer.rightAnswers = rightAnswers
-			composer.success = false
-			composer.gotoScene( "cycleLevel2", "fade", 500 )
+			if(composer.game == "soccer") then
+				if(rightAnswers >= 3) then
+					composer.healthIncrease = 50
+				else
+					composer.healthIncrease = 0
+				end
+				composer.gotoScene( "level2", "fade", 500 )
+			else
+				if(rightAnswers >= 3) then
+					composer.success = true
+				else
+					composer.success = false
+				end
+				composer.gotoScene( "cycleLevel2", "fade", 500 )
+			end
 		end
 		timer.performWithDelay( 2000, destroyLoose, 1)
-		audio.stop()
-		audio.play(wrongbuzzerSound)
 		audio.stop()
 		audio.play(wrongbuzzerSound)
 	end
@@ -285,6 +302,10 @@ function scene:hide( event )
     if ( phase == "will" ) then
         -- Call the "resumeGame()" function in the parent scene
         --composer.chance = 0
+    	if (composer.game ==  'cycle') then
+        	local parent = event.parent
+        	parent:resumeGame()
+        end
     end
 
 end
