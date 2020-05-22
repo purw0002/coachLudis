@@ -132,7 +132,7 @@ local function selectParents (e)
 	if e.phase == "began" then
 		e.target:removeSelf()
 		e.target.friendsObj:removeSelf()
-		youwin.isVisible = false
+		youwin.isVisible = true
 		redcross.isVisible = false
 		local youwin= display.newImageRect( "images/headstrike/correct.png", 150 , 150 )
 		youwin.x =  display.contentCenterX +195
@@ -170,7 +170,8 @@ local function selectFriends ()
 	if e.phase == "began" then
 		e.target:removeSelf()
 		e.target.parentsObj:removeSelf()
-		redcross.isVisible =false
+		redcross.isVisible = true
+		youwin.isVisible = false
 		local redcross = display.newImageRect( "images/headstrike/wrong.png", 150, 150 )
 		redcross.x =  display.contentCenterX +190
 		redcross.y = display.contentCenterY -70
