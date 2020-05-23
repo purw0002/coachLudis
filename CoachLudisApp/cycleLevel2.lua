@@ -501,6 +501,8 @@ goRight:addEventListener( "touch", goRight )
 -- This function is used to detect collision (Here player 1 on collision with animals or obstacles obstacles would dissapear with injury board ) and player would slow down
 local function onCollision(event)
 	if(event.phase == "began") then
+		print(event.object1.name)
+		print(event.object2.name)
 		if(event.object1.name == "cycle" and ( (event.object2.name  == "kangaroo") or (event.object2.name  == "pothole") or (event.object2.name  == "speedBreaker") or (event.object2.name  == "op-cycle") )) then
 			if(sound == "ON") then
 				--audio.play(collisionSound)
@@ -556,9 +558,9 @@ local function onCollision(event)
 			event.object1:removeSelf()
 		elseif(event.object1.name == "op-cycle" and event.object2.name  == "finishLine") then
 			event.object1:removeSelf()
+		elseif(event.object1.name == "finishLine" and event.object2.name == "op-cycle") then
+			event.object2:removeSelf()
 		end
-
-
 	end
 end
 
