@@ -264,7 +264,7 @@ local function createCrate()
 			player2:setSequence("run")
 			player2:scale(0.12,0.12)
 			player2:play()
-			local nw, nh = player2.width*0.12*0.5, player2.height*0.12*0.5;
+			nw, nh = player2.width*0.12*0.5, player2.height*0.12*0.5;
 			physics.addBody(player2, {shape={-nw,-nh,nw,-nh,nw,nh,-nw,nh} });
 			player2s:insert(player2)
 		end
@@ -679,9 +679,9 @@ function scene:show( event )
 		if(composer.start == true) then
 			local title
 			if(composer.suceeded == true) then
-				title = display.newText("Warmup level Successful", display.contentCenterX, 250 , native.systemFontBold, 20) 
+				title = display.newText("Warmup level Successful - extra prevention level!", display.contentCenterX, 250 , native.systemFontBold, 20) 
 			else
-				title = display.newText("Warmup level Failed", display.contentCenterX, 250 , native.systemFontBold, 20) 
+				title = display.newText("Warmup level Failed - no extra prevention level!", display.contentCenterX, 250 , native.systemFontBold, 20) 
 			end
 
 			local function hideText()

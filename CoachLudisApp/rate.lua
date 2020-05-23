@@ -101,8 +101,8 @@ function scene:create( event )
 		composer.chance = 1
 		if composer.game == "soccer" then
 			composer.game = "cycle"
-			composer.removeScene( "injurySheet")
-			composer.gotoScene( "injurySheet", "fade", 500 )
+			composer.removeScene( "InjurySheet")
+			composer.gotoScene( "InjurySheet", "fade", 500 )
 		else 
 			composer.removeScene( "select")
 			composer.gotoScene( "select", "fade", 500 )
