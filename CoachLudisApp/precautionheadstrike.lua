@@ -132,8 +132,6 @@ local function selectParents (e)
 	if e.phase == "began" then
 		e.target:removeSelf()
 		e.target.friendsObj:removeSelf()
-		youwin.isVisible = false
-		redcross.isVisible = false
 		local youwin= display.newImageRect( "images/headstrike/correct.png", 150 , 150 )
 		youwin.x =  display.contentCenterX +235
 		youwin.y = display.contentCenterY +75
@@ -170,7 +168,7 @@ local function selectFriends ()
 	if e.phase == "began" then
 		e.target:removeSelf()
 		e.target.parentsObj:removeSelf()
-		redcross.isVisible =false
+		redcross.isVisible = true
 		local redcross = display.newImageRect( "images/headstrike/wrong.png", 150, 150 )
 		redcross.x =  display.contentCenterX +235
 		redcross.y = display.contentCenterY -70
@@ -264,10 +262,6 @@ end
 
 
 question1()
-
-timer.performWithDelay( 10000, question2, 1)
-
-timer.performWithDelay( 20000, question3, 1)
 
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

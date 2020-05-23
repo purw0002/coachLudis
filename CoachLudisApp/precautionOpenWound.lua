@@ -25,12 +25,6 @@ wrongbuzzerSound = audio.loadSound( "sound/openwound/wrong.mp3")
 -- Play background music
 
 audio.play(levelTrack, { channel=2, loops=-1})
-----------------------------------------------------------------------------------------
--- Load all titles
-
-local timerText = display.newText( " ", 100, 100, native.systemFont, 16)
-	timerText:translate(55,-40)
-	timerText:setTextColor( 255, 255, 255 )
 
 ----------------------------------------------------------------------------------------
 -- Load all backgrounds
