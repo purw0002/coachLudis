@@ -29,7 +29,7 @@ audio.play(levelTrack, { channel=2, loops=-1})
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 local background1 = display.newImageRect( "images/headstrike/head injury page background.png", screenW, screenH )
-	background1.anchorX = 0.08
+	background1.anchorX = 0
 	background1.anchorY = 0
 
 local title = display.newText("Whom would you call?", display.contentCenterX, 15 , native.systemFontBold, 20) 
@@ -87,46 +87,6 @@ end
 
 
 
-local function selectHospital ()
-	hospital:removeSelf()
-	rightAnswers = rightAnswers + 1
-	school:removeSelf()
-	youwin.isVisible = true
-	audio.stop()
-	audio.play(winningSound)
-end
-
-
-local function selectSchool ()
-	school:removeSelf()
-	hospital:removeSelf()
-	redcross.isVisible =true
-	audio.stop()
-	audio.play(wrongbuzzerSound)
-end
-
-
-
-local function selectCorrectNumber ()
-	correctNumber:removeSelf()
-	rightAnswers = rightAnswers + 1
-	nineOne:removeSelf()
-	youwin.isVisible = true
-	audio.stop()
-	audio.play(winningSound)
-end
-
-
-local function selectNine ()
-	correctNumber:removeSelf()
-	nineOne:removeSelf()
-	redcross.isVisible =true
-	audio.stop()
-	audio.play(wrongbuzzerSound)
-end
-
-
-
 
 local function selectParents (e)
 	if e.phase == "began" then
@@ -164,11 +124,10 @@ end
 
 
 
-local function selectFriends ()
+local function selectFriends (e)
 	if e.phase == "began" then
 		e.target:removeSelf()
-		e.target.parentsObj:removeSelf()
-		redcross.isVisible = true
+		e.target.parentObj:removeSelf()
 		local redcross = display.newImageRect( "images/headstrike/wrong.png", 150, 150 )
 		redcross.x =  display.contentCenterX +235
 		redcross.y = display.contentCenterY -70
@@ -197,42 +156,7 @@ local function selectFriends ()
 	end
 end
 
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
--- Load all events
 
-local function question1()	
-	
-	hospital= display.newImageRect( "images/headstrike/hospital.png", 140,120  )
-		hospital.x =  display.contentCenterX +230
-		hospital.y = display.contentCenterY -70
-	hospital:addEventListener( "touch", selectHospital )
-
-
-	school= display.newImageRect( "images/headstrike/school.png", 140, 130)
-		school.x =  display.contentCenterX +230
-		school.y = display.contentCenterY +75
-	school:addEventListener( "touch", selectSchool )
-end
-
-
-local function question2()
-	audio.stop()
-	audio.play(levelTrack, { channel=2, loops=-1})
-	redcross.isVisible = false
-	youwin.isVisible = false
-	redcross1.isVisible = false
-	youwin1.isVisible = false
-	
-	correctNumber = display.newImageRect( "images/headstrike/000.png", 100,45  )
-		correctNumber.x =  display.contentCenterX +230
-		correctNumber.y = display.contentCenterY -70
-	correctNumber:addEventListener("touch", selectCorrectNumber)
-
-	nineOne = display.newImageRect( "images/headstrike/911.png", 100 , 45 )
-		nineOne.x =  display.contentCenterX +235
-		nineOne.y = display.contentCenterY +75
-	nineOne:addEventListener("touch", selectNine)
-end
 
 
 local function question3()
@@ -259,6 +183,94 @@ local function question3()
 	friends:addEventListener( "touch", selectFriends)
 	parents:addEventListener( "touch", selectParents )
 end
+
+
+
+
+local function selectCorrectNumber ()
+	correctNumber:removeSelf()
+	rightAnswers = rightAnswers + 1
+	nineOne:removeSelf()
+	youwin.isVisible = true
+	audio.stop()
+	audio.play(winningSound)
+	timer.performWithDelay(2000, question3, 1)
+end
+
+
+local function selectNine ()
+	correctNumber:removeSelf()
+	nineOne:removeSelf()
+	redcross.isVisible =true
+	audio.stop()
+	audio.play(wrongbuzzerSound)
+	timer.performWithDelay(2000, question3, 1)
+end
+
+
+
+local function question2()
+	audio.stop()
+	audio.play(levelTrack, { channel=2, loops=-1})
+	redcross.isVisible = false
+	youwin.isVisible = false
+	redcross1.isVisible = false
+	youwin1.isVisible = false
+	
+	correctNumber = display.newImageRect( "images/headstrike/000.png", 100,45  )
+		correctNumber.x =  display.contentCenterX +230
+		correctNumber.y = display.contentCenterY -70
+	correctNumber:addEventListener("touch", selectCorrectNumber)
+
+	nineOne = display.newImageRect( "images/headstrike/911.png", 100 , 45 )
+		nineOne.x =  display.contentCenterX +235
+		nineOne.y = display.contentCenterY +75
+	nineOne:addEventListener("touch", selectNine)
+end
+
+
+
+
+
+local function selectHospital ()
+	hospital:removeSelf()
+	hospital = nil
+	rightAnswers = rightAnswers + 1
+	school:removeSelf()
+	school = nil
+	youwin.isVisible = true
+	audio.stop()
+	audio.play(winningSound)
+	timer.performWithDelay(2000, question2, 1)
+end
+
+
+local function selectSchool ()
+	school:removeSelf()
+	hospital:removeSelf()
+	redcross.isVisible =true
+	audio.stop()
+	audio.play(wrongbuzzerSound)
+	timer.performWithDelay(2000, question2, 1)
+end
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-- Load all events
+
+local function question1()	
+	
+	hospital= display.newImageRect( "images/headstrike/hospital.png", 140,120  )
+		hospital.x =  display.contentCenterX +230
+		hospital.y = display.contentCenterY -70
+	hospital:addEventListener( "touch", selectHospital )
+
+
+	school= display.newImageRect( "images/headstrike/school.png", 140, 130)
+		school.x =  display.contentCenterX +230
+		school.y = display.contentCenterY +75
+	school:addEventListener( "touch", selectSchool )
+end
+
 
 
 question1()

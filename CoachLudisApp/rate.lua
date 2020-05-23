@@ -84,10 +84,10 @@ function scene:create( event )
 		composer.start = true
 		if composer.game == "soccer" then
 			composer.removeScene( "level2")
-			composer.gotoScene( "level2", "fade", 500 )
+			composer.gotoScene( "InjurySheet", "fade", 500 )
 		else 
 			composer.removeScene( "cycleLevel2")
-			composer.gotoScene( "cycleLevel2", "fade", 500 )
+			composer.gotoScene( "InjurySheet", "fade", 500 )
 		end
 	end
 
@@ -141,7 +141,7 @@ function scene:create( event )
 	local rect3 = display.newRect( display.contentCenterX+47, display.contentCenterY +105, 30, 30 )
 
 	rect3.fill = paint
-	--rect3:addEventListener( "tap", replayLevel )
+	rect3:addEventListener( "tap", replayLevel )
 
 	--replayButton:addEventListener( "tap", replayLevel )
 

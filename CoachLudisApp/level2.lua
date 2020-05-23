@@ -295,10 +295,21 @@ local function boardDissapear(event)
 		-- By some method such as a "pause" button, show the overlay
 		print("go to next scene")
 		composer.deadPlayers = deadPlayers
-		timer.cancel(createObstacles)
+		while stones.numChildren > 0 do
+        	local child = stones[1]
+        	if child then 
+        		child:removeSelf() 
+        	end
+    	end
+		while player2s.numChildren > 0 do
+        	local child = player2s[1]
+        	if child then 
+        		child:removeSelf() 
+        	end
+    	end		
+    	timer.cancel(createObstacles)
 		composer.removeScene( selectedLevel)
 		composer.gotoScene( selectedLevel, "fade", 100 )
-			--composer.gotoScene("level3","fade",100)
 
 	elseif(injuryBoard.param1 == nil) then
 		print("starting on collide start & resume timer and ophysics")
@@ -331,7 +342,7 @@ local function showInjuryBoard()
 	injuryBoard.x = display.contentCenterX
 	injuryBoard.y = display.contentCenterY
 	injuryBoard.params = createObstacles
-	if(choice["Image_name"] == 'leg fracture.png') then
+	if(choice["Image_name"] == 'leg fracture.png' and choice["Image_name"] == 'soft-tissue injury(leg).png' and choice["Image_name"] == 'shoulder dislocation (text).png') then
 		injuriesOccured[#injuriesOccured+1] = 'level3'
 	elseif(choice["Image_name"] == 'intracranial injury.png') then
 		injuriesOccured[#injuriesOccured+1] = 'precautionheadstrike'
@@ -447,8 +458,10 @@ local function selectSetting(event)
 end
 	-- This would occur when you click the replay button
 local function replayButtonEvent()
-	composer.removeScene( composer.levelPlaying)
-	composer.gotoScene( composer.levelPlaying, "fade", 500 )
+	composer.start = true
+	composer.sport = 'soccer'
+	composer.removeScene( "InjurySheet")
+	composer.gotoScene( "InjurySheet", "fade", 500 )
 end
 
 

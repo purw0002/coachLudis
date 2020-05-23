@@ -416,7 +416,7 @@ local function showInjuryBoard()
 	injuryBoard.y = display.contentCenterY
 	injuryBoard.params = createObs
 
-	if(choice["Image_name"] == 'leg fracture.png') then
+	if(choice["Image_name"] == 'leg fracture.png' and choice["Image_name"] == 'soft-tissue injury(leg).png' and choice["Image_name"] == 'shoulder dislocation (text).png') then
 		injuriesOccured[#injuriesOccured+1] = 'level3'
 	elseif(choice["Image_name"] == 'intracranial injury.png') then
 		injuriesOccured[#injuriesOccured+1] = 'precautionheadstrike'

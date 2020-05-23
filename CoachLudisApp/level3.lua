@@ -142,8 +142,14 @@ function scene:create( event )
 			gameComplete = true
 			countDown = 0
 			composer.healthIncrease = 0
-			composer.chance = 0
 			composer.success = false
+			display.remove(myCircle)
+			myCircle = nil
+			timerText:removeSelf()
+			timerText = nil
+			ice_pack:removeSelf()
+			arm:removeSelf()
+			hot_water_bag:removeSelf()
 			if composer.game == 'soccer' then
 				composer.gotoScene("level2","fade",100)
 			else
