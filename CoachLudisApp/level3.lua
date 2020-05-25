@@ -36,7 +36,7 @@ function scene:create( event )
 	pauseTime = false;
 	resumeTime = true;
 
-	local timerText = display.newText( "", 100, 100, native.systemFont, 16)
+	timerText = display.newText( "", 100, 100, native.systemFont, 16)
 	timerText:translate(55,-40)
 	timerText:setTextColor( 255, 255, 255 )
 
@@ -197,7 +197,7 @@ function scene:create( event )
 				if ( hasCollidedCircle( ice_pack, myCircle, radius ) ) then
 				-- Remove the coin from the screen
 					display.remove(myCircle)
-					myCircle = nil
+					--myCircle = nil
 					myCircle = display.newCircle(440, 260,radius)
 					myCircle:setFillColor(1,0,0)
 					-- Remove reference from table

@@ -32,8 +32,6 @@ local healthRectangeRed
 local deadPlayers
 local boom
 local createObstacles
-local nw
-local nh
 -- Sheet data for graphics
 local sheetData = {
 	width= 614,
@@ -714,8 +712,6 @@ function scene:show( event )
 			physics.setGravity(-2,0)
 
 			physics.addBody(ball, "static", {shape={-nw,-nh,nw,-nh,nw,nh,-nw,nh} });
-			--physics.addBody(player2s, {shape={-nw,-nh,nw,-nh,nw,nh,-nw,nh} });
-			--physics.addBody(stones)
 			physics.addBody( detector , "static")
 			healthValue = healthValue +composer.healthIncrease
 			healthRectangeGreen.width =  healthValue*2

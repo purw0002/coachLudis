@@ -54,21 +54,10 @@ function scene:create( event )
 	musicButtonOFFSC.y = 20
 	musicButtonOFFSC:addEventListener( "touch", startAudio )
 
-	local background = display.newImageRect( "images/background/app background/appBack.png", screenW, screenH )
+	local background = display.newImageRect( "images/background/app background/character select background.png", screenW, screenH )
 	background.anchorX = 0
 	background.anchorY = 0
 
-	local playBtn = widget.newButton{
-		label="Select Character",
-		labelColor = { default={0,0,0} },
-		default="button.png",
-		over="button-over.png",
-		width=154, height=40,
-	}
-	playBtn.x = display.contentCenterX +50
-	playBtn.y = display.contentCenterY - 130
-	
-	playBtn._view._label.size = 25
 
 
 	local function selectBoy()
@@ -135,7 +124,6 @@ function scene:create( event )
 	sceneGroup:insert( window1 )
 	sceneGroup:insert( player )
 	sceneGroup:insert( player1 )
-	sceneGroup:insert( playBtn )
 	sceneGroup:insert( musicButtonONSC )
 	sceneGroup:insert( musicButtonOFFSC )
 
