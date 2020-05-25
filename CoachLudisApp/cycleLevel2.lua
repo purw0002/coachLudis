@@ -35,7 +35,7 @@ bottles = display.newGroup()
 stamina = 3
 healthValue = 50
 
-healthRectangeRed = display.newRect( 130, 20, healthValue*2, 20 ) 
+healthRectangeRed = display.newRect( 130, 20, 100, 20 ) 
 healthRectangeRed:setFillColor(208, 208, 57, 1)
 healthRectangeRed.x = 100
 	-- health bar
@@ -569,9 +569,10 @@ function scene:resumeGame()
     Runtime:addEventListener('enterFrame',move)
     --Runtime:addEventListener("collision", onCollision)
 	if composer.success  ==  true then
-		healthValue =  healthValue + 20
+		healthValue =  healthValue + 25
 		healthRectangeGreen.width =  healthValue*2
-		healthRectangeGreen.x = healthRectangeRed.x - 50 + (healthValue/2)
+		healthRectangeGreen.x = 100
+		healthRectangeGreen.x = healthRectangeGreen.x - 50 + (healthValue)
 	end
 	timer.resume(createObs)
 	timer.resume(spawnOp)

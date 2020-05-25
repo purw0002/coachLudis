@@ -715,7 +715,8 @@ function scene:show( event )
 			physics.addBody( detector , "static")
 			healthValue = healthValue +composer.healthIncrease
 			healthRectangeGreen.width =  healthValue*2
-			healthRectangeGreen.x = healthRectangeGreen.x + composer.healthIncrease
+			healthRectangeGreen.x = 130
+			healthRectangeGreen.x = healthRectangeGreen.x - 100 + composer.healthIncrease
 			createObstacles = timer.performWithDelay( 1500, createCrate, 13-composer.deadPlayers)
 			timer.resume(createObstacles)
 		end
