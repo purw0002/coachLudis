@@ -405,18 +405,18 @@ local function showInjuryBoard()
 
 	for i, weight in pairs(weights1) do
    		if rand < weight then
-       		choice = choices[i]
+       		choice = choices1[i]
        		break
    		else
        		rand = rand - weight
    		end
 	end
-	injuryBoard = display.newImageRect("images/injury window/" .. choice["Image_name"], 250,200)
+	injuryBoard = display.newImageRect("images/Image board main/" .. choice["Image_name"], 250,200)
 	injuryBoard.x = display.contentCenterX
 	injuryBoard.y = display.contentCenterY
 	injuryBoard.params = createObs
 
-	if(choice["Image_name"] == 'leg fracture.png' and choice["Image_name"] == 'soft-tissue injury(leg).png' and choice["Image_name"] == 'shoulder dislocation (text).png') then
+	if(choice["Image_name"] == 'leg fracture.png' or choice["Image_name"] == 'soft-tissue injury(leg).png' or choice["Image_name"] == 'shoulder dislocation (text).png') then
 		injuriesOccured[#injuriesOccured+1] = 'level3'
 	elseif(choice["Image_name"] == 'intracranial injury.png') then
 		injuriesOccured[#injuriesOccured+1] = 'precautionheadstrike'
@@ -639,7 +639,7 @@ local function randomizeObstaclesForSuburb()
 		physics.addBody(speedBreaker)
 		obstaclesCycle:insert(speedBreaker)
 	elseif (selectedObstacle == 'bottle') then
-		local bottle = display.newImageRect("images/cycling level assets/boost/boost button.png", 50, 50)
+		local bottle = display.newImageRect("images/cycling level assets/boost/boost symbol.png", 50, 50)
 		bottle.x, bottle.y = randomizeLane(),-10
 		bottle.name =  "bottle"
 		physics.addBody(bottle)

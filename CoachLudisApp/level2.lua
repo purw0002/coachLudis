@@ -306,15 +306,18 @@ local function boardDissapear(event)
         	if child then 
         		child:removeSelf() 
         	end
-    	end		
+    	end
     	timer.cancel(createObstacles)
 		composer.removeScene( selectedLevel)
 		composer.gotoScene( selectedLevel, "fade", 100 )
-
 	elseif(injuryBoard.param1 == nil) then
 		print("starting on collide start & resume timer and ophysics")
 		timer.resume(event.target.params)
+		if(deadPlayers == 13) then
+			Runtime:addEventListener("enterFrame", moveBackground)
+		end
 		physics.start()
+
 	else
 		timer.performWithDelay( 1000, showGameOver(injuryBoard.param1), 1)
 	end
@@ -338,11 +341,11 @@ local function showInjuryBoard()
        		rand = rand - weight
    		end
 	end
-	injuryBoard = display.newImageRect("images/injury window/" .. choice["Image_name"], 250,200)
+	injuryBoard = display.newImageRect("images/Image board main/" .. choice["Image_name"], 250,200)
 	injuryBoard.x = display.contentCenterX
 	injuryBoard.y = display.contentCenterY
 	injuryBoard.params = createObstacles
-	if(choice["Image_name"] == 'leg fracture.png' and choice["Image_name"] == 'soft-tissue injury(leg).png' and choice["Image_name"] == 'shoulder dislocation (text).png') then
+	if(choice["Image_name"] == 'leg fracture.png' or choice["Image_name"] == 'soft-tissue injury(leg).png' or choice["Image_name"] == 'shoulder dislocation (text).png') then
 		injuriesOccured[#injuriesOccured+1] = 'level3'
 	elseif(choice["Image_name"] == 'intracranial injury.png') then
 		injuriesOccured[#injuriesOccured+1] = 'precautionheadstrike'
@@ -403,7 +406,6 @@ local function onCollision(event)
 			print("on collision pausing timer and physics")
 			physics.pause()
 			timer.pause(createObstacles)
-			print("weird")
 			showInjuryBoard()
 				
 		elseif(event.object1.name == "detector" or event.object2.name == "detector") then

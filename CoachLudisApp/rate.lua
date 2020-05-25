@@ -45,19 +45,19 @@ function scene:create( event )
 
 	starsGp = display.newGroup()
 
-	local star1 = display.newImageRect( "images/ratings/star.png", 85, 85)
-	star1.x = display.contentCenterX-21
-	star1.y = display.contentCenterY -35
+	local star1 = display.newImageRect( "images/ratings/star.png", 120, 120)
+	star1.x = display.contentCenterX-25
+	star1.y = display.contentCenterY - 5
 	star1.isVisible = false
 
-	local star2 = display.newImageRect( "images/ratings/star.png", 95, 95 )
+	local star2 = display.newImageRect( "images/ratings/star.png", 120, 120 )
 	star2.x = display.contentCenterX+29 
-	star2.y = display.contentCenterY - 44
+	star2.y = display.contentCenterY - 18
 	star2.isVisible = false
 
-	local star3 = display.newImageRect( "images/ratings/star.png", 85, 85 )
+	local star3 = display.newImageRect( "images/ratings/star.png", 120, 120 )
 	star3.x = display.contentCenterX+82 
-	star3.y = display.contentCenterY -35
+	star3.y = display.contentCenterY - 5
 	star3.isVisible = false
 
 	starsGp:insert(star1)
@@ -91,14 +91,8 @@ function scene:create( event )
 		end
 	end
 
-	local function goToLevelSelect()
-		composer.prevScreen = "select"
-		composer.gotoScene( composer.levelSelectLink, "fade", 500 )
-	end
 
 	local function goNext()
-		composer.prevScreen = "selectCharacter"
-		composer.chance = 1
 		if composer.game == "soccer" then
 			composer.game = "cycle"
 			composer.removeScene( "InjurySheet")
@@ -111,7 +105,7 @@ function scene:create( event )
 
 	local levelUpButton = display.newImageRect( "images/ratings/home icon.png", 75, 75 )
 	levelUpButton.x = display.contentCenterX-23
-	levelUpButton.y = display.contentCenterY +105
+	levelUpButton.y = display.contentCenterY+ 68
 
 	local paint = {
     	type = "gradient",
@@ -120,25 +114,15 @@ function scene:create( event )
     	direction = "down"
 	}
 
-	local rect1 = display.newRect( display.contentCenterX-23, display.contentCenterY +105, 30, 30 )
+	local rect1 = display.newRect( display.contentCenterX-23, display.contentCenterY +68, 30, 30 )
 
 	rect1.fill = paint
 	rect1:addEventListener( "tap", goToSportSelect )
 
-	local levelIconButton = display.newImageRect( "images/ratings/level icon.png", 75, 75 )
-	levelIconButton.x = display.contentCenterX +12
-	levelIconButton.y = display.contentCenterY +105
-
-	local rect2 = display.newRect( display.contentCenterX +12, display.contentCenterY +105, 30, 30 )
-
-	rect2.fill = paint
-	--rect2:addEventListener( "tap", goToLevelSelect )
-	--levelIconButton:addEventListener( "tap", goToLevelSelect )
-
 	local replayButton = display.newImageRect( "images/ratings/replay icon.png", 75, 75 )
-	replayButton.x = display.contentCenterX+47
-	replayButton.y = display.contentCenterY +105
-	local rect3 = display.newRect( display.contentCenterX+47, display.contentCenterY +105, 30, 30 )
+	replayButton.x = display.contentCenterX + 30
+	replayButton.y = display.contentCenterY +68
+	local rect3 = display.newRect( display.contentCenterX + 30, display.contentCenterY +68, 30, 30 )
 
 	rect3.fill = paint
 	rect3:addEventListener( "tap", replayLevel )
@@ -148,10 +132,9 @@ function scene:create( event )
 
 	local playIcon = display.newImageRect( "images/ratings/play icon.png", 75, 75 )
 	playIcon.x = display.contentCenterX+82
-	playIcon.y = display.contentCenterY +105
-	--playIcon:addEventListener( "tap", goNext )
+	playIcon.y = display.contentCenterY +68
 
-	local rect4 = display.newRect( display.contentCenterX+82, display.contentCenterY +105, 30, 30 )
+	local rect4 = display.newRect( display.contentCenterX+82, display.contentCenterY +68, 30, 30 )
 
 	rect4.fill = paint
 	rect4:addEventListener( "tap", goNext )
@@ -169,13 +152,11 @@ function scene:create( event )
 	sceneGroup:insert( frame )
 	sceneGroup:insert( starsGp )
 	sceneGroup:insert( rect1 )
-	sceneGroup:insert( rect2 )
 	sceneGroup:insert( rect3 )
 	sceneGroup:insert( rect4 )
 
 	sceneGroup:insert( levelUpButton )
 	sceneGroup:insert( replayButton )
-	sceneGroup:insert( levelIconButton )
 	sceneGroup:insert( playIcon )
 	--sceneGroup:insert( factPart )
 

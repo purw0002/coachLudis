@@ -17,11 +17,11 @@ local screenW, screenH, halfW = display.actualContentWidth, display.actualConten
 function goToMainLevel(e)
 	if e.phase == "began" then
 		if(composer.game == 'soccer') then
-			composer.removeScene('level1')
-			composer.gotoScene( "level1", "fade", 500 )
+			composer.removeScene('level2')
+			composer.gotoScene( "level2", "fade", 500 )
 		else
 			composer.removeScene('level02_1')
-			composer.gotoScene( "level02_1", "fade", 500 )
+			composer.gotoScene( "cycleLevel2", "fade", 500 )
 		end
 	end
 end

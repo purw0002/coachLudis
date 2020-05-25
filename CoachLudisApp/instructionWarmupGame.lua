@@ -13,11 +13,12 @@ local scene = composer.newScene()
 -- forward declarations and other locals
 local screenW, screenH, halfW = display.actualContentWidth, display.actualContentHeight, display.contentCenterX
 
+
 function goToMainLevel(e)
 	if e.phase == "began" then
 		if(composer.game == 'soccer') then
-			composer.removeScene('level2')
-			composer.gotoScene( "level2", "fade", 500 )
+			composer.removeScene('level1')
+			composer.gotoScene( "level1", "fade", 500 )
 		else
 			composer.removeScene('level02_1')
 			composer.gotoScene( "level02_1", "fade", 500 )
@@ -27,15 +28,17 @@ end
 
 
 function scene:create( event )
+
 	local sceneGroup = self.view
-	local backgroundimg = display.newImageRect( "images/instruction sheet/soccer game instruction.png", screenW, screenH)
+
+	local backgroundimg = display.newImageRect( "images/instruction sheet/warm-up game instruction .png", screenW, screenH)
 		backgroundimg.anchorX = 0
 		backgroundimg.anchorY = 0
 	backgroundimg:addEventListener('touch', goToMainLevel)
+
 	sceneGroup:insert(backgroundimg)
 
 end
-
 
 function scene:show( event )
 	local sceneGroup = self.view
@@ -46,7 +49,6 @@ function scene:show( event )
 	elseif phase == "did" then
 		-- Called when the scene is now on screen
 		-- 
-		timer.performWithDelay( 5000, goToMainLevel, 1)
 		-- INSERT code here to make the scene come alive
 		-- e.g. start timers, begin animation, play audio, etc.
 	end

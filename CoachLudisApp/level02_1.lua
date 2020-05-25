@@ -28,9 +28,19 @@ function scene:create( event )
   ending:setFillColor(black)
   ending.isVisible = false
 
-  local character = display.newImageRect("images/cyclinglevel1/Idle (15).png", 210, 210)
-  character.x = 115
-  character.y = 230
+  local character
+  if (composer.playerGender == "boy") then
+    character = display.newImageRect("images/cyclinglevel1/Idle (15).png", 210, 210)
+    character.x = 115
+    character.y = 230
+  else
+    character = display.newImageRect("images/characters/player-girl/Idle (1).png", 130, 130)
+
+    character.x = 60
+    character.y = 230
+  end
+
+
 
   local caliper = display.newImageRect("images/cyclinglevel1/caliper.png", 95, 95)
   caliper.x = 73

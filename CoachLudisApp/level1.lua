@@ -66,8 +66,9 @@ function scene:create( event )
 			gameComplete = true;
 			composer.chance = 1
 			composer.start = true
-			composer.removeScene("level2")
-			composer.gotoScene("level2","fade",400)
+			composer.gotoScene("instructionSoccer","fade",500)
+			--composer.removeScene("level2")
+			--composer.gotoScene("level2","fade",400)
 		end
 
 	end
@@ -169,8 +170,8 @@ function scene:create( event )
 				composer.chance = 2
 				timer.cancel(countDownTimer)
 				composer.suceeded  =  true
-				composer.removeScene("level2","fade",400)
-				composer.gotoScene("level2","fade",400)
+				composer.removeScene("instructionSoccer")
+				composer.gotoScene("instructionSoccer","fade",500)
 			end
 		end
 	end 

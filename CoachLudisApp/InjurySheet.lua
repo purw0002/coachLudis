@@ -23,10 +23,10 @@ local backgroundimg = display.newImageRect( "images/infoimage/backgroundInfo.jpg
 	backgroundimg.anchorY = 0
 
 local title = display.newText("Your Health Bar", display.contentCenterX, 15 , native.systemFontBold, 20) 
---	title:setTextColor(0)
+title:setTextColor(0)
 
 local title1 = display.newText("Click on the inuries and see how much health you will loose", display.contentCenterX, 90 , native.systemFontBold, 10) 
---	title:setTextColor(0)
+title1:setTextColor(0)
 ----------------------------------------------------------------------------------------------
 -- ALL EVENTS
 local Healthbar20 = display.newImageRect( "images/infoimage/Healthbar20.PNG", 350,20 )
@@ -102,6 +102,7 @@ local function selectHead()
 	Healthbar100.isVisible = false
 	audio.play(levelTrack)
 end
+
 
 local function selectOpenwound()
 
@@ -201,11 +202,11 @@ end
 
 local function goToLevel()
 	if(composer.game ==  "soccer") then
-		composer.removeScene("instructionSoccer")
-		composer.gotoScene( "instructionSoccer", "fade", 500 )
+		composer.removeScene("instructionWarmupGame")
+		composer.gotoScene( "instructionWarmupGame", "fade", 500 )
 	else
-		composer.removeScene("instructionCycle")
-		composer.gotoScene( "instructionCycle", "fade", 500 )
+		composer.removeScene("level02_1")
+		composer.gotoScene( "level02_1", "fade", 500 )
 	end
 end
 

@@ -40,6 +40,16 @@ function scene:create( event )
 	timerText:translate(55,-40)
 	timerText:setTextColor( 255, 255, 255 )
 
+	function goBackToPlay(e)
+		if(e.phase == "began") then
+			e.target:removeSelf()
+			if composer.game == 'soccer' then
+				composer.gotoScene("level2","fade",500)
+			else
+				composer.hideOverlay( "fade", 500 )
+			end
+		end
+	end
 
 	function gameOver()
 		if(gameComplete == false) then
@@ -54,11 +64,11 @@ function scene:create( event )
 				arm:removeSelf()
 				composer.healthIncrease = 0
 				composer.success = false
-				if composer.game == 'soccer' then
-					composer.gotoScene("level2","fade",100)
-				else
-					composer.gotoScene("cycleLevel2","fade",100)
-				end
+
+				local zeroBackground = display.newImageRect( "images/precaution level decrease screen/0 health.png", screenW, screenH )
+				zeroBackground.anchorX = 0
+				zeroBackground.anchorY = 0
+				zeroBackground:addEventListener( "touch", goBackToPlay )
 			else
 
 				timerText.text = "Time:"..countDown
@@ -150,11 +160,10 @@ function scene:create( event )
 			ice_pack:removeSelf()
 			arm:removeSelf()
 			hot_water_bag:removeSelf()
-			if composer.game == 'soccer' then
-				composer.gotoScene("level2","fade",100)
-			else
-				composer.gotoScene("cycleLevel2","fade",100)
-			end
+			local zeroBackground = display.newImageRect( "images/precaution level decrease screen/0 health.png", screenW, screenH )
+			zeroBackground.anchorX = 0
+			zeroBackground.anchorY = 0
+			zeroBackground:addEventListener( "touch", goBackToPlay )
 		end
 		return true
 	end
@@ -201,25 +210,33 @@ function scene:create( event )
 						arm:removeSelf()
 						if countDown <= 3 then
 							composer.healthIncrease = 20
-
+							local twentyBackground = display.newImageRect( "images/precaution level decrease screen/20 health.png", screenW, screenH )
+							twentyBackground.anchorX = 0
+							twentyBackground.anchorY = 0
+							twentyBackground:addEventListener( "touch", goBackToPlay )
 						elseif countDown <= 6 then
 							composer.healthIncrease = 40 
+							local fortyBackground = display.newImageRect( "images/precaution level decrease screen/40 health.png", screenW, screenH )
+							fortyBackground.anchorX = 0
+							fortyBackground.anchorY = 0
+							fortyBackground:addEventListener( "touch", goBackToPlay )
 						elseif countDown <= 9 then
 							composer.healthIncrease = 60
+							local sixtyBackground = display.newImageRect( "images/precaution level decrease screen/60 health.png", screenW, screenH )
+							sixtyBackground.anchorX = 0
+							sixtyBackground.anchorY = 0
+							sixtyBackground:addEventListener( "touch", goBackToPlay )
 						else
 							composer.healthIncrease = 0
+							local zeroBackground = display.newImageRect( "images/precaution level decrease screen/0 health.png", screenW, screenH )
+							zeroBackground.anchorX = 0
+							zeroBackground.anchorY = 0
+							zeroBackground:addEventListener( "touch", goBackToPlay )
 						end
 						gameComplete = true
 						timer.cancel(countDownTimer)
+						composer.success =  true
 
-						if composer.game == 'soccer' then
-							composer.gotoScene("level2","fade",100)
-						else
-							composer.success =  true
-							composer.gotoScene("cycleLevel2","fade",100)
-						end
-						--composer.gotoScene( "level2", "fade", 400 )
-						--composer.gotoScene("level2","fade",100)
 						break
 					end	
 					-- Handle other collision aspects like increasing score, etc.
@@ -339,6 +356,10 @@ function scene:hide( event )
     if ( phase == "will" ) then
         -- Call the "resumeGame()" function in the parent scene
         --composer.chance = 0
+    	if (composer.game ==  'cycle') then
+        	local parent = event.parent
+        	parent:resumeGame()
+        end
     end
 
 end

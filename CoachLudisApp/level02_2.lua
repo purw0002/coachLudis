@@ -7,7 +7,7 @@ local startCycling = display.newImageRect( "images/cyclinglevel1/play icon.png",
 
 local function startCyclingTapListener()
     composer.removeScene( "level02_2" )
-    composer.gotoScene( "cycleLevel2", "fade", 500 )
+    composer.gotoScene( "instructionCycle", "fade", 500 )
     return true
 end
 
