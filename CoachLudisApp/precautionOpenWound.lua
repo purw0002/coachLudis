@@ -25,21 +25,13 @@ wrongbuzzerSound = audio.loadSound( "sound/openwound/wrong.mp3")
 -- Play background music
 
 audio.play(levelTrack, { channel=2, loops=-1})
-
+	
 ----------------------------------------------------------------------------------------
 -- Load all backgrounds
-local background1
 
-if (composer.playerGender == "boy") then
-	background1 = display.newImageRect( "images/openwound/open wound page background.png", screenW, screenH )
+local background1 = display.newImageRect( "images/openwound/open wound page background.png", screenW, screenH )
 	background1.anchorX = 0
 	background1.anchorY = 0
-else
-	background1 = display.newImageRect( "images/openwound/open wound page background(girl).png", screenW, screenH )
-	background1.anchorX = 0
-	background1.anchorY = 0
-end
-
 
 local rightAnswers = 0
 
@@ -93,16 +85,7 @@ local function makeLooseDissapear()
 	redcross.isVisible = false
 end
 
-local function goBackToPlay(e)
-	if e.phase  ==  "began"  then
-		e.target:removeSelf()
-		if(composer.game == "soccer") then
-			composer.gotoScene( "level2", "fade", 500 )
-		else
-			composer.hideOverlay( "fade", 400 )
-		end
-	end
-end
+
 local function selectBandaid (e)
 	if e.phase  ==  "began"  then
 		e.target:removeSelf()
@@ -116,32 +99,17 @@ local function selectBandaid (e)
 			if(composer.game == "soccer") then
 				if(rightAnswers >= 3) then
 					composer.healthIncrease = 50
-					local fiftyBackground = display.newImageRect( "images/precaution level decrease screen/50 health.png", screenW, screenH )
-					fiftyBackground.anchorX = 0
-					fiftyBackground.anchorY = 0
-					fiftyBackground:addEventListener( "touch", goBackToPlay )
 				else
 					composer.healthIncrease = 0
-					local zeroBackground = display.newImageRect( "images/precaution level decrease screen/0 health.png", screenW, screenH )
-					zeroBackground.anchorX = 0
-					zeroBackground.anchorY = 0
-					zeroBackground:addEventListener( "touch", goBackToPlay )
 				end
-
+				composer.gotoScene( "level2", "fade", 500 )
 			else
 				if(rightAnswers >= 3) then
 					composer.success = true
-					local fiftyBackground = display.newImageRect( "images/precaution level decrease screen/50 health.png", screenW, screenH )
-					fiftyBackground.anchorX = 0
-					fiftyBackground.anchorY = 0
-					fiftyBackground:addEventListener( "touch", goBackToPlay )
 				else
 					composer.success = false
-					local zeroBackground = display.newImageRect( "images/precaution level decrease screen/0 health.png", screenW, screenH )
-					zeroBackground.anchorX = 0
-					zeroBackground.anchorY = 0
-					zeroBackground:addEventListener( "touch", goBackToPlay )
 				end
+				composer.hideOverlay( "fade", 400 )
 			end
 		end
 		timer.performWithDelay( 2000, destroyWin, 1)
@@ -167,31 +135,17 @@ local function selecttape (e)
 			if(composer.game == "soccer") then
 				if(rightAnswers >= 3) then
 					composer.healthIncrease = 50
-					local fiftyBackground = display.newImageRect( "images/precaution level decrease screen/50 health.png", screenW, screenH )
-					fiftyBackground.anchorX = 0
-					fiftyBackground.anchorY = 0
-					fiftyBackground:addEventListener( "touch", goBackToPlay )
 				else
 					composer.healthIncrease = 0
-					local zeroBackground = display.newImageRect( "images/precaution level decrease screen/0 health.png", screenW, screenH )
-					zeroBackground.anchorX = 0
-					zeroBackground.anchorY = 0
-					zeroBackground:addEventListener( "touch", goBackToPlay )
 				end
+				composer.gotoScene( "level2", "fade", 500 )
 			else
 				if(rightAnswers >= 3) then
 					composer.success = true
-					local fiftyBackground = display.newImageRect( "images/precaution level decrease screen/50 health.png", screenW, screenH )
-					fiftyBackground.anchorX = 0
-					fiftyBackground.anchorY = 0
-					fiftyBackground:addEventListener( "touch", goBackToPlay )
 				else
 					composer.success = false
-					local zeroBackground = display.newImageRect( "images/precaution level decrease screen/0 health.png", screenW, screenH )
-					zeroBackground.anchorX = 0
-					zeroBackground.anchorY = 0
-					zeroBackground:addEventListener( "touch", goBackToPlay )
 				end
+				composer.gotoScene( "cycleLevel2", "fade", 500 )
 			end
 		end
 		timer.performWithDelay( 2000, destroyLoose, 1)
