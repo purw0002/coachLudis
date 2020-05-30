@@ -4,6 +4,7 @@
 --
 -----------------------------------------------------------------------------------------
 
+
 local composer = require( "composer" )
 local scene = composer.newScene()
 local json = require( "json" )
@@ -17,7 +18,7 @@ local playBtn
 local background
 musicTrack = audio.loadSound( "sound/bensound-hey.mp3")
 totalRequests = 0
-sound = "ON"
+sound = "OFF"
 
 --choice = {}
 --injuryData = {}
@@ -113,15 +114,9 @@ function scene:create( event )
 	background.touch = onPlayBtnRelease
 
 	-- create a widget button (which will loads level1.lua on release)
-	playBtn = widget.newButton{
-		label="Tap to Start Game",
-		labelColor = { default={0.175,0.335,0.351} },
-		default="button.png",
-		over="button-over.png",
-		width=154, height=40,
-	}
-	playBtn.x = display.contentCenterX +50
-	playBtn.y = display.contentHeight - 25
+	playBtn = display.newImageRect( "images/logo/starting screen.png", display.actualContentWidth, display.actualContentHeight )
+	playBtn.anchorX = 0
+	playBtn.anchorY = 0
 	playBtn.isVisible = false
 	-- all display objects must be inserted into group
 	sceneGroup:insert( background )

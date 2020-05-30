@@ -237,7 +237,7 @@ local function createCrate()
 	local obs = {'stone','player'}
 	local idx = math.random(#obs)
 	local selectedObs = obs[idx]
-   	physics.setGravity(-2,0)
+   	physics.setGravity(-5,0)
    	if(selectedObs == 'stone') then
    		local stone = display.newImageRect("images/objects/soccer/stone2.png", 20,20)
 		stone.x, stone.y = initialObstacle,randomizeLane()+20
@@ -311,7 +311,7 @@ local function boardDissapear(event)
 	elseif(injuryBoard.param1 == nil) then
 		print("starting on collide start & resume timer and ophysics")
 		timer.resume(event.target.params)
-		if(deadPlayers == 13) then
+		if(deadPlayers == 40) then
 			Runtime:addEventListener("enterFrame", moveBackground)
 		end
 		physics.start()
@@ -409,7 +409,7 @@ local function onCollision(event)
 		elseif(event.object1.name == "detector" or event.object2.name == "detector") then
 			event.object2:removeSelf()
 			deadPlayers = deadPlayers + 1
-			if(deadPlayers == 13) then
+			if(deadPlayers == 40) then
 				Runtime:addEventListener("enterFrame", moveBackground)
 			end
 		end
@@ -701,15 +701,15 @@ function scene:show( event )
 				title.isVisible =  false
 			end
 
-			timer.performWithDelay( 3000, hideText, 13)
+			timer.performWithDelay( 3000, hideText, 1)
 			composer.start =  false
 			physics.start()
-			createObstacles = timer.performWithDelay( 1500, createCrate, 13)
+			createObstacles = timer.performWithDelay( 1000, createCrate, 40)
 		else
 			print("physics starting again along eith timer")
 
 			physics.start()
-			physics.setGravity(-2,0)
+			physics.setGravity(-5,0)
 
 			physics.addBody(ball, "static", {shape={-nw,-nh,nw,-nh,nw,nh,-nw,nh} });
 			physics.addBody( detector , "static")
@@ -717,7 +717,7 @@ function scene:show( event )
 			healthRectangeGreen.width =  healthValue*2
 			healthRectangeGreen.x = 130
 			healthRectangeGreen.x = healthRectangeGreen.x - 100 + composer.healthIncrease
-			createObstacles = timer.performWithDelay( 1500, createCrate, 13-composer.deadPlayers)
+			createObstacles = timer.performWithDelay( 1000, createCrate, 40-composer.deadPlayers)
 			timer.resume(createObstacles)
 		end
 
