@@ -535,7 +535,7 @@ function scene:create( event )
 	if (composer.playerGender == "boy") then
 		blueSheet = graphics.newImageSheet("runBlueGuy.png",sheetDataBlueGuyRunning )
 		blueSequenceData = {
-			{ name = "run", start = 1, count= 15,time=800},
+			{ name = "run", start = 1, count= 15,time=300},
 		}
 		player = display.newSprite(blueSheet, blueSequenceData)
 		player.x, player.y = 80,160
