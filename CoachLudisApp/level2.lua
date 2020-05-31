@@ -420,6 +420,7 @@ local settingBackground
 local settingWindow
 local playButton
 local replayButton
+local goBackToSelectButton
 
 local function startPlaying(event )
 
@@ -434,6 +435,7 @@ local function startPlaying(event )
 		settingWindow.isVisible = false
 		playButton.isVisible = false
 		replayButton.isVisible = false
+		goBackToSelectButton.isVisible = false
 		physics.start()
 		timer.resume(createObstacles)
    	end
@@ -451,6 +453,7 @@ local function selectSetting(event)
 		settingWindow.isVisible = true
 		playButton.isVisible = true
 		replayButton.isVisible = true
+		goBackToSelectButton.isVisible = true
 		physics.pause()
 		timer.pause(createObstacles)
    	end
@@ -644,6 +647,16 @@ function scene:create( event )
 	-- make a crate (off-screen), position it, and rotate slightly
 	-- create a grass object and add physics (with custom shape)
 
+	local function goBackToHome()
+		composer.removeScene("level2")
+		composer.gotoScene("select","fade",500)
+	end
+	goBackToSelectButton = display.newImageRect( "images/commons/music button.png", 50, 50 )
+	goBackToSelectButton.x =  display.contentCenterX  + 45
+	goBackToSelectButton.y = display.contentCenterY + 35
+	goBackToSelectButton.isVisible = false
+	goBackToSelectButton:addEventListener( "touch", goBackToHome )
+
 	sceneGroup:insert( background )
 	sceneGroup:insert( background1 )
 	sceneGroup:insert(ball)
@@ -661,6 +674,7 @@ function scene:create( event )
 	sceneGroup:insert(settingWindow)
 	sceneGroup:insert(playButton)
 	sceneGroup:insert(replayButton)
+	sceneGroup:insert(goBackToSelectButton)
 
 
 	-- TO DO 3

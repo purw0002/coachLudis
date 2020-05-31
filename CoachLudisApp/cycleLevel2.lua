@@ -52,37 +52,37 @@ local function showBottle(stamina)
 
 	if(stamina == 4) then
 		local bottle = display.newImageRect("images/cycling level assets/boost/boost symbol.png", 50, 50)
-		bottle.x, bottle.y = 490,20
+		bottle.x, bottle.y = 400,20
 		local bottle1 = display.newImageRect("images/cycling level assets/boost/boost symbol.png", 50, 50)
-		bottle1.x, bottle1.y = 520,20
+		bottle1.x, bottle1.y = 430,20
 		local bottle2 = display.newImageRect("images/cycling level assets/boost/boost symbol.png", 50, 50)
-		bottle2.x, bottle2.y = 550,20
+		bottle2.x, bottle2.y = 460,20
 		local bottle3 = display.newImageRect("images/cycling level assets/boost/boost symbol.png", 50, 50)
-		bottle3.x, bottle3.y = 580,20
+		bottle3.x, bottle3.y = 490,20
 		bottles:insert(bottle)
 		bottles:insert(bottle1)
 		bottles:insert(bottle2)
 		bottles:insert(bottle3)
 	elseif(stamina == 3) then
 		local bottle = display.newImageRect("images/cycling level assets/boost/boost symbol.png", 50, 50)
-		bottle.x, bottle.y = 490,20
+		bottle.x, bottle.y = 400,20
 		local bottle1 = display.newImageRect("images/cycling level assets/boost/boost symbol.png", 50, 50)
-		bottle1.x, bottle1.y = 520,20
+		bottle1.x, bottle1.y = 430,20
 		local bottle2 = display.newImageRect("images/cycling level assets/boost/boost symbol.png", 50, 50)
-		bottle2.x, bottle2.y = 550,20
+		bottle2.x, bottle2.y = 460,20
 		bottles:insert(bottle)
 		bottles:insert(bottle1)
 		bottles:insert(bottle2)
 	elseif(stamina == 2) then
 		local bottle = display.newImageRect("images/cycling level assets/boost/boost symbol.png", 50, 50)
-		bottle.x, bottle.y = 490,20
+		bottle.x, bottle.y = 400,20
 		local bottle1 = display.newImageRect("images/cycling level assets/boost/boost symbol.png", 50, 50)
-		bottle1.x, bottle1.y = 520,20
+		bottle1.x, bottle1.y = 430,20
 		bottles:insert(bottle)
 		bottles:insert(bottle1)
 	elseif(stamina == 1) then
 		local bottle = display.newImageRect("images/cycling level assets/boost/boost symbol.png", 50, 50)
-		bottle.x, bottle.y = 490,20
+		bottle.x, bottle.y = 400,20
 		bottles:insert(bottle)
 	end
 end
@@ -565,6 +565,61 @@ local function onCollision(event)
 end
 
 
+local settingBackground
+local settingWindow
+local playButton
+local replayButton
+local goBackToSelectButton
+
+local function startPlaying(event )
+
+
+	local phase = event.phase
+    if (phase == "began") then
+
+    elseif (phase == "moved") then
+
+    elseif (phase == "ended" or phase == "cancelled") then
+		settingBackground.isVisible = false
+		settingWindow.isVisible = false
+		playButton.isVisible = false
+		replayButton.isVisible = false
+		goBackToSelectButton.isVisible = false
+		timer.resume(createObs)
+		timer.resume(spawnOp)
+		Runtime:addEventListener( "enterFrame", move )
+   	end
+end
+
+local function selectSetting(event)
+
+	local phase = event.phase
+    if (phase == "began") then
+
+    elseif (phase == "moved") then
+
+    elseif (phase == "ended" or phase == "cancelled") then
+       	settingBackground.isVisible = true
+		settingWindow.isVisible = true
+		playButton.isVisible = true
+		replayButton.isVisible = true
+		goBackToSelectButton.isVisible = true
+		timer.pause(createObs)
+		timer.pause(spawnOp)
+		Runtime:removeEventListener( "enterFrame", move )
+   	end
+
+end
+	-- This would occur when you click the replay button
+local function replayButtonEvent()
+	composer.start = true
+	composer.sport = 'cycle'
+	composer.removeScene( "InjurySheet")
+	composer.gotoScene( "InjurySheet", "fade", 500 )
+end
+
+
+
 function scene:resumeGame()
     Runtime:addEventListener('enterFrame',move)
     --Runtime:addEventListener("collision", onCollision)
@@ -577,6 +632,56 @@ function scene:resumeGame()
 	timer.resume(createObs)
 	timer.resume(spawnOp)
 end
+
+
+settingBackground = display.newImageRect( "images/background/app background/appBack.png", screenW, screenH )
+settingBackground.anchorX = 0 
+settingBackground.anchorY = 0
+settingBackground:setFillColor( 0.8 )
+settingBackground.isVisible = false
+
+
+settingWindow = display.newImageRect( "images/background/app background/paused window.png", 150, 200 )
+settingWindow.x = display.contentCenterX + 45
+settingWindow.y = display.contentCenterY
+settingWindow.isVisible = false
+
+playButton = display.newImageRect( "images/background/app background/play button.png", 50, 50 )
+playButton.x =  display.contentCenterX + 25
+playButton.y = display.contentCenterY - 10
+playButton.isVisible = false
+
+
+replayButton = display.newImageRect( "images/background/app background/restart button.png", 50, 50 )
+	-- On click of resume in settings
+
+	-- TO DO 2
+playButton:addEventListener( "touch", startPlaying )
+
+
+	-- On click of settings button
+	
+settingsButton = display.newImageRect( "images/commons/setting button.png", 50, 50 )
+settingsButton.x =  display.contentCenterX + 300
+settingsButton.y = display.contentCenterY - 140
+settingsButton:addEventListener( "touch", selectSetting )
+replayButton.x =  display.contentCenterX + 65
+replayButton.y = display.contentCenterY - 10
+replayButton.isVisible = false
+replayButton:addEventListener( "touch", replayButtonEvent )
+	-- make a crate (off-screen), position it, and rotate slightly
+	-- create a grass object and add physics (with custom shape)
+
+local function goBackToHome()
+	composer.removeScene("level2")
+	composer.gotoScene("select","fade",500)
+end
+goBackToSelectButton = display.newImageRect( "images/commons/music button.png", 50, 50 )
+goBackToSelectButton.x =  display.contentCenterX  + 45
+goBackToSelectButton.y = display.contentCenterY + 35
+goBackToSelectButton.isVisible = false	
+goBackToSelectButton:addEventListener( "touch", goBackToHome )
+
 
 
 function scene:create( event )
@@ -612,6 +717,12 @@ function scene:create( event )
 	sceneGroup:insert(healthRectangeRed)
 	sceneGroup:insert(healthRectangeGreen)
 	sceneGroup:insert(loss)
+	sceneGroup:insert(settingBackground)
+	sceneGroup:insert(settingsButton)
+	sceneGroup:insert(settingWindow)
+	sceneGroup:insert(playButton)
+	sceneGroup:insert(replayButton)
+	sceneGroup:insert(goBackToSelectButton)
 end
 
 local kangaroos = display.newGroup()

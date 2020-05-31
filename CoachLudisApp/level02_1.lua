@@ -183,6 +183,7 @@ sceneGroup:insert(caliperPopup)
 sceneGroup:insert(helmetPopup)
 sceneGroup:insert(taillightPopup)
 sceneGroup:insert(wheelPopup)
+sceneGroup:insert(startCycling)
 
 
 end
