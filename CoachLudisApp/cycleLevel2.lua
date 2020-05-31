@@ -25,6 +25,8 @@ local rank = 5
 local spawnedplay  = 0
 
 obstaclesCycle = display.newGroup()
+levelTrack = audio.loadSound( "sound/levels/bensound-rumble.mp3")
+collisionSound = audio.loadSound( "sound/injury/Concussive_Hit_Guitar_Boing.mp3")
 
 
 local injuriesOccured  = {}
@@ -507,6 +509,10 @@ local function onCollision(event)
 			if(sound == "ON") then
 				--audio.play(collisionSound)
 			end
+			if(sound == "ON") then
+				--audio.stop()
+				audio.play(collisionSound)
+			end
 			if(event.object2.name  == "speedBreaker" and scrollSpeed < 2) then
 				event.object2:removeSelf()
 			elseif(event.object2.name  == "op-cycle") then
@@ -623,6 +629,8 @@ end
 function scene:resumeGame()
     Runtime:addEventListener('enterFrame',move)
     --Runtime:addEventListener("collision", onCollision)
+    audio.stop()
+	audio.play(levelTrack, { channel=2, loops=-1})
 	if composer.success  ==  true then
 		healthValue =  healthValue + 25
 		healthRectangeGreen.width =  healthValue*2
@@ -819,6 +827,13 @@ function scene:show( event )
 	elseif phase == "did" then
 		-- Called when the scene is now on screen
 		-- 
+		if(sound == "ON") then
+
+			audio.stop()
+			audio.play(levelTrack, { channel=2, loops=-1})
+		else
+			audio.stop()
+		end
 		--map.positionCamera(cycle.x,cycle.y )
 		composer.game = 'cycle'
 		-- First time entering the level, otherwose chance=0

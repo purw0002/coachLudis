@@ -81,7 +81,7 @@ local function selectFracture()
 	Healthbar100.isVisible = false
 	if(sound == "ON") then
 		audio.stop()
-		audio.play(levelTrack, { channel=2, loops=-1})
+		audio.play(levelTrack)
 	else
 		audio.stop()
 	end
@@ -98,7 +98,7 @@ local function selectTissue()
 	Healthbar100.isVisible = false
 	if(sound == "ON") then
 		audio.stop()
-		audio.play(levelTrack, { channel=2, loops=-1})
+		audio.play(levelTrack)
 	else
 		audio.stop()
 	end
@@ -114,7 +114,7 @@ local function selectHead()
 	Healthbar100.isVisible = false
 	if(sound == "ON") then
 		audio.stop()
-		audio.play(levelTrack, { channel=2, loops=-1})
+		audio.play(levelTrack)
 	else
 		audio.stop()
 	end
@@ -132,7 +132,7 @@ local function selectOpenwound()
 	Healthbar100.isVisible = false
 	if(sound == "ON") then
 		audio.stop()
-		audio.play(levelTrack, { channel=2, loops=-1})
+		audio.play(levelTrack)
 	else
 		audio.stop()
 	end
@@ -148,7 +148,7 @@ local function selectDislocation()
 	Healthbar100.isVisible = false
 	if(sound == "ON") then
 		audio.stop()
-		audio.play(levelTrack, { channel=2, loops=-1})
+		audio.play(levelTrack)
 	else
 		audio.stop()
 	end
@@ -164,7 +164,7 @@ local function selectOther()
 	Healthbar100.isVisible = false
 	if(sound == "ON") then
 		audio.stop()
-		audio.play(levelTrack, { channel=2, loops=-1})
+		audio.play(levelTrack)
 	else
 		audio.stop()
 	end

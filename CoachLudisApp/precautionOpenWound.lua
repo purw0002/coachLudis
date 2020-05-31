@@ -24,13 +24,6 @@ wrongbuzzerSound = audio.loadSound( "sound/openwound/wrong.mp3")
 ----------------------------------------------------------------------------------------
 -- Play background music
 
-if(sound == "ON") then
-	audio.stop()
-	audio.play(levelTrack, { channel=2, loops=-1})
-else
-	audio.stop()
-end
-	
 ----------------------------------------------------------------------------------------
 -- Load all backgrounds
 
@@ -333,7 +326,13 @@ function scene:show( event )
 		-- Called when the scene is now on screen
 		-- 
 
-		-- INSERT code here to make the scene come alive
+		if(sound == "ON") then
+			audio.stop()
+			audio.play(levelTrack, { channel=2, loops=-1})
+		else
+			audio.stop()
+		end
+			-- INSERT code here to make the scene come alive
 		-- e.g. start timers, begin animation, play audio, etc.
 		physics.start()
 	end
