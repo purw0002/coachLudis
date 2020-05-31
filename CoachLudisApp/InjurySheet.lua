@@ -261,7 +261,7 @@ function scene:show( event )
 	local phase = event.phase
 	
 	if phase == "will" then
-		timer.performWithDelay( 10000, goToLevel, 1)
+		--timer.performWithDelay( 10000, goToLevel, 1)
 		-- Called when the scene is still off screen and is about to move on screen
 	elseif phase == "did" then
 		-- Called when the scene is now on screen
