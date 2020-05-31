@@ -24,7 +24,12 @@ wrongbuzzerSound = audio.loadSound( "sound/openwound/wrong.mp3")
 ----------------------------------------------------------------------------------------
 -- Play background music
 
-audio.play(levelTrack, { channel=2, loops=-1})
+if(sound == "ON") then
+	audio.stop()
+	audio.play(levelTrack, { channel=2, loops=-1})
+else
+	audio.stop()
+end
 	
 ----------------------------------------------------------------------------------------
 -- Load all backgrounds
@@ -114,8 +119,14 @@ local function selectBandaid (e)
 		end
 		timer.performWithDelay( 2000, destroyWin, 1)
 		rightAnswers = rightAnswers + 1
-		audio.stop()
-		audio.play(winningSound)
+		
+		if(sound == "ON") then
+			audio.stop()
+			audio.play(winningSound, { channel=2, loops=-1})
+		else
+			audio.stop()
+		end
+
 	end
 end
 
@@ -149,15 +160,25 @@ local function selecttape (e)
 			end
 		end
 		timer.performWithDelay( 2000, destroyLoose, 1)
-		audio.stop()
-		audio.play(wrongbuzzerSound)
+
+		if(sound == "ON") then
+			audio.stop()
+			audio.play(wrongbuzzerSound, { channel=2, loops=-1})
+		else
+			audio.stop()
+		end
 	end
 end
 
 
 local function question3()
-	audio.stop()
-	audio.play(levelTrack, { channel=2, loops=-1})
+	if(sound == "ON") then
+		audio.stop()
+		audio.play(levelTrack, { channel=2, loops=-1})
+	else
+		audio.stop()
+	end
+	
 	redcross.isVisible = false
 	youwin.isVisible = false
 	redcross1.isVisible = false
@@ -185,8 +206,13 @@ local function selectIodine (e)
 		toothpaste:removeSelf()
 		youwin1.isVisible = true
 		rightAnswers = rightAnswers + 1
-		audio.stop()
-		audio.play(winningSound)
+		if(sound == "ON") then
+			audio.stop()
+			audio.play(winningSound, { channel=2, loops=-1})
+		else
+			audio.stop()
+		end
+		
 		timer.performWithDelay(2000, question3, 1)
 	end
 end
@@ -198,16 +224,26 @@ local function selectToothpaste (e)
 		iodine:removeSelf()
 		redcross1.isVisible =true
 
-		audio.stop()
-		audio.play(wrongbuzzerSound)
+		if(sound == "ON") then
+			audio.stop()
+			audio.play(wrongbuzzerSound, { channel=2, loops=-1})
+		else
+			audio.stop()
+		end
+
 		timer.performWithDelay(2000, question3, 1)
 	end
 end
 
 
 local function question2()
-	audio.stop()
-	audio.play(levelTrack, { channel=2, loops=-1})
+	if(sound == "ON") then
+		audio.stop()
+		audio.play(levelTrack, { channel=2, loops=-1})
+	else
+		audio.stop()
+	end
+	
 
 	redcross.isVisible = false
 	youwin.isVisible = false
@@ -230,8 +266,12 @@ local function selectWipe (e)
 	rightAnswers = rightAnswers + 1
 	napkin:removeSelf()
 	youwin.isVisible = true
-	audio.stop()
-	audio.play(winningSound)
+	if(sound == "ON") then
+		audio.stop()
+		audio.play(winningSound, { channel=2, loops=-1})
+	else
+		audio.stop()
+	end
 	timer.performWithDelay(2000, question2, 1)
 end
 
@@ -240,8 +280,13 @@ local function selectNapkin (e)
 	napkin:removeSelf()
 	wipe:removeSelf()
 	redcross.isVisible =true
-	audio.stop()
-	audio.play(wrongbuzzerSound)
+	if(sound == "ON") then
+		audio.stop()
+		audio.play(wrongbuzzerSound, { channel=2, loops=-1})
+	else
+		audio.stop()
+	end
+	
 	timer.performWithDelay(2000, question2, 1)
 end
 

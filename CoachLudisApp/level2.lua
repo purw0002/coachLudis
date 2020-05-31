@@ -395,6 +395,7 @@ local function onCollision(event)
 			print(event.object2.name)
 			print(healthValue)
 			if(sound == "ON") then
+				audio.stop
 				audio.play(collisionSound)
 			end
 			event.object2:removeSelf()

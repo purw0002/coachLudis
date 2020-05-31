@@ -25,7 +25,12 @@ wrongbuzzerSound = audio.loadSound( "sound/headsound/wrong.mp3")
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- Play background music
 
-audio.play(levelTrack, { channel=2, loops=-1})
+if(sound == "ON") then
+	audio.stop()
+	audio.play(levelTrack, { channel=2, loops=-1})
+else
+	audio.stop()
+end
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 local background1
@@ -96,7 +101,6 @@ end
 
 
 local function makeWin1Dissapear()
-	print("diassdjkd")
 	youwin1.isVisible = false
 end
 
@@ -151,8 +155,12 @@ local function selectParents (e)
 		timer.performWithDelay( 2000, destroyWin, 1)
 
 		rightAnswers = rightAnswers + 1
-		audio.stop()
-		audio.play(winningSound)
+		if(sound == "ON") then
+			audio.stop()
+			audio.play(winningSound, { channel=2, loops=-1})
+		else
+			audio.stop()
+		end
 	end
 end
 
@@ -185,8 +193,12 @@ local function selectFriends (e)
 			end
 		end
 		timer.performWithDelay( 2000, destroyLoose, 1)
-		audio.stop()
-		audio.play(wrongbuzzerSound)
+		if(sound == "ON") then
+			audio.stop()
+			audio.play(wrongbuzzerSound, { channel=2, loops=-1})
+		else
+			audio.stop()
+		end
 	end
 end
 
@@ -194,9 +206,12 @@ end
 
 
 local function question3()
-	audio.stop()
-	audio.play(levelTrack, { channel=2, loops=-1})
-
+	if(sound == "ON") then
+		audio.stop()
+		audio.play(levelTrack, { channel=2, loops=-1})
+	else
+		audio.stop()
+	end
 		
 	redcross.isVisible = false
 	youwin.isVisible = false
@@ -226,8 +241,12 @@ local function selectCorrectNumber ()
 	rightAnswers = rightAnswers + 1
 	nineOne:removeSelf()
 	youwin.isVisible = true
-	audio.stop()
-	audio.play(winningSound)
+	if(sound == "ON") then
+		audio.stop()
+		audio.play(winningSound, { channel=2, loops=-1})
+	else
+		audio.stop()
+	end
 	timer.performWithDelay(2000, question3, 1)
 end
 
@@ -236,16 +255,26 @@ local function selectNine ()
 	correctNumber:removeSelf()
 	nineOne:removeSelf()
 	redcross.isVisible =true
-	audio.stop()
-	audio.play(wrongbuzzerSound)
+	if(sound == "ON") then
+		audio.stop()
+		audio.play(wrongbuzzerSound, { channel=2, loops=-1})
+	else
+		audio.stop()
+	end
+
 	timer.performWithDelay(2000, question3, 1)
 end
 
 
 
 local function question2()
-	audio.stop()
-	audio.play(levelTrack, { channel=2, loops=-1})
+	if(sound == "ON") then
+		audio.stop()
+		audio.play(levelTrack, { channel=2, loops=-1})
+	else
+		audio.stop()
+	end
+
 	redcross.isVisible = false
 	youwin.isVisible = false
 	redcross1.isVisible = false
@@ -273,8 +302,12 @@ local function selectHospital ()
 	school:removeSelf()
 	school = nil
 	youwin.isVisible = true
-	audio.stop()
-	audio.play(winningSound)
+	if(sound == "ON") then
+		audio.stop()
+		audio.play(winningSound, { channel=2, loops=-1})
+	else
+		audio.stop()
+	end
 	timer.performWithDelay(2000, question2, 1)
 end
 
@@ -283,8 +316,12 @@ local function selectSchool ()
 	school:removeSelf()
 	hospital:removeSelf()
 	redcross.isVisible =true
-	audio.stop()
-	audio.play(wrongbuzzerSound)
+	if(sound == "ON") then
+		audio.stop()
+		audio.play(wrongbuzzerSound, { channel=2, loops=-1})
+	else
+		audio.stop()
+	end
 	timer.performWithDelay(2000, question2, 1)
 end
 
