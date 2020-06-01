@@ -385,10 +385,6 @@ end
 
 local function onCollision(event)
 	if(event.phase == "began") then
-		print("Collided with ")
-		print(event.object1.name)
-		print(event.object2.name)
-		print(deadPlayers)
 
 		if(event.object1.name == "ball" or event.object2.name == "ball") then
 			print(event.object1.name)
@@ -488,6 +484,8 @@ function scene:create( event )
 	-- health bar
 	healthRectangeGreen = display.newRect( 130, 20, healthValue*2, 20 ) 
 	healthRectangeGreen:setFillColor(1, 0, 0, 1)
+	healthRectangeGreen.x = 130
+	healthRectangeGreen.y = 20
 
 	-- Keeps track of players that crossed the scene
 	deadPlayers = 0
@@ -658,6 +656,7 @@ function scene:create( event )
 	goBackToSelectButton.isVisible = false
 	goBackToSelectButton:addEventListener( "touch", goBackToHome )
 
+
 	sceneGroup:insert( background )
 	sceneGroup:insert( background1 )
 	sceneGroup:insert(ball)
@@ -704,6 +703,18 @@ function scene:show( event )
 			audio.stop()
 		end
 
+		local function showGameOver(loss)
+			player:pause()
+			if(sound == "ON") then
+				audio.stop()
+				audio.play(lostTrack)
+			end
+			loss.isVisible = true
+			settingsButton.isVisible = false
+			healthRectangeGreen.isVisible = false
+			healthRectangeRed.isVisible = false
+		end
+
 		if(composer.start == true) then
 			local title
 			if(composer.suceeded == true) then
@@ -722,18 +733,20 @@ function scene:show( event )
 			createObstacles = timer.performWithDelay( 1000, createCrate, 40)
 		else
 			print("physics starting again along eith timer")
-
-			physics.start()
-			physics.setGravity(-5,0)
-
-			physics.addBody(ball, "static", {shape={-nw,-nh,nw,-nh,nw,nh,-nw,nh} });
-			physics.addBody( detector , "static")
-			healthValue = healthValue +composer.healthIncrease
-			healthRectangeGreen.width =  healthValue*2
-			healthRectangeGreen.x = 130
-			healthRectangeGreen.x = healthRectangeGreen.x - 100 + composer.healthIncrease
-			createObstacles = timer.performWithDelay( 1000, createCrate, 40-composer.deadPlayers)
-			timer.resume(createObstacles)
+			if(composer.healthIncrease == 0 and healthValue == 0) then
+				showGameOver(loss)
+			else
+				physics.start()
+				physics.setGravity(-5,0)
+				physics.addBody(ball, "static", {shape={-nw,-nh,nw,-nh,nw,nh,-nw,nh} });
+				physics.addBody( detector , "static")
+				healthValue = healthValue +composer.healthIncrease
+				healthRectangeGreen.width =  healthValue*2
+				healthRectangeGreen.x = 130
+				healthRectangeGreen.x = healthRectangeGreen.x - (200 - healthValue*2)/2
+				createObstacles = timer.performWithDelay( 1000, createCrate, 40-composer.deadPlayers)
+				timer.resume(createObstacles)
+			end
 		end
 
 		

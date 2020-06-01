@@ -170,13 +170,15 @@ local function selectOther()
 	end
 end
 
-local function skipButton()
-	if (composer.game ==  "soccer") then
-		composer.removeScene("instructionWarmupGame")
-		composer.gotoScene( "instructionWarmupGame", "fade", 500 )
-	else
-		composer.removeScene("level02_1")
-		composer.gotoScene( "level02_1", "fade", 500 )
+local function skipButton(e)
+	if(e.phase == "began") then
+		if (composer.game ==  "soccer") then
+			composer.removeScene("instructionWarmupGame")
+			composer.gotoScene( "instructionWarmupGame", "fade", 500 )
+		else
+			composer.removeScene("level02_1")
+			composer.gotoScene( "level02_1", "fade", 500 )
+		end
 	end
 end
 

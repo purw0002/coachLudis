@@ -126,14 +126,14 @@ local function randomizePlayers()
 			local player = display.newImageRect("images/cycling level assets/obstacles/cyclists/cyclist1.png", 50, 50)
 			player.x, player.y = randomizeLane(),-10
 			player.name =  "op-cycle"
-			physics.addBody(player)
+			physics.addBody(player, "dynamic", {shape={-5,-5,5,-5,5,5,-5,5} })
 			obstaclesCycle:insert(player)
 		elseif(selectedObstacle == 'player2') then
 			local player = display.newImageRect("images/cycling level assets/obstacles/cyclists/cyclist2.png", 50, 50)
 			player.x, player.y = randomizeLane(),-10
 			player.name =  "op-cycle"
 			physics.addBody(player)
-			obstaclesCycle:insert(player)
+			obstaclesCycle:insert(player, "dynamic", {shape={-5,-5,5,-5,5,5,-5,5} })
 		end
 	end
 end
@@ -239,7 +239,8 @@ cycle = display.newImageRect("images/level2Cycling/bicycle character top view.pn
 -- cycle, position is set  to static
 cycle.x, cycle.y = 250,280
 cycle.name =  "cycle"
-physics.addBody(cycle, "static")
+physics.addBody(cycle, "static" ,{shape={-5,-5,5,-5,5,5,-5,5} })
+
 
 -- nitros button
 boom = display.newImageRect("boom.png", 40,40)
@@ -631,11 +632,33 @@ function scene:resumeGame()
     --Runtime:addEventListener("collision", onCollision)
     audio.stop()
 	audio.play(levelTrack, { channel=2, loops=-1})
+
+	local function showGameOver(loss)
+		if(sound == "ON") then
+			audio.stop()
+			audio.play(lostTrack)
+		end
+		loss.isVisible = true
+		--settingsButton.isVisible = false
+		healthRectangeGreen.isVisible = false
+		healthRectangeRed.isVisible = false
+		--goLeft.isVisible = false
+		--goRight.isVisible =  false
+		myText.isVisible  = false
+		Runtime:removeEventListener( "enterFrame", move )
+		timer.cancel(createObs)
+		timer.cancel(spawnOp)
+		composer.stars  =  0
+	end
+
+
 	if composer.success  ==  true then
 		healthValue =  healthValue + 25
 		healthRectangeGreen.width =  healthValue*2
 		healthRectangeGreen.x = 100
 		healthRectangeGreen.x = healthRectangeGreen.x - 50 + (healthValue)
+	elseif healthValue  == 0 then
+		showGameOver(loss)
 	end
 	timer.resume(createObs)
 	timer.resume(spawnOp)
