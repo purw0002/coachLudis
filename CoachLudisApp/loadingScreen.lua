@@ -14,31 +14,52 @@ local scene = composer.newScene()
 local screenW, screenH, halfW = display.actualContentWidth, display.actualContentHeight, display.contentCenterX
 
 
-function goToMainLevel(e)
-	if e.phase == "began" then
-		if(composer.game == 'soccer') then
-			composer.removeScene('loadingScreen')
-			composer.gotoScene( "loadingScreen", "fade", 500 )
-		else
-			composer.removeScene('loadingScreen')
-			composer.gotoScene( "loadingScreen", "fade", 500 )
-		end
-	end
-end
-
 
 function scene:create( event )
+	-- Called when the scene's view does not exist.
+	-- 
+	-- INSERT code here to initialize the scene
+	-- e.g. add display objects to 'sceneGroup', add touch listeners, etc.
 
+	local loadingGif = {
+		width= 72,
+		height= 72,
+		numFrames= 6,
+		sheetContentWidth= 432,
+		sheetContentHeight= 72
+	}
 	local sceneGroup = self.view
 
-	local backgroundimg = display.newImageRect( "images/instruction sheet/cycling game instruction.png", screenW, screenH)
-		backgroundimg.anchorX = 0
-		backgroundimg.anchorY = 0
-	backgroundimg:addEventListener('touch', goToMainLevel)
+	-- We need physics started to add bodies, but we don't want the simulaton
+	-- running until the scene is on the screen.
 
-	sceneGroup:insert(backgroundimg)
+	-- create a grey rectangle as the backdrop
+	-- the physical screen will likely be a different shape than our defined content area
+	-- since we are going to position the background from it's top, left corner, draw the
+	-- background at the real top, left corner.
 
+
+	local background = display.newImageRect( "images/loading/loading screen background.png", screenW, screenH )
+	background.anchorX = 0
+	background.anchorY = 0
+
+	local loadingSheet = graphics.newImageSheet("images/loading/loding gifs/loadingSprite.png",loadingGif )
+	local 	loadingGifC = {
+		{ name = "turn", start = 1, count= 6,time=1000}
+	}
+	local loadGif = display.newSprite(loadingSheet, loadingGifC)
+	-- all display objects must be inserted into group
+
+	loadGif.x, loadGif.y = display.contentCenterX+30,display.contentCenterY-10
+	loadGif.name="loadGif"
+	loadGif:setSequence("turn")
+	loadGif:scale(0.5,0.5)
+	loadGif:play()
+
+	sceneGroup:insert( background )
+	sceneGroup:insert( loadGif )
 end
+
 
 function scene:show( event )
 	local sceneGroup = self.view
@@ -49,6 +70,13 @@ function scene:show( event )
 	elseif phase == "did" then
 		-- Called when the scene is now on screen
 		-- 
+		if(composer.game == "soccer") then
+			composer.removeScene('level2')
+			composer.gotoScene( "level2", "fade", 100 )
+		else
+			composer.removeScene('cycleLevel2')
+			composer.gotoScene( "cycleLevel2", "fade", 100 )
+		end
 		-- INSERT code here to make the scene come alive
 		-- e.g. start timers, begin animation, play audio, etc.
 	end
