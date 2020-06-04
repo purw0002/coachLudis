@@ -82,7 +82,9 @@ function scene:create( event )
   wheelPopup.y = 205
   wheelPopup.isVisible = false
 
-  local function startCyclingTapListener()
+  local function startCyclingTapListener(e)
+    print(e.phase)
+    if e.phase == "began" then
      if (helmet.alpha < 1 ) then
         startCycling.isVisible = false
         composer.removeScene( "level02_1" )
@@ -92,6 +94,7 @@ function scene:create( event )
         composer.removeScene( "level02_1" )
         composer.gotoScene( "level02_2", "fade", 500 )
      end
+   end
   end
 
   local function helmetTapListener()
@@ -169,7 +172,7 @@ function scene:create( event )
 
 
 
-startCycling:addEventListener("tap", startCyclingTapListener)
+startCycling:addEventListener("touch", startCyclingTapListener)
 
 sceneGroup:insert(background)
 sceneGroup:insert(instruction)

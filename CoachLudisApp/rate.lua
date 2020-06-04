@@ -84,9 +84,11 @@ function scene:create( event )
 		composer.start = true
 		if composer.game == "soccer" then
 			composer.removeScene( "level2")
+			composer.removeScene( "InjurySheet")
 			composer.gotoScene( "InjurySheet", "fade", 500 )
 		else 
 			composer.removeScene( "cycleLevel2")
+			composer.removeScene( "InjurySheet")
 			composer.gotoScene( "InjurySheet", "fade", 500 )
 		end
 	end

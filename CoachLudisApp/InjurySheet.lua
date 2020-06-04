@@ -170,18 +170,6 @@ local function selectOther()
 	end
 end
 
-local function skipButton(e)
-	if(e.phase == "began") then
-		if (composer.game ==  "soccer") then
-			composer.removeScene("instructionWarmupGame")
-			composer.gotoScene( "instructionWarmupGame", "fade", 500 )
-		else
-			composer.removeScene("level02_1")
-			composer.gotoScene( "level02_1", "fade", 500 )
-		end
-	end
-end
-
 ------------------------------------------------------------------------------------------------
 -- 20
 local fracture = display.newImageRect( "images/infoimage/fracture.png", 120,120 )
@@ -221,10 +209,27 @@ local other = display.newImageRect( "images/infoimage/other.png",  170,148 )
 	other.y = display.contentCenterY +105
 other:addEventListener( "touch", selectOther )
 
+
+local function skipButton(e)
+	if(e.phase == "began") then
+		e.target:removeSelf()
+		if (composer.game ==  "soccer") then
+			composer.removeScene("instructionWarmupGame")
+			composer.gotoScene( "instructionWarmupGame", "fade", 500 )
+		else
+			composer.removeScene("level02_1")
+			composer.gotoScene( "level02_1", "fade", 500 )
+		end
+	end
+end
+
 local skip_button = display.newImageRect("skip button.png",80,80)
 	skip_button.x = display.contentCenterX + 300
 	skip_button.y = display.contentCenterY - 120
 skip_button:addEventListener("touch", skipButton)
+
+
+
 
 --------------------------------------------------------------------------------------------
 function scene:create( event )
