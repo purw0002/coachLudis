@@ -1,0 +1,230 @@
+<html>
+
+<head>
+	
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+</head>
+<body>
+	
+<div id="header">
+	<div id="logo">
+		<img id="imageLogo" src="images/logo.png">
+	</div>
+	<div id="logoText">
+		<img id="imageText" src="images/app name.png">
+	</div>
+
+	<div id="aboutUsButton">
+		<div id="aboutUsText">About Us
+		</div>
+		
+	</div>
+  <div id="dashboardButton">
+    <div id="dashText">Dashboard
+     </div>   
+  </div>
+<div id="applicationButton">
+    <div id="appText">Application
+     </div>   
+  </div>
+  </div>	
+
+
+
+<div id="content">
+
+
+<div id="dashboardPage">
+
+<div class='tableauPlaceholder' id='viz1591254778434' style='position: relative'><noscript><a href='#'><img alt=' ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Lu&#47;LudisAnalytica&#47;Dashboard1&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz'  style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='LudisAnalytica&#47;Dashboard1' /><param name='tabs' value='no' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Lu&#47;LudisAnalytica&#47;Dashboard1&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /></object></div>                
+
+<script type='text/javascript'>                    var divElement = document.getElementById('viz1591254778434');                    var vizElement = divElement.getElementsByTagName('object')[0];                    if ( divElement.offsetWidth > 800 ) { vizElement.style.width='1300px';vizElement.style.height='1500px';} else if ( divElement.offsetWidth > 500 ) { vizElement.style.width='1300px';vizElement.style.height='927px';} else { vizElement.style.width='100%';vizElement.style.height='1377px';}                     var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);               
+ </script>
+
+
+
+  </div>
+
+<div id="aboutUsPageD">
+
+	<div id="ludisAnalytica">
+		<img id="teamL" src="images/team logo2.jpg">
+	</div>
+	<div id="textBox">
+		<div id="textDecorator">Ludis Analytica, a team of specialists from business, IT and data science, building a game for kids to improve sport safety</div>
+	</div>
+</div>
+
+
+
+<div id="slide-contents">
+
+<div class="slideshow-container">
+
+<div class="mySlides fade">
+  <div class="numbertext">1 / 6</div>
+  <img src="images/screenshot1.jpg" style="width:100%">
+</div>
+
+<div class="mySlides fade">
+  <div class="numbertext">2 / 6</div>
+  <img src="images/screenshot2.jpg" style="width:100%">
+</div>
+
+<div class="mySlides fade">
+  <div class="numbertext">3 / 6</div>
+  <img src="images/screenshot3.jpg" style="width:100%">
+</div>
+
+<div class="mySlides fade">
+  <div class="numbertext">4 / 6</div>
+  <img src="images/screenshot4.jpg" style="width:100%">
+</div>
+
+
+<div class="mySlides fade">
+  <div class="numbertext">5 / 6</div>
+  <img src="images/screenshot5.jpg" style="width:100%">
+</div>
+
+
+<div class="mySlides fade">
+  <div class="numbertext">6 / 6</div>
+  <img src="images/screenshot6.png" style="width:100%">
+</div>
+
+
+
+<a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+<a class="next" onclick="plusSlides(1)">&#10095;</a>
+
+</div>
+<br>
+
+<div style="text-align:center">
+  <span class="dot" onclick="currentSlide(1)"></span> 
+  <span class="dot" onclick="currentSlide(2)"></span> 
+  <span class="dot" onclick="currentSlide(3)"></span> 
+  <span class="dot" onclick="currentSlide(4)"></span> 
+  <span class="dot" onclick="currentSlide(5)"></span> 
+  <span class="dot" onclick="currentSlide(6)"></span> 
+</div>
+
+</div>
+
+
+<div id="downloadBox">
+	<div id="logoAgain">
+		<img id="imgReady" src="images/logo.png">
+	</div>
+	<div id="downloadLink">
+		<img id="imgDownloadReady" src="images/download button.png">
+	</div>
+
+</div>
+
+
+
+</div>
+
+<div id="footer">
+
+</div>
+
+<iframe id="my_iframe" style="display:none;"></iframe>
+<script>
+function Download(url) {
+    document.getElementById('my_iframe').src = url;
+};
+</script>
+
+
+<script>
+var slideIndex = 1;
+showSlides(slideIndex);
+
+function plusSlides(n) {
+  showSlides(slideIndex += n);
+}
+
+function currentSlide(n) {
+  showSlides(slideIndex = n);
+}
+
+function showSlides(n) {
+  var i;
+  var slides = document.getElementsByClassName("mySlides");
+  var dots = document.getElementsByClassName("dot");
+  if (n > slides.length) {slideIndex = 1}    
+  if (n < 1) {slideIndex = slides.length}
+  for (i = 0; i < slides.length; i++) {
+      slides[i].style.display = "none";  
+  }
+  for (i = 0; i < dots.length; i++) {
+      dots[i].className = dots[i].className.replace(" active", "");
+  }
+  slides[slideIndex-1].style.display = "block";  
+  dots[slideIndex-1].className += " active";
+}
+
+$( "#aboutUsButton" ).click(function() {
+	$("#aboutUsPageD").show();
+  $("#slide-contents").hide();
+  $("#downloadBox").hide();
+  $("#dashboardPage").hide()
+  $("#applicationButton").css("background-color","white")
+  $("#applicationButton").css("color","black")
+  $("#aboutUsButton").css("background-color","rgb(239,226,205)")
+  $("#aboutUsButton").css("color","rgb(99,166,236)")
+  $("#dashboardButton").css("background-color","white")
+  $("#dashboardButton").css("color","black")
+});
+
+
+$( "#applicationButton" ).click(function() {
+  $("#aboutUsPageD").hide();
+  $("#slide-contents").show();
+  $("#downloadBox").show();
+  $("#dashboardPage").hide();
+  $("#aboutUsButton").css("background-color","white")
+  $("#aboutUsButton").css("color","black")
+  $("#applicationButton").css("background-color","rgb(239,226,205)")
+  $("#applicationButton").css("color","rgb(99,166,236)")
+
+  $("#dashboardButton").css("background-color","white")
+  $("#dashboardButton").css("color","black")
+});
+
+$( "#dashboardButton" ).click(function() {
+  $("#aboutUsPageD").hide();
+  $("#slide-contents").hide();
+  $("#downloadBox").hide();
+  $("#dashboardPage").show();
+  $("#dashboardButton").css("background-color","rgb(239,226,205)")
+  $("#dashboardButton").css("color","rgb(99,166,236)")
+
+  $("#aboutUsButton").css("background-color","white")
+  $("#aboutUsButton").css("color","black")
+  $("#applicationButton").css("background-color","white")
+  $("#applicationButton").css("color","black")
+});
+
+
+
+$( "#imgDownloadReady" ).click(function() {
+window.open('https://drive.google.com/open?id=1HO8KrvVrTXEFO2QhvEFlTQ0pTzE9u0rg', '_blank');	
+});
+
+
+$( "#applicationButton" ).click()
+
+
+</script>
+
+
+</body>
+
+</html>
